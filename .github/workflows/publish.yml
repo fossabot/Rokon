@@ -81,7 +81,7 @@ jobs:
         if: ${{ !github.event.act }}
         with:
           name: ${{ runner.os }}
-          path: ./rokon
+          path: ./
       # - name: Import GPG key
       #   id: import_gpg
       #   if: ${{ !github.event.act }} && github.event_name != 'pull_request'
