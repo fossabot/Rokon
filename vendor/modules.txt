@@ -1,0 +1,23 @@
+# github.com/jwijenbergh/purego v0.0.0-20240527152122-d7876464a49c
+## explicit; go 1.18
+github.com/jwijenbergh/purego
+github.com/jwijenbergh/purego/internal/cgo
+github.com/jwijenbergh/purego/internal/fakecgo
+github.com/jwijenbergh/purego/internal/strings
+# github.com/jwijenbergh/puregotk v0.0.0-20240827133221-51f7e663a5e9
+## explicit; go 1.20
+github.com/jwijenbergh/puregotk/internal/core
+github.com/jwijenbergh/puregotk/v4/cairo
+github.com/jwijenbergh/puregotk/v4/gdk
+github.com/jwijenbergh/puregotk/v4/gdkpixbuf
+github.com/jwijenbergh/puregotk/v4/gio
+github.com/jwijenbergh/puregotk/v4/glib
+github.com/jwijenbergh/puregotk/v4/gmodule
+github.com/jwijenbergh/puregotk/v4/gobject
+github.com/jwijenbergh/puregotk/v4/graphene
+github.com/jwijenbergh/puregotk/v4/gsk
+github.com/jwijenbergh/puregotk/v4/gtk
+github.com/jwijenbergh/puregotk/v4/pango
+# golang.org/x/sys v0.24.0
+## explicit; go 1.18
+golang.org/x/sys/windows
