@@ -1,5 +1,5 @@
   <p align="center">
-      <img src="resources/icon.png" width="240" />
+      <img src="assets/Rokon.png" width="240" />
       <h1 align="center" >Rokon (Roku Remote for your computer) </h1>
   </p>
   <p align="center">
@@ -17,7 +17,7 @@
 
 > Also, none of the features listed below are implemented yet. This is a roadmap for the future.
 
-This application provides a remote control interface for Roku devices, utilizing React for the frontend.
+This application provides a remote control interface for Roku devices, utilizing the Roku External Control Protocol (ECP) API. It allows users to control their Roku device from their desktop or laptop, providing a more convenient and efficient way to interact with their TV. The app offers a sleek interface with various functions such as navigation, volume control, input selection, typing, and more. It also supports features like Neovim Mode, automatic Roku discovery, DiscordRPC integration, and more. With Rokon, you can control your Roku device remotely with ease and speed, all without the noise of a traditional remote. All powered by Golang and GTK4.
 
 ## Features
 
