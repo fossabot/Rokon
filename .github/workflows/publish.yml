@@ -145,7 +145,7 @@ jobs:
           - arch: armv6
             distro: alpine_latest
           - arch: armv7
-            distro: fedora_latest
+            distro: ubuntu_latest
         os:
           - ubuntu-24.04
 
