@@ -2,10 +2,16 @@ package main
 
 import (
 	"fmt"
-	"golang.org/x/sys/windows"
+	"os"
 	"syscall"
 	"unsafe"
+
+	"golang.org/x/sys/windows"
 )
+
+// This was tested on Wine staging 9.16 and Windows 10 and 11. It works on both.
+// Linux cannot build this normally, as it's using Windows-specific functions
+// To build this you must do `GOOS=windows go build`
 
 func main() {
 	// Load the ntdll.dll module
@@ -35,10 +41,13 @@ func main() {
 
 	// Call wine_get_host_version
 	var sysname, release uintptr
+	/// Ignore what VSCode says about the number of arguments, this is correct. 
 	syscall.Syscall(wineGetHostVersionProc, 2, uintptr(unsafe.Pointer(&sysname)), uintptr(unsafe.Pointer(&release)), 0)
 
 	sysnameStr := windows.BytePtrToString((*byte)(unsafe.Pointer(sysname)))
 	releaseStr := windows.BytePtrToString((*byte)(unsafe.Pointer(release)))
 
-	fmt.Printf("Running Wine %s under %s %s.\n", version, sysnameStr, releaseStr)
+	fmt.Printf("Running under Wine %s under %s %s.\n", version, sysnameStr, releaseStr)
+	// Now error out, to let the caller know
+	os.Exit(1)
 }
