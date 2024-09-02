@@ -1,0 +1,158 @@
+title: Rokon
+name: rokon
+summary: Roku Remote for your Linux Desktop
+description: |
+      Super efficent and easy to use Roku Remote for your Linux Desktop.
+      It uses the Roku External Control Protocol to control your Roku device.
+      It also uses SSDP to discover Roku devices on your network.
+      Finally, it is built on GTK4.
+version: '1.0.0'
+license: GPL-3.0
+source-code: "https://github.com/BrycensRanch/Rokon"
+adopt-info: rokon
+grade: devel
+base: core24
+# Extension GNOMME does not support confinement classic
+# So uhhh, GTK4's accessibility bus is broken in strict confinement.
+# Suffice to say, uhhh, it's a mess.
+confinement: strict
+compression: lzo
+contact: "brycengranville@outlook.com"
+issues: "https://github.com/BrycensRanch/Rokon/issues"
+icon: "./assets/Rokon.png"
+donation: "https://ko-fi.com/brycensranch"
+# By default, snaps have an epoch of ‘0’. When a new version breaks data compatibility with this old version, incrementing the epoch in the new release stops those old users automatically refreshing to the new version.
+# epoch: 0
+
+
+# Snap package confinement mess up telemetry data from /etc/os-release
+# Unfortunately, there is no cure. lol
+# As hard as the snapd team tries to pretend the host doesn't matter, it does.
+# The snapd team is trying to make the host irrelevant, but it's not.
+# The host is always relevant.
+# https://forum.snapcraft.io/t/snap-package-confinement-mess-up-telemetry-data-from-etc-os-release/27694
+
+assumes:
+  - snapd2.38
+  - snap-env
+
+platforms:
+  amd64:
+    build-on: [amd64]
+    build-for: [amd64]
+  arm64:
+    build-on: [arm64]
+    build-for: [arm64]
+  armhf:
+    build-on: [armhf]
+    build-for: [armhf]
+
+
+
+plugs:
+  dot-config-rokon:
+    interface: personal-files
+    read:
+      - $HOME/.config/rokon
+      - $HOME/.config/gtk-4.0
+    write:
+      - $HOME/.config/rokon
+  gtk-3-themes:
+    interface: content
+    target: $SNAP/share/themes
+    default-provider: gtk-common-themes
+  icon-themes:
+    interface: content
+    target: $SNAP/share/icons
+    default-provider: gtk-common-themes
+  sound-themes:
+    interface: content
+    target: $SNAP/share/sounds
+    default-provider: gtk-common-themes
+apps:
+  rokon:
+    # This will make GTK4 and GNOME libraries available to the snap at runtime
+    extensions: [gnome]
+    command: usr/bin/rokon
+    environment:
+      # This is needed for GTK4 to work properly
+      LD_LIBRARY_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:/usr/lib:$LD_LIBRARY_PATH
+      # PUREGOTK_CAIRO_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libcairo.so
+      # PUREGOTK_GLIB_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libglib-2.0.so.0
+      # PUREGOTK_PANGO_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libpango-1.0.so
+      # PUREGOTK_GDKPIXBUF_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libgdk_pixbuf-2.0.so
+      # PUREGOTK_LIB_FOLDER: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR
+
+    common-id: io.github.brycensranch.Rokon.desktop
+    # You should not use the desktop keyword and the snap/gui directory together. Remove the desktop keyword; putting the files in snap/gui will do what you want.
+    # desktop: old/usr/share/applications/io.github.brycensranch.Rokon.desktop
+    plugs:
+      - home
+      - gsettings
+      - desktop
+      - desktop-legacy
+      - opengl
+      - wayland
+      - x11
+      - dot-config-rokon
+      - gtk-3-themes
+      - icon-themes
+      - sound-themes
+      - network
+      - network-status
+      - joystick
+      - audio-playback
+      - raw-input
+      - raw-usb
+      # Does not solve 2024/08/31 15:41:44 ERROR Unable to connect to the accessibility bus at 'unix:path=/run/user/1000/at-spi/bus_0': The connection is closed priority=4 code_file=../src/gtk/a11y/gtkatspiroot.c code_line=679 code_func=gtk_at_spi_root_constructed glib_domain=Gtk
+slots:
+  rokon:
+    interface: dbus
+    bus: session
+    name: io.github.brycensranch.Rokon
+
+parts:
+  rokon:
+    parse-info: [usr/share/metainfo/io.github.brycensranch.Rokon.xml]
+    plugins: [go, rust]
+    # CGO is slow, so we add the version flag to show that building is not hanging or stuck.
+    override-build: |
+      go mod download all
+      cd old/lib/sysinfo
+      cargo build --release
+      mv ./target/release/liblibrokon_rust_sysinfo.a ../
+      mv ./target/librokon_rust_sysinfo.h ../
+      cd ../../
+      go build -v -o $SNAPCRAFT_PART_INSTALL/usr/bin/rokon main.go
+    build-snaps: [go/latest/stable, gnome-46-2404-sdk/latest/edge]
+    build-packages:
+      # For goreleaser or git information in general.
+      - git
+    # stage-packages:
+      # - pkg-config
+      # - libcairo2-dev
+      # - libgdk-pixbuf2.0-dev
+      # #pango
+      # - libpango1.0-dev
+      # - libglib2.0-dev
+      # - libgtk-4-dev
+      # - libappindicator3-dev
+      # - libgtksourceview-4-dev
+      # - libgtkspell3-3-dev
+      # - libhandy-1-dev
+      # - libjson-glib-dev
+      # - libsecret-1-dev
+      # - libxml2-dev
+      # - libgirepository1.0-dev
+      # - libpango1.0-dev
+    build-environment:
+      - CGO_ENABLED: '1'
+      # GTK libs are loading at runtime!
+      # - PUREGOTK_CAIRO_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libcairo.so
+      # - PUREGOTK_LIB_FOLDER: /usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/
+    source: .
+    source-type: local
+    override-pull: |
+      craftctl default
+      # snapcraftctl set-version \
+      # "$(git describe --long --tags --always --match=v*.*.* | sed 's/v//')"
