@@ -2,10 +2,8 @@ use std::ffi::CStr;
 use std::ffi::CString;
 extern crate sysinfo;
 
-use std::io::{self, Write};
 use std::ptr;
 // use std::str::FromStr;
-use sysinfo::{Components, Disks, Networks, Pid, Signal, System, Users};
 
 #[no_mangle]
 pub extern "C" fn hello(name: *const libc::c_char) {
