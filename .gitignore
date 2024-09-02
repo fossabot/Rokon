@@ -12,6 +12,7 @@
 *.o
 *.dylib
 rokon
+Rokon
 rokon_puregotk
 rokon_puregotk4
 *.snap
