@@ -7,7 +7,7 @@ concurrency:
 on:
   push:
     branches:
-      - '*'
+      - "*"
 
   pull_request:
     types:
@@ -58,10 +58,27 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install GTK4
+        run: |
+          sudo apt update
+          sudo apt install -y libgtk-4-dev
+
       - name: ❤️‍🔥 Setup Golang
         uses: magnetikonline/action-golang-cache@v5
         with:
           go-version-file: go.mod
+
+      - name: 🦀 Setup Rust
+        uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: Build sysinfo
+        run: cargo build --release
+        working-directory: old/lib/sysinfo
+      - name: Move sysinfo
+        working-directory: old/lib/sysinfo
+        run: |
+          mv ./target/release/liblibrokon_rust_sysinfo.a ../
+          mv ./target/librokon_rust_sysinfo.h ../
       # - name: 👁️ Ensure Code is Linted
       #   run: |
       #     pnpm lint:check
@@ -70,8 +87,9 @@ jobs:
       #     pnpm format:check
       - name: 📦 Install Dependencies
         run: |
-          go install
+          go mod download all
       - name: 🤖 Build Project
+        working-directory: old
         run: |
           CGO_ENABLED=1 go build -v -o rokon main.go
       # - name: 📤 Upload Code coverage to Codecov
