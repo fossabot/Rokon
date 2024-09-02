@@ -1,15 +1,31 @@
 # MacOS DS_Store files
 .DS_Store
 
-# Binaries for programs and plugins
+# Binaries/packages for programs and plugins
 *.exe
 *.exe~
 *.dll
 *.so
+*.a
+*.h
+*.d
+*.o
 *.dylib
 rokon
 rokon_puregotk
 rokon_puregotk4
+*.snap
+*.deb
+*.rpm
+*.AppImage
+*.dmg
+*.pkg
+*.nupkg
+*.tar.gz
+*.tgz
+*.zip
+*.apk
+*.pacman
 
 # Test binary, built with `go test -c`
 *.test
@@ -19,7 +35,11 @@ rokon_puregotk4
 coverage.html
 
 # Dependency directories (remove the comment below to include it)
-#vendor/
+# Is this the equivalent of including node_modules in a Github repository ? lol
+vendor/
+
+# do not allow the target directory of any cargo project
+**/target/**
 
 # Output of GoReleaser
 dist/
