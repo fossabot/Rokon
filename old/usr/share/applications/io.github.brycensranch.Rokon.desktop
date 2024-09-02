@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+NoDisplay=false
+Terminal=false
+Exec=/usr/bin/rokon
+Icon=Rokon
+Name=Rokon
+Comment=Roku Remote
+Categories=Utility
