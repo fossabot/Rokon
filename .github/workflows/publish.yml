@@ -200,6 +200,10 @@ jobs:
               fedora_latest)
                 dnf install -y @development-tools git gtk4-devel gobject-introspection-devel rust cargo
                 ;;
+              ubuntu_latest)
+                apt update
+                apt install -y build-essential git libgtk-4-dev libgirepository1.0-dev rust-all
+                ;;
             esac
           run: |
              cd old/lib/sysinfo && cargo build --release && mv ./target/release/liblibrokon_rust_sysinfo.a ./target/librokon_rust_sysinfo.h ../ && cd ../../ &&
