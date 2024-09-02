@@ -1,6 +1,6 @@
 Name:           rokon
 Version:        1.0.0
-Release:        %autorelease
+Release:        3%{?dist}
 Summary:        Control your Roku device with your desktop!
 
 License:        AGPLv3
@@ -52,4 +52,5 @@ install -Dpm 0755 old/%{name} %{buildroot}%{_bindir}/%{name}
 
 
 %changelog
-%autochangelog
+* Mon Sep 2 2024 Brycen <brycengranville@outlook.com> 1.0.0-3
+- Initial package
