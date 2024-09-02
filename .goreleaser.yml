@@ -1,0 +1,49 @@
+# honestly I might not even use this
+
+version: 2
+
+before:
+  hooks:
+    - go mod download
+    - cd old/lib/sysinfo
+    - cargo build --release
+    - mv ./target/release/liblibrokon_rust_sysinfo.a ../
+    - mv ./target/librokon_rust_sysinfo.h ../
+    - cd ../../ # go back to the root directory
+    - go build -v -o /usr/bin/rokon
+builds:
+  - env:
+      - CGO_ENABLED=1
+    goos:
+      - linux
+    goarch:
+      - amd64
+      - arm64
+      - armhf
+archives:
+  - format_overrides:
+      - goos: windows
+        format: zip
+dockers:
+  - image_templates:
+    - "ghcr.io/BrycensRanch/Rokon:latest"
+    - "ghcr.io/BrycensRanch/Rokon:v{{ .Major }}"
+    - "ghcr.io/BrycensRanch/Rokon:v{{ .Major }}.{{ .Minor }}"
+    - "ghcr.io/BrycensRanch/Rokon:v{{ .Major }}.{{ .Minor }}.{{ .Patch }}"
+    build_flag_templates:
+    - "--pull"
+    # OCI annotations: https://github.com/opencontainers/image-spec/blob/main/annotations.md
+    - "--label=org.opencontainers.image.created={{.Date}}"
+    - "--label=org.opencontainers.image.name={{.ProjectName}}"
+    - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+    - "--label=org.opencontainers.image.version={{.Version}}"
+    - "--label=org.opencontainers.image.source={{.GitURL}}"
+release:
+  github:
+    owner: "BrycensRanch"
+    name: "Rokon"
+  name_template: "{{.Version}}"
+  prerelease: auto
+  mode: append
+changelog:
+  disable: true
