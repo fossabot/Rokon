@@ -7,7 +7,8 @@ License:        AGPLv3
 URL:            https://github.com/BrycensRanch/Rokon
 Source0:        %{url}/tarball/master
 
-BuildRequires:  go >= 1.23
+BuildRequires:  git
+BuildRequires:  go
 BuildRequires:  rust
 BuildRequires:  cargo
 BuildRequires:  cmake
