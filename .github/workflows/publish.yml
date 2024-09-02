@@ -24,8 +24,12 @@ jobs:
         os:
           # ubuntu 24.04 is in beta. ubuntu-latest is 22.04 at time of writing. Our application won't build on 22.04.
           - ubuntu-24.04
+        arch:
+          - arm64
+          - amd64
 
-    runs-on: ${{ matrix.os }}
+
+    runs-on: ${{ matrix.os }}-${{ matrix.arch }}
     # Service containers to run with `container-job`
     # services:
     #   # Label used to access the service container
@@ -99,7 +103,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ !github.event.act }}
         with:
-          name: ${{ runner.os }}
+          name: rokon-${{ runner.os }}-${{ matrix.arch }}
           path: ./old/rokon
       # - name: Import GPG key
       #   id: import_gpg
