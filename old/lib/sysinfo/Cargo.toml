@@ -1,0 +1,19 @@
+[package]
+name = "librokon_rust_sysinfo"
+version = "0.0.0"
+build = "src/build.rs"
+
+
+[lib]
+# If you only wanted dynamic library, you'd use only "cdylib".
+# If you only wanted static library, you'd use only "staticlib".
+# This demo shows static. See https://doc.rust-lang.org/reference/linkage.html
+# for more information.
+crate-type = ["staticlib"]
+
+[dependencies]
+libc = "0.2.2"
+sysinfo = "0.31.3"
+
+[build-dependencies]
+cbindgen = "0.27.0"
