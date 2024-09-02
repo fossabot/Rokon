@@ -1,11 +1,12 @@
 Name:           rokon
 Version:        1.0.0
-Release:        1%{?dist}
+Release:        %autorelease
 Summary:        Control your Roku device with your desktop!
 
 License:        AGPLv3
 URL:            https://github.com/BrycensRanch/Rokon
-Source0:        %{url}/tarball/master
+%undefine _disable_source_fetch
+Source0:        %{url}/archive/master.tar.gz
 
 BuildRequires:  git
 BuildRequires:  go
@@ -27,7 +28,8 @@ Rokon is a GTK4 application that allows you to control your Roku device with you
 %global debug_package %{nil}
 
 %prep
-%autosetup
+%autosetup -n Rokon-master
+
 
 
 %build
@@ -51,5 +53,4 @@ install -Dpm 0755 old/%{name} %{buildroot}%{_bindir}/%{name}
 
 
 %changelog
-* Mon Sep 02 2024 Brycen G <brycengranville@outlook.com>
-- Initial package release
+%autochangelog
