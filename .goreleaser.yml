@@ -2,25 +2,61 @@
 
 version: 2
 
-before:
-  hooks:
-    - go mod download
-    - cd old/lib/sysinfo
-    - cargo build --release
-    - mv ./target/release/liblibrokon_rust_sysinfo.a ../
-    - mv ./target/librokon_rust_sysinfo.h ../
-    - cd ../../ # go back to the root directory
-    - go build -v -o /usr/bin/rokon
+gomod:
+  proxy: true
+
 builds:
-  - env:
+  - main: ./main.go
+    id: rokon
+    dir: old
+    flags: -v
+    hooks:
+       pre:
+        - cmd: go clean && go mod download && cd old/lib/sysinfo && cargo clean && cargo build --release && mv ./target/release/liblibrokon_rust_sysinfo.a ../ && mv ./target/librokon_rust_sysinfo.h ../
+          output: true
+       post: go env
+    binary: rokon
+    ldflags: >
+      -X main.version={{.Version}}
+      -X main.commit={{.Commit}}
+      -X main.date={{.Date}}
+
+    env:
       - CGO_ENABLED=1
+      - >-
+        {{- if eq .Arch "arm" }}
+             CC="arm-linux-gnu-gcc"
+             CC_FOR_TARGET="arm-linux-gnu-gcc"
+        {{- end }}
+        {{- if eq .Arch "arm64" }}
+             CC="aarch64-linux-gnu-gcc"
+              CC_FOR_TARGET="aarch64-linux-gnu-gcc"
+        {{- end }}
+        {{- if eq .Arch "arm" }}
+             CXX="arm-linux-gnu-g++"
+             CXX_FOR_TARGET="arm-linux-gnu-g++"
+        {{- end }}
+        {{- if eq .Arch "arm64" }}
+             CXX="aarch64-linux-gnu-g++"
+             CXX_FOR_TARGET="aarch64-linux-gnu-g++"
+        {{- end }}
+
     goos:
       - linux
     goarch:
-      - amd64
+      # - amd64
       - arm64
-      - armhf
+      # - arm
+    # These binaries should work on Chromebooks and Raspberry Pis, if not, open a bug report.
+    # I do not own these devices, so I cannot test them.
+    goarm: ["6", "7"]
+checksum:
+  name_template: "checksums.txt"
+  algorithm: sha256
 archives:
+  - format: binary
+    id: rokon
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
   - format_overrides:
       - goos: windows
         format: zip
@@ -33,11 +69,13 @@ dockers:
     build_flag_templates:
     - "--pull"
     # OCI annotations: https://github.com/opencontainers/image-spec/blob/main/annotations.md
+    - "--label=org.opencontainers.image.description={{.Summary}}"
     - "--label=org.opencontainers.image.created={{.Date}}"
     - "--label=org.opencontainers.image.name={{.ProjectName}}"
     - "--label=org.opencontainers.image.revision={{.FullCommit}}"
     - "--label=org.opencontainers.image.version={{.Version}}"
     - "--label=org.opencontainers.image.source={{.GitURL}}"
+    - "--label=org.opencontainers.image.url={{.GitURL}}"
 release:
   github:
     owner: "BrycensRanch"
