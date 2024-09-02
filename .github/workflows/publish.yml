@@ -201,9 +201,11 @@ jobs:
                 dnf install -y @development-tools git gtk4-devel gobject-introspection-devel rust cargo go
                 ;;
               ubuntu_latest)
+                apt update
+                apt install -y build-essential git libgtk-4-dev libgirepository1.0-dev rust-all software-properties-common
                 add-apt-repository -y ppa:longsleep/golang-backports
                 apt update
-                apt install -y build-essential git libgtk-4-dev libgirepository1.0-dev rust-all golang-go
+                apt install -y golang-go
                 ;;
             esac
           run: |
