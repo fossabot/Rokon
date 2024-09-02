@@ -21,7 +21,7 @@ Before you start contributing, please make sure you have the following:
 ```bash
 sudo dnf in -y git golang gtk4-devel rust cargo @development-tools
 git clone https://github.com/BrycensRanch/Rokon
-cd Rokon/lib/sysinfo
+cd Rokon/old/lib/sysinfo
 # If your computer is slow, this may take a while
 cargo build --release
 mv ./target/release/liblibrokon_rust_sysinfo.a ../
