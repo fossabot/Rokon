@@ -7,7 +7,7 @@ License:        AGPLv3
 URL:            https://github.com/BrycensRanch/Rokon
 Source0:        %{name}-%{version}.tar.gz
 
-BuildRequires:  golang >= 1.23
+BuildRequires:  go >= 1.23
 BuildRequires:  rust
 BuildRequires:  cargo
 BuildRequires:  cmake
@@ -17,7 +17,6 @@ BuildRequires:  make
 BuildRequires:  gtk4-devel
 BuildRequires:  glib2-devel
 BuildRequires:  gobject-introspection-devel
-BuildRequires:  kernel-devel
 
 Provides:       %{name} = %{version}-%{release}
 
