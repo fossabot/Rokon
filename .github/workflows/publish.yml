@@ -195,14 +195,15 @@ jobs:
             case "${{ matrix.distro }}" in
               alpine_latest)
                 setup-apkrepos -c -1
-                apk add --no-cache alpine-sdk gtk4.0-dev gobject-introspection-dev rust cargo
+                apk add --no-cache alpine-sdk gtk4.0-dev gobject-introspection-dev rust cargo go
                 ;;
               fedora_latest)
-                dnf install -y @development-tools git gtk4-devel gobject-introspection-devel rust cargo
+                dnf install -y @development-tools git gtk4-devel gobject-introspection-devel rust cargo go
                 ;;
               ubuntu_latest)
+                add-apt-repository -y ppa:longsleep/golang-backports
                 apt update
-                apt install -y build-essential git libgtk-4-dev libgirepository1.0-dev rust-all
+                apt install -y build-essential git libgtk-4-dev libgirepository1.0-dev rust-all golang-go
                 ;;
             esac
           run: |
