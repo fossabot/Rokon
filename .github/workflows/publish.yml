@@ -68,7 +68,7 @@ jobs:
       - name: ❤️‍🔥 Setup Golang
         uses: magnetikonline/action-golang-cache@v5
         with:
-          go-version: 'stable'
+          go-version: "stable"
 
       - name: 🦀 Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
@@ -135,7 +135,7 @@ jobs:
       #     GH_URL: 'https://api.github.com/'
       #     HUSKY: 0
   arm64:
-    timeout-minutes: 30
+    timeout-minutes: 560
     strategy:
       fail-fast: false
       matrix:
@@ -209,8 +209,8 @@ jobs:
                 ;;
             esac
           run: |
-             cd old/lib/sysinfo && cargo build --release && mv ./target/release/liblibrokon_rust_sysinfo.a ./target/librokon_rust_sysinfo.h ../ && cd ../../ &&
-             go mod download all && go build -ldflags '-extldflags "-static"' -v -o "${PWD}/artifacts/rokon-${{matrix.arch}}" main.go
+            cd old/lib/sysinfo && cargo build --release && mv ./target/release/liblibrokon_rust_sysinfo.a ./target/librokon_rust_sysinfo.h ../ && cd ../../ &&
+            go mod download all && go build -ldflags '-extldflags "-static"' -v -o "${PWD}/artifacts/rokon-${{matrix.arch}}" main.go
       - name: Show built binaries
         run: ls -la ./artifacts
       - name: Upload the entire directory
