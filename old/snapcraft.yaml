@@ -114,7 +114,7 @@ slots:
 parts:
   rokon:
     parse-info: [usr/share/metainfo/io.github.brycensranch.Rokon.xml]
-    plugins: [go]
+    plugin: go
     # CGO is slow, so we add the version flag to show that building is not hanging or stuck.
     override-build: |
       go mod download all
