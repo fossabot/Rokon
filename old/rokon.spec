@@ -11,12 +11,8 @@ Source:         %{url}/archive/master.tar.gz
 
 BuildRequires:  git
 BuildRequires:  go
-BuildRequires:  rust
-BuildRequires:  cargo
-BuildRequires:  cmake
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
-BuildRequires:  make
 BuildRequires:  gtk4-devel
 BuildRequires:  glib2-devel
 BuildRequires:  gobject-introspection-devel
@@ -36,11 +32,7 @@ Rokon is a GTK4 application that allows you to control your Roku device with you
 %build
 go mod download all
 ls
-cd old/lib/sysinfo
-cargo build --release
-mv ./target/release/liblibrokon_rust_sysinfo.a ../
-mv ./target/librokon_rust_sysinfo.h ../
-cd ../..
+cd old
 go build -v -o %{name}
 
 %install

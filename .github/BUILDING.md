@@ -19,18 +19,14 @@ Before you start contributing, please make sure you have the following:
 1. Clone the repository & install dependencies:
 
 ```bash
-sudo dnf in -y git golang gtk4-devel rust cargo @development-tools
+sudo dnf in -y git golang gtk4-devel @development-tools
 git clone https://github.com/BrycensRanch/Rokon
-cd Rokon/old/lib/sysinfo
-# If your computer is slow, this may take a while
-cargo build --release
-mv ./target/release/liblibrokon_rust_sysinfo.a ../
-mv ./target/librokon_rust_sysinfo.h ../
-cd ../../
+cd Rokon/old
 # If your internet is slow, this WILL take awhile.
 go mod download all
 # This will always take a while, CGO is slow.
 go build -v -o rokon .
+# This command doesn't exist. It's a placeholder for the future.
 sudo make install
 ```
 

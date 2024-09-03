@@ -69,18 +69,6 @@ jobs:
         uses: magnetikonline/action-golang-cache@v5
         with:
           go-version: "stable"
-
-      - name: 🦀 Setup Rust
-        uses: actions-rust-lang/setup-rust-toolchain@v1
-
-      - name: Build sysinfo
-        run: cargo build --release
-        working-directory: old/lib/sysinfo
-      - name: Move sysinfo
-        working-directory: old/lib/sysinfo
-        run: |
-          mv ./target/release/liblibrokon_rust_sysinfo.a ../
-          mv ./target/librokon_rust_sysinfo.h ../
       # - name: 👁️ Ensure Code is Linted
       #   run: |
       #     pnpm lint:check
@@ -196,21 +184,20 @@ jobs:
             case "${{ matrix.distro }}" in
               alpine_latest)
                 setup-apkrepos -c -1
-                apk add --no-cache alpine-sdk gtk4.0-dev gobject-introspection-dev rust cargo go
+                apk add --no-cache alpine-sdk gtk4.0-dev gobject-introspection-dev go
                 ;;
               fedora_latest)
-                dnf install -y @development-tools git gtk4-devel gobject-introspection-devel rust cargo go
+                dnf install -y @development-tools git gtk4-devel gobject-introspection-devel go
                 ;;
               ubuntu_latest)
                 apt update
-                apt install -y build-essential git libgtk-4-dev libgirepository1.0-dev rust-all software-properties-common
+                apt install -y build-essential git libgtk-4-dev libgirepository1.0-dev software-properties-common
                 add-apt-repository -y ppa:longsleep/golang-backports
                 apt update
                 apt install -y golang-go
                 ;;
             esac
           run: |
-            cd old/lib/sysinfo && cargo build --release && mv ./target/release/liblibrokon_rust_sysinfo.a ./target/librokon_rust_sysinfo.h ../ && cd ../../ &&
             go mod download all && go build -v -o "${PWD}/artifacts/rokon-${{matrix.arch}}" main.go
       - name: Show built binaries
         run: ls -la ./artifacts

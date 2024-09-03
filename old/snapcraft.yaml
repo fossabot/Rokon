@@ -114,15 +114,11 @@ slots:
 parts:
   rokon:
     parse-info: [usr/share/metainfo/io.github.brycensranch.Rokon.xml]
-    plugins: [go, rust]
+    plugins: [go]
     # CGO is slow, so we add the version flag to show that building is not hanging or stuck.
     override-build: |
       go mod download all
-      cd old/lib/sysinfo
-      cargo build --release
-      mv ./target/release/liblibrokon_rust_sysinfo.a ../
-      mv ./target/librokon_rust_sysinfo.h ../
-      cd ../../
+      cd old
       go build -v -o $SNAPCRAFT_PART_INSTALL/usr/bin/rokon main.go
     build-snaps: [go/latest/stable, gnome-46-2404-sdk/latest/edge]
     build-packages:

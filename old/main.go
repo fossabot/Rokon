@@ -6,29 +6,14 @@ import (
 	"os"
 	"strconv"
 	"time"
-	"unsafe"
 
 	"github.com/diamondburned/gotk4/pkg/gio/v2"
 	"github.com/diamondburned/gotk4/pkg/gtk/v4"
 	"github.com/getsentry/sentry-go"
 )
 
-/*
-#cgo LDFLAGS: ./lib/liblibrokon_rust_sysinfo.a -ldl
-#include "./lib/librokon_rust_sysinfo.h"
-#include <stdlib.h>
-*/
-import "C"
-
 func main() {
 	fmt.Println("Starting Rokon. Now with more telemetry!")
-	
-	// C.sysinfo returns a cstring
-	// we need to convert it to a go string
-	// and then free the memory
-	// https://stackoverflow.com/questions/40845677/how-to-convert-c-char-to-go-string
-	sysinfo := C.sysinfo()
-	defer C.free(unsafe.Pointer(sysinfo))
 	err := sentry.Init(sentry.ClientOptions{
 		Dsn:                "https://63c6c95f892988509925aaff62c839b3@o4504136997928960.ingest.us.sentry.io/4506838451945472",
 		EnableTracing:      true,
@@ -85,8 +70,7 @@ func activate(app *gtk.Application) {
 	aboutWindow.SetWebsite("https://github.com/BrycensRanch/Rokon")
 	aboutWindow.SetWebsiteLabel("GitHub")
 	aboutWindow.SetSystemInformation(
-		C.GoString(C.sysinfo()) +
-			"\n" + "GTK: " + strconv.Itoa(int(gtk.GetMajorVersion())) + "." + strconv.Itoa(int(gtk.GetMinorVersion())) + "." + strconv.Itoa(int(gtk.GetMicroVersion())))
+		("GTK: " + strconv.Itoa(int(gtk.GetMajorVersion())) + "." + strconv.Itoa(int(gtk.GetMinorVersion())) + "." + strconv.Itoa(int(gtk.GetMicroVersion()))))
 	aboutWindow.SetCopyright("2024 Brycen G and contributors, but mostly Brycen")
 	aboutWindow.SetWrapLicense(true)
 	aboutWindow.SetModal(true)
