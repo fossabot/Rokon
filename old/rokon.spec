@@ -3,7 +3,7 @@ Version:        1.0.0
 Release:        3%{?dist}
 Summary:        Control your Roku device with your desktop!
 
-License:        AGPLv3
+License:        AGPL-3.0-or-later
 URL:            https://github.com/BrycensRanch/Rokon
 Source:        %{url}/archive/master.tar.gz
 
