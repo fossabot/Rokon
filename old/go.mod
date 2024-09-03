@@ -2,6 +2,8 @@ module Rokon
 
 go 1.21.0
 
+toolchain go1.21.6
+
 require (
 	github.com/diamondburned/gotk4/pkg v0.3.1
 	github.com/getsentry/sentry-go v0.28.1
