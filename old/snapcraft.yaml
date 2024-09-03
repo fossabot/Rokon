@@ -118,7 +118,6 @@ parts:
     # CGO is slow, so we add the version flag to show that building is not hanging or stuck.
     override-build: |
       go mod download all
-      cd old
       go build -v -o $SNAPCRAFT_PART_INSTALL/usr/bin/rokon main.go
     build-snaps: [go/latest/stable, gnome-46-2404-sdk/latest/edge]
     build-packages:
