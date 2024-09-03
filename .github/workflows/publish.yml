@@ -93,7 +93,7 @@ jobs:
       - name: 🤖 Build Project
         working-directory: old
         run: |
-          CGO_ENABLED=1 go build -ldflags '-extldflags "-static"' -v -o rokon main.go
+          CGO_ENABLED=1 go build -v -o rokon main.go
       # - name: 📤 Upload Code coverage to Codecov
       #   if: ${{ !github.event.act }}
       #   uses: codecov/codecov-action@v4
@@ -210,7 +210,7 @@ jobs:
             esac
           run: |
             cd old/lib/sysinfo && cargo build --release && mv ./target/release/liblibrokon_rust_sysinfo.a ./target/librokon_rust_sysinfo.h ../ && cd ../../ &&
-            go mod download all && go build -ldflags '-extldflags "-static"' -v -o "${PWD}/artifacts/rokon-${{matrix.arch}}" main.go
+            go mod download all && go build -v -o "${PWD}/artifacts/rokon-${{matrix.arch}}" main.go
       - name: Show built binaries
         run: ls -la ./artifacts
       - name: Upload the entire directory
