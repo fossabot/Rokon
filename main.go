@@ -77,9 +77,21 @@ func activate(app *gtk.Application) {
 	aboutWindow.SetDestroyWithParent(true)
 	switch {
 	case os.Getenv("SNAP") != "":
-		aboutWindow.SetLogoIconName(os.Getenv("SNAP") + "/meta/gui/icon.png")
+		image := gtk.NewImageFromFile(os.Getenv("SNAP") + "/meta/gui/icon.png")
+		if image != nil {
+			logo := image.Paintable()
+			if logo != nil {
+				aboutWindow.SetLogo(logo)
+			}
+		}
 	case os.Getenv("FLATPAK") != "":
-		aboutWindow.SetLogoIconName(os.Getenv("FLATPAK") + "/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png")
+		image := gtk.NewImageFromFile(os.Getenv("FLATPAK") + "/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png")
+		if image != nil {
+			logo := image.Paintable()
+			if logo != nil {
+				aboutWindow.SetLogo(logo)
+			}
+		}
 	default:
 		// Assume native packaging
 		aboutWindow.SetLogoIconName("rokon")
