@@ -8,11 +8,10 @@ gomod:
 builds:
   - main: ./main.go
     id: rokon
-    dir: old
     flags: -v
     hooks:
        pre:
-        - cmd: go clean && go mod download && cd old/lib/sysinfo && cargo clean && cargo build --release && mv ./target/release/liblibrokon_rust_sysinfo.a ../ && mv ./target/librokon_rust_sysinfo.h ../
+        - cmd: go clean && go mod download all
           output: true
        post: go env
     binary: rokon
