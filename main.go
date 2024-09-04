@@ -85,7 +85,7 @@ func activate(app *gtk.Application) {
 			}
 		}
 	case os.Getenv("FLATPAK") != "":
-		image := gtk.NewImageFromFile(os.Getenv("FLATPAK") + "/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png")
+		image := gtk.NewImageFromFile("/app/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png")
 		if image != nil {
 			logo := image.Paintable()
 			if logo != nil {
