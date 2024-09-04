@@ -14,7 +14,6 @@ BuildRequires:  go
 BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  gtk4-devel
-BuildRequires:  glib2-devel
 BuildRequires:  gobject-introspection-devel
 
 Provides:       %{name} = %{version}-%{release}
