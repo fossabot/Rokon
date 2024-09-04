@@ -1,6 +1,6 @@
 Name:           rokon
 Version:        1.0.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 Summary:        Control your Roku device with your desktop!
 
 License:        AGPL-3.0-or-later
@@ -56,7 +56,12 @@ install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
 
 
 %changelog
+* Tue Sep 3 2024 Brycen <brycengranville@outlook.com> 1.0.0-6
+- Removed sysinfo package decreasing binary size and portability and startup time
+- Added metainfo file for appstream
+- Added icons to package
+- Added desktop entry
+- Added license file to package
+- Added documentation to package
 * Mon Sep 2 2024 Brycen <brycengranville@outlook.com> 1.0.0-3
 - Initial package
-* Tue Sep 3 2024 Brycen <brycengranville@outlook.com> 1.0.0-5
-- Removed sysinfo package decreasing binary size and portability and startup time
