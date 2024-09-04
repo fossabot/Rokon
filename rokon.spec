@@ -35,7 +35,7 @@ ls
 go build -v -o %{name}
 
 %install
-install -Dpm 0755 old/%{name} %{buildroot}%{_bindir}/%{name}
+install -Dpm 0755 ./%{name} %{buildroot}%{_bindir}/%{name}
 
 
 %files
