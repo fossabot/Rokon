@@ -9,7 +9,7 @@ description: |
 version: '1.0.0'
 license: GPL-3.0
 source-code: "https://github.com/BrycensRanch/Rokon"
-adopt-info: rokon
+adopt-info: metadata
 grade: devel
 base: core24
 # Extension GNOMME does not support confinement classic
@@ -33,7 +33,7 @@ donation: "https://ko-fi.com/brycensranch"
 # https://forum.snapcraft.io/t/snap-package-confinement-mess-up-telemetry-data-from-etc-os-release/27694
 
 assumes:
-  - snapd2.38
+  - snapd2.39
   - snap-env
 
 platforms:
@@ -83,9 +83,9 @@ apps:
       # PUREGOTK_GDKPIXBUF_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libgdk_pixbuf-2.0.so
       # PUREGOTK_LIB_FOLDER: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR
 
-    common-id: io.github.brycensranch.Rokon.desktop
+    # common-id: io.github.brycensranch.Rokon.desktop
     # You should not use the desktop keyword and the snap/gui directory together. Remove the desktop keyword; putting the files in snap/gui will do what you want.
-    # desktop: old/usr/share/applications/io.github.brycensranch.Rokon.desktop
+    # desktop: ./usr/share/applications/io.github.brycensranch.Rokon.desktop
     plugs:
       - home
       - gsettings
@@ -113,7 +113,7 @@ slots:
 
 parts:
   rokon:
-    parse-info: [usr/share/metainfo/io.github.brycensranch.Rokon.xml]
+    parse-info: [./usr/share/metainfo/io.github.brycensranch.Rokon.xml]
     plugin: go
     # CGO is slow, so we add the version flag to show that building is not hanging or stuck.
     override-build: |
