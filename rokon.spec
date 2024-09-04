@@ -19,8 +19,7 @@ BuildRequires:  gobject-introspection-devel
 Provides:       %{name} = %{version}-%{release}
 
 %description
-Rokon is a GTK4 application that allows you to control your Roku device with your desktop. It is written in Golang and uses the Roku External Control API to communicate with your Roku device.
-
+Rokon is a GTK4 application that allows you to control your Roku device with your desktop or controller!
 %global debug_package %{nil}
 
 %prep
