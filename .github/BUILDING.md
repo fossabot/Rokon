@@ -21,7 +21,7 @@ Before you start contributing, please make sure you have the following:
 ```bash
 sudo dnf in -y git golang gtk4-devel @development-tools
 git clone https://github.com/BrycensRanch/Rokon
-cd Rokon/old
+cd Rokon
 # If your internet is slow, this WILL take awhile.
 go mod download all
 # This will always take a while, CGO is slow.
