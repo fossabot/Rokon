@@ -75,19 +75,17 @@ func activate(app *gtk.Application) {
 	aboutWindow.SetWrapLicense(true)
 	aboutWindow.SetModal(true)
 	aboutWindow.SetDestroyWithParent(true)
-	image := gtk.NewImageFromFile("assets/Rokon.png")
-	// https://youtu.be/bLHL75H_VEM
-	if image != nil {
-		logo := image.Paintable()
-		if logo == nil {
-			fmt.Println("Warning: Could not load logo image from assets/Rokon.png")
-			aboutWindow.SetLogoIconName("rokon")
-		} else {
-			aboutWindow.SetLogo(logo)
-		}
-	} else {
-		fmt.Println("Warning: Could not load logo image from assets/Rokon.png")
+	switch {
+	case os.Getenv("SNAP") != "":
+		aboutWindow.SetLogoIconName(os.Getenv("SNAP") + "/meta/gui/icon.png")
+	case os.Getenv("FLATPAK") != "":
+		aboutWindow.SetLogoIconName(os.Getenv("FLATPAK") + "/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png")
+	default:
+		// Assume native packaging
 		aboutWindow.SetLogoIconName("rokon")
+		if os.Getenv("CONTAINER") != "" {
+			log.Println("Running in a container, the logo icon may not be displayed due to wrong path")
+		}
 	}
 
 	// aboutWindow.SetAuthors([]string{"Brycen G. (BrycensRanch)"})

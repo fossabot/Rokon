@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+NoDisplay=false
+Terminal=false
+Exec=rokon
+Icon=${SNAP}/meta/gui/io.github.brycensranch.Rokon.png
+Name=Rokon
+Comment=Roku Remote
+Categories=Utility
