@@ -9,7 +9,7 @@ description: |
 version: '1.0.0'
 license: GPL-3.0
 source-code: "https://github.com/BrycensRanch/Rokon"
-adopt-info: metadata
+adopt-info: rokon
 grade: devel
 base: core24
 # Extension GNOMME does not support confinement classic
