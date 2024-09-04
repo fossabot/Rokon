@@ -27,7 +27,7 @@ jobs:
         arch:
           - amd64
 
-    runs-on: ${{ matrix.os }}-${{ matrix.arch }}
+    runs-on: self-hosted
     # Service containers to run with `container-job`
     # services:
     #   # Label used to access the service container
@@ -137,7 +137,7 @@ jobs:
         os:
           - ubuntu-24.04
 
-    runs-on: ${{ matrix.os }}
+    runs-on: self-hosted
     # Service containers to run with `container-job`
     # services:
     #   # Label used to access the service container
