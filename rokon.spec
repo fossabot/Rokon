@@ -36,9 +36,9 @@ go build -v -o %{name}
 %install
 install -Dpm 0755 ./%{name} %{buildroot}%{_bindir}/%{name}
 install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop %{buildroot}%{_datadir}/applications/io.github.brycensranch.Rokon.desktop
-install -Dpm 0644 ./usr/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
-install -Dpm 0644 ./usr/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
-install -Dpm 0644 ./usr/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
+install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
+install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
+install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
 install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml %{buildroot}%{_datadir}/metainfo/io.github.brycensranch.Rokon.metainfo.xml
 
 
