@@ -15,6 +15,7 @@ BuildRequires:  gcc
 BuildRequires:  gcc-c++
 BuildRequires:  gtk4-devel
 BuildRequires:  gobject-introspection-devel
+Requires:       gtk4
 
 Provides:       %{name} = %{version}-%{release}
 
