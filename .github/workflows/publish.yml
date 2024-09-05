@@ -121,3 +121,75 @@ jobs:
       #     signingPassword: ${{ secrets.PASSPHRASE }}
       #     GH_URL: 'https://api.github.com/'
       #     HUSKY: 0
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        arch:
+          - amd64
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - name: Check out current repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Build using MSYS2
+        uses: ./.github/actions/build-msys2-app
+        with:
+          msys-dependencies: |
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-pkg-config
+            mingw-w64-x86_64-gtk4
+            mingw-w64-x86_64-libadwaita
+            mingw-w64-x86_64-gobject-introspection
+            mingw-w64-x86_64-glib2
+            mingw-w64-x86_64-go
+          out-path: ${{ runner.temp }}/exe
+          exe-name: dissent.exe
+          build-tags: nogtksource
+
+      - name: Prepare
+        id: prepare
+        run: |
+          version="v1.0.0"
+
+          # version is usually in the format vMAJOR.MINOR.PATCH-N-HASH, while
+          # Advanced Installer only allows format MAJOR.MINOR.PATCH.REVISION.
+          # We trim out our hash, trim the leading v, and replace the first - with a .
+          if [[ $version =~ ^v([0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?) ]]; then
+            version=${BASH_REMATCH[1]}
+            version=${version//-/.}
+          else
+            # Use some fallback version. Realistically, this should never
+            # happen, so we throw a warning.
+            version=0.0.0.999
+            echo '::warning::Could not determine version from git for Windows build. Using `$version`'
+          fi
+
+          cat<<EOF >> "$GITHUB_OUTPUT"
+          version=$version
+          name=dissent-windows-amd64
+          EOF
+
+      - name: Make MSI installer
+        uses: ./.github/actions/make-advinst-app
+        with:
+          aip-file: nix/dissent-windows.aip
+          exe-directory: ${{ runner.temp }}/exe
+          exe-name: dissent.exe
+          app-name: Dissent
+          app-version: ${{ steps.prepare.outputs.version }}
+          icon-file: internal/icons/windows/dissent.ico
+          out-path: result
+          out-name: ${{ steps.prepare.outputs.name }}.msi
+
+      - name: 🗃️ Upload Built Binaries
+        uses: actions/upload-artifact@v4
+        if: ${{ !github.event.act }}
+        with:
+          name: rokon-${{ runner.os }}-${{ matrix.arch }}
+          path: result
