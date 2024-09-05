@@ -220,5 +220,5 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ !github.event.act }}
         with:
-          name: rokon-${{ runner.os }}-${{ matrix.arch }}
+          name: rokon-${{ runner.os }}-${{ runner.arch }}
           path: ./rokon
