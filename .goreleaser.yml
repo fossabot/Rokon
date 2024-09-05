@@ -44,9 +44,9 @@ builds:
     goos:
       - linux
     goarch:
-      - amd64
+      # - amd64
       - arm64
-      - arm
+      # - arm
     # These binaries should work on Chromebooks and Raspberry Pis, if not, open a bug report.
     # I do not own these devices, so I cannot test them.
     goarm: ["6", "7"]
