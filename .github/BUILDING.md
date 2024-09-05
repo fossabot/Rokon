@@ -126,9 +126,8 @@ git clone https://github.com/BrycensRanch/Rokon
 cd Rokon
 # If your internet is slow, this WILL take awhile.
 go mod download all
-# This will always take a while, CGO is slow.
+# This will may take a while, CGO is slow.
 go build -v -o rokon .
-# This command doesn't exist. It's a placeholder for the future.
 sudo make install
 ```
 

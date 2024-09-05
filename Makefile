@@ -36,6 +36,27 @@ inst: ## go install tools
 	$(call print-target)
 	cd tools && go install $(shell cd tools && go list -e -f '{{ join .Imports " " }}' -tags=tools)
 
+## Linux only, I have no idea how to do this on Windows
+.PHONY: install
+install:
+	$(call print-target)
+	install -Dpm 0755 ./rokon /usr/local/bin/rokon
+	install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop /usr/share/applications/io.github.brycensranch.Rokon.desktop
+	install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png /usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
+	install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png /usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
+	install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg /usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
+	install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml /usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+
+.PHONY: uninstall
+uninstall:
+	$(call print-target)
+	rm -f /usr/local/bin/rokon
+	rm -f /usr/share/applications/io.github.brycensranch.Rokon.desktop
+	rm -f /usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
+	rm -f /usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
+	rm -f /usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
+	rm -f /usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+
 .PHONY: gen
 gen: ## go generate
 	$(call print-target)
