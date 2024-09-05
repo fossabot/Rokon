@@ -1,6 +1,6 @@
 Name:           rokon
 Version:        1.0.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 Summary:        Control your Roku device with your desktop!
 
 License:        AGPL-3.0-or-later
@@ -40,6 +40,8 @@ install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Ro
 install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
 install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
 install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml %{buildroot}%{_datadir}/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+# Add all *.md files to the package's documentation
+install -Dpm 0644 ./*.md %{buildroot}%{_docdir}/%{name}/
 
 
 
@@ -50,6 +52,7 @@ install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
 %{_datadir}/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
 %{_datadir}/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
 %{_datadir}/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+%{buildroot}%{_docdir}/%{name}/
 %license LICENSE.md
 %doc *.md
 
