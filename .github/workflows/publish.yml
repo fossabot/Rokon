@@ -122,7 +122,6 @@ jobs:
       #     GH_URL: 'https://api.github.com/'
       #     HUSKY: 0
   arm:
-    needs: build
     timeout-minutes: 560
     strategy:
       fail-fast: false
