@@ -209,7 +209,7 @@ jobs:
           fetch-depth: 0
       - name: Install GTK4 Golang
         run: |
-          sudo brew install gtk4 gobject-introspection pkg-config go gtkmm4 cairomm
+          brew install gtk4 gobject-introspection pkg-config go gtkmm4 cairomm
       - name: 📦 Install Dependencies
         run: |
           go mod download all
