@@ -78,9 +78,16 @@ jobs:
       - name: 📦 Install Dependencies
         run: |
           go mod download all
-      - name: 🤖 Build Project
-        run: |
-          CGO_ENABLED=1 go build -v -o rokon main.go
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          # either 'goreleaser' (default) or 'goreleaser-pro'
+          distribution: goreleaser
+          # 'latest', 'nightly', or a semver
+          version: "latest"
+          args: release --clean --snapshot --draft
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - name: 📤 Upload Code coverage to Codecov
       #   if: ${{ !github.event.act }}
       #   uses: codecov/codecov-action@v4
@@ -88,8 +95,8 @@ jobs:
         uses: actions/upload-artifact@v4
         if: ${{ !github.event.act }}
         with:
-          name: rokon-${{ runner.os }}-${{ matrix.arch }}
-          path: ./rokon
+          name: rokon-${{ runner.os }}
+          path: ./dist
       # - name: Import GPG key
       #   id: import_gpg
       #   if: ${{ !github.event.act }} && github.event_name != 'pull_request'
