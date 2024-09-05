@@ -112,8 +112,8 @@ parts:
       - git
     build-environment:
       - CGO_ENABLED: '1'
-    source: .
-    source-type: local
+    source: https://github.com/BrycensRanch/Rokon
+    source-type: git
     override-pull: |
       craftctl default
       # snapcraftctl set-version \
