@@ -5,14 +5,15 @@ version: 2
 gomod:
   proxy: true
 
+before:
+  hooks:
+    - go mod tidy
+
 builds:
   - main: ./main.go
     id: rokon
     flags: -v
     hooks:
-       pre:
-        - cmd: go clean && go mod download all
-          output: true
        post: go env
     binary: rokon
     ldflags: >
