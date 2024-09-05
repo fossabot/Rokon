@@ -108,7 +108,7 @@ sudo apt update
 sudo apt install -y golang-go
 ```
 
-> Alpine Linux:
+> Alpine Linux ⚠️: (According to my local docker testing, builds produced from Alpine Linux are broken. Use at your own risk.)
 
 ```bash
 sudo setup-apkrepos -c -1
