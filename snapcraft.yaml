@@ -74,18 +74,6 @@ apps:
     # This will make GTK4 and GNOME libraries available to the snap at runtime
     extensions: [gnome]
     command: usr/bin/rokon
-    environment:
-      # This is needed for GTK4 to work properly
-      LD_LIBRARY_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR:/usr/lib:$LD_LIBRARY_PATH
-      # PUREGOTK_CAIRO_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libcairo.so
-      # PUREGOTK_GLIB_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libglib-2.0.so.0
-      # PUREGOTK_PANGO_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libpango-1.0.so
-      # PUREGOTK_GDKPIXBUF_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libgdk_pixbuf-2.0.so
-      # PUREGOTK_LIB_FOLDER: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR
-
-    # common-id: io.github.brycensranch.Rokon.desktop
-    # You should not use the desktop keyword and the snap/gui directory together. Remove the desktop keyword; putting the files in snap/gui will do what you want.
-    # desktop: ./usr/share/applications/io.github.brycensranch.Rokon.desktop
     plugs:
       - home
       - gsettings
@@ -123,28 +111,8 @@ parts:
     build-packages:
       # For goreleaser or git information in general.
       - git
-    # stage-packages:
-      # - pkg-config
-      # - libcairo2-dev
-      # - libgdk-pixbuf2.0-dev
-      # #pango
-      # - libpango1.0-dev
-      # - libglib2.0-dev
-      # - libgtk-4-dev
-      # - libappindicator3-dev
-      # - libgtksourceview-4-dev
-      # - libgtkspell3-3-dev
-      # - libhandy-1-dev
-      # - libjson-glib-dev
-      # - libsecret-1-dev
-      # - libxml2-dev
-      # - libgirepository1.0-dev
-      # - libpango1.0-dev
     build-environment:
       - CGO_ENABLED: '1'
-      # GTK libs are loading at runtime!
-      # - PUREGOTK_CAIRO_PATH: $SNAP/usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/libcairo.so
-      # - PUREGOTK_LIB_FOLDER: /usr/lib/$CRAFT_ARCH_TRIPLET_BUILD_FOR/
     source: .
     source-type: local
     override-pull: |
