@@ -7,7 +7,7 @@ inputs:
     description: Path to the output directory
     default: dist
   out-name:
-    description: Name of the output file, e.g. dissent.msi
+    description: Name of the output file, e.g. rokon.msi
     required: true
   aip-file:
     description: Path to the Advanced Installer project file

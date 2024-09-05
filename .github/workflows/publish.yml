@@ -144,12 +144,11 @@ jobs:
             mingw-w64-x86_64-gcc
             mingw-w64-x86_64-pkg-config
             mingw-w64-x86_64-gtk4
-            mingw-w64-x86_64-libadwaita
             mingw-w64-x86_64-gobject-introspection
             mingw-w64-x86_64-glib2
             mingw-w64-x86_64-go
           out-path: ${{ runner.temp }}/exe
-          exe-name: dissent.exe
+          exe-name: Rokon.exe
           build-tags: nogtksource
 
       - name: Prepare
@@ -172,18 +171,18 @@ jobs:
 
           cat<<EOF >> "$GITHUB_OUTPUT"
           version=$version
-          name=dissent-windows-amd64
+          name=rokon-${{ runner.os }}-${{ runner.arch }}
           EOF
 
       - name: Make MSI installer
         uses: ./.github/actions/make-advinst-app
         with:
-          aip-file: nix/dissent-windows.aip
+          aip-file: windows/rokon.aip
           exe-directory: ${{ runner.temp }}/exe
-          exe-name: dissent.exe
-          app-name: Dissent
+          exe-name: Rokon.exe
+          app-name: Rokon
           app-version: ${{ steps.prepare.outputs.version }}
-          icon-file: internal/icons/windows/dissent.ico
+          icon-file: windows/assets/rokon.ico
           out-path: result
           out-name: ${{ steps.prepare.outputs.name }}.msi
 
