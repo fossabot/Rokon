@@ -71,7 +71,7 @@ function docker_build {
         -v "$(Get-Location):/go/work" `
         -w /go/work `
         "x1unix/go-mingw:$GO_VERSION" `
-        go build $GO_BUILD_FLAGS -v -o "rokon-$GOARCH.exe" .
+        go build $GO_BUILD_FLAGS -ldflags "-H windowsgui" -v -o "rokon-$GOARCH.exe" .
 }
 
 # Example usage of the docker_build function
