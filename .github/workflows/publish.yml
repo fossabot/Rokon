@@ -168,10 +168,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Install QEMU
+      - name: Check if /var/run/docker.sock is mounted
         run: |
-          sudo apt update
-          sudo apt install -y qemu-user-static
+          ls -la /var/run/docker.sock
 
       - name: Build ${{ matrix.arch }} on ${{ matrix.distro }}
         uses: uraimo/run-on-arch-action@v2
