@@ -23,10 +23,20 @@ rokon_puregotk4
 *.pkg
 *.nupkg
 *.tar.gz
+*.tar.xz
+*.tar.bz2
+*.tar.lz
+*.tar**
 *.tgz
 *.zip
 *.apk
 *.pacman
+
+
+# Arch Linux MAKEPKG
+pkg/
+
+
 
 # Test binary, built with `go test -c`
 *.test
