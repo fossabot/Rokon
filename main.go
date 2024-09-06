@@ -58,9 +58,6 @@ func activate(app *gtk.Application) {
 			return " (AppImage)"
 		case os.Getenv("CONTAINER") != "":
 			return " (Container)"
-		// Development build ?
-		case os.Getenv("APP_ENV") == "production":
-			return " (Dev)"
 		default:
 			return ""
 		}
