@@ -1,4 +1,6 @@
-SHELL := /bin/bash
+
+SHELL := $(which bash)
+
 # Define the default install directory
 PREFIX ?= /usr/local
 
