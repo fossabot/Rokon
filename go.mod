@@ -1,4 +1,4 @@
-module Rokon
+module rokon
 
 go 1.21.0
 

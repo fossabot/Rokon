@@ -31,6 +31,8 @@ rokon_puregotk4
 *.zip
 *.apk
 *.pacman
+flathub/.flatpak-builder
+flathub/repo
 
 
 # Arch Linux MAKEPKG
