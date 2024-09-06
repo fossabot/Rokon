@@ -47,7 +47,6 @@ install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
 %{_datadir}/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
 %{_datadir}/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
 %{_datadir}/metainfo/io.github.brycensranch.Rokon.metainfo.xml
-%{buildroot}%{_docdir}/%{name}/
 %license LICENSE.md
 %doc *.md
 
