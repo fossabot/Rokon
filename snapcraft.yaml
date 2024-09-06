@@ -1,6 +1,8 @@
 title: Rokon
 name: rokon
 summary: Roku Remote for your Linux Desktop
+# Snapcraft says Markdown is supported yet it's the most watered down Markdown I've ever seen.
+# I can't even use tables. lol
 description: |
       Super efficent and easy to use Roku Remote for your Linux Desktop.
       It uses the Roku External Control Protocol to control your Roku device.
@@ -54,38 +56,19 @@ plugs:
     interface: personal-files
     read:
       - $HOME/.config/rokon
-      - $HOME/.config/gtk-4.0
     write:
       - $HOME/.config/rokon
-  gtk-3-themes:
-    interface: content
-    target: $SNAP/share/themes
-    default-provider: gtk-common-themes
-  icon-themes:
-    interface: content
-    target: $SNAP/share/icons
-    default-provider: gtk-common-themes
-  sound-themes:
-    interface: content
-    target: $SNAP/share/sounds
-    default-provider: gtk-common-themes
 apps:
   rokon:
     # This will make GTK4 and GNOME libraries available to the snap at runtime
     extensions: [gnome]
+    environment:
+      # Will NOT add the +git commit SHA to the version
+      SENTRY_RELEASE: $SNAPCRAFT_PROJECT_VERSION
+      SENTRY_ENVIRONMENT: production
     command: usr/bin/rokon
     plugs:
-      - home
-      - gsettings
-      - desktop
-      - desktop-legacy
-      - opengl
-      - wayland
-      - x11
       - dot-config-rokon
-      - gtk-3-themes
-      - icon-themes
-      - sound-themes
       - network
       - network-status
       - joystick
@@ -105,7 +88,7 @@ parts:
     plugin: go
     override-build: |
       go mod download all
-      go build -v -o $SNAPCRAFT_PART_INSTALL/usr/bin/rokon main.go
+      go build -v -ldflags="-X main.version=$SNAPCRAFT_PROJECT_VERSION -X main.commit=$(git rev-parse --short HEAD) -X main.packaged=true -X main.packageFormat=snap -X main.branch=$(git rev-parse --abbrev-ref HEAD) -X main.date=$(date -u +%Y-%m-%d)" -o $SNAPCRAFT_PART_INSTALL/usr/bin/rokon main.go
     build-snaps: [go/latest/stable, gnome-46-2404-sdk/latest/edge]
     build-packages:
       # For goreleaser or git information in general.
@@ -117,7 +100,7 @@ parts:
     override-pull: |
       craftctl default
       # Get the current version from snapcraft.yaml
-      current_version=$(snapcraftctl get-version)
+      current_version=$SNAPCRAFT_PROJECT_VERSION
 
       # Get the Git commit SHA
       git_commit_sha=$(git rev-parse --short HEAD)
