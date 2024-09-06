@@ -41,7 +41,7 @@ func main() {
 
 	// Call wine_get_host_version
 	var sysname, release uintptr
-	/// Ignore what VSCode says about the number of arguments, this is correct. 
+	/// Ignore what VSCode says about the number of arguments, this is correct.
 	syscall.Syscall(wineGetHostVersionProc, 2, uintptr(unsafe.Pointer(&sysname)), uintptr(unsafe.Pointer(&release)), 0)
 
 	sysnameStr := windows.BytePtrToString((*byte)(unsafe.Pointer(sysname)))
