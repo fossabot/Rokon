@@ -64,3 +64,6 @@ install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
 - Added documentation to package
 * Mon Sep 2 2024 Brycen <brycengranville@outlook.com> 1.0.0-3
 - Initial package
+* Thu Sep 5 2024 Brycen <brycengranville@outlook.com> 1.0.0-1
+- We went back to the start.
+- Now uses %autorelease
