@@ -1,4 +1,14 @@
 SHELL := /bin/bash
+# Define the default install directory
+PREFIX ?= /usr/local
+
+# Define install directories
+BINDIR = $(PREFIX)/bin
+DATADIR = $(PREFIX)/share/rokon
+
+# Define target binary
+TARGET = rokon
+
 
 .DEFAULT_GOAL := all
 .PHONY: all
@@ -21,6 +31,9 @@ help:
 clean: ## remove files created during build pipeline
 	$(call print-target)
 	rm -rf dist
+	rm -rf pkg/
+	rm *.pkg.tar.zst
+	rm *.snap
 	rm -f coverage.*
 	rm -f '"$(shell go env GOCACHE)/../golangci-lint"'
 	go clean -i -cache -testcache -modcache -fuzzcache -x
@@ -40,22 +53,24 @@ inst: ## go install tools
 .PHONY: install
 install:
 	$(call print-target)
-	install -Dpm 0755 ./rokon /usr/local/bin/rokon
-	install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop /usr/share/applications/io.github.brycensranch.Rokon.desktop
-	install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png /usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
-	install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png /usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
-	install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg /usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
-	install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml /usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+	@echo "Installing $(TARGET) to $(BINDIR)"
+	mkdir -p $(BINDIR)
+	install -Dpm 0755 $(TARGET) $(BINDIR)
+	install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(PREFIX)/applications/io.github.brycensranch.Rokon.desktop
+	install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(PREFIX)/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
+	install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(PREFIX)/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
+	install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(PREFIX)/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
+	install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(PREFIX)/metainfo/io.github.brycensranch.Rokon.metainfo.xml
 
 .PHONY: uninstall
 uninstall:
 	$(call print-target)
-	rm -f /usr/local/bin/rokon
-	rm -f /usr/share/applications/io.github.brycensranch.Rokon.desktop
-	rm -f /usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
-	rm -f /usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
-	rm -f /usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
-	rm -f /usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+	rm -f $(BINDIR)
+	rm -f $(PREFIX)/applications/io.github.brycensranch.Rokon.desktop
+	rm -f $(PREFIX)/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
+	rm -f $(PREFIX)/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
+	rm -f $(PREFIX)/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
+	rm -f $(PREFIX)/metainfo/io.github.brycensranch.Rokon.metainfo.xml
 
 .PHONY: gen
 gen: ## go generate
@@ -63,9 +78,9 @@ gen: ## go generate
 	go generate ./...
 
 .PHONY: build
-build: ## goreleaser build
+build: ## go build -v -o rokon
 	$(call print-target)
-	goreleaser build --single-target --snapshot
+	go build -v -o $(TARGET)
 
 .PHONY: spell
 spell: ## misspell
