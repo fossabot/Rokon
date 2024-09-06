@@ -66,7 +66,7 @@ func activate(app *gtk.Application) {
 	window.SetTitle("Rokon: Control your Roku from your desktop")
 	window.SetChild(&gtk.NewLabel("Hello from Go!").Widget)
 	aboutWindow := gtk.NewAboutDialog()
-	aboutWindow.SetProgramName("Rokon" + qualifier)
+	aboutWindow.SetProgramName("Rokon " + app.Version() + qualifier)
 	aboutWindow.SetVersion(app.Version())
 	aboutWindow.SetComments("Control your Roku TV from your desktop")
 	aboutWindow.SetWebsite("https://github.com/BrycensRanch/Rokon")
