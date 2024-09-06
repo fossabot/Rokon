@@ -1,6 +1,6 @@
 Name:           rokon
 Version:        1.0.0
-Release:        8%{?dist}
+Release:        9%{?dist}
 Summary:        Control your Roku device with your desktop!
 
 License:        AGPL-3.0-or-later
@@ -33,7 +33,6 @@ ls
 go build -v -o %{name}
 
 %install
-tree .
 install -Dpm 0755 ./%{name} %{buildroot}%{_bindir}/%{name}
 install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop %{buildroot}%{_datadir}/applications/io.github.brycensranch.Rokon.desktop
 install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
