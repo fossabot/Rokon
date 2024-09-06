@@ -1,0 +1,4 @@
+Super efficent and easy to use Roku Remote for your Linux Desktop.
+It uses the Roku External Control Protocol to control your Roku device.
+It also uses SSDP to discover Roku devices on your network.
+Finally, it is built on GTK4.
