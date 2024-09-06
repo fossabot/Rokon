@@ -1,18 +1,6 @@
 Name:           rokon
-# Get the base version
-%global base_version 1.0.0
-
-# Get the Git commit SHA
-%global git_commit_sha %(git rev-parse --short HEAD)
-
-# Get the current date in YYYYMMDD format
-%global build_date %(date +%%Y%%m%%d)
-
-# Construct the release string (using only alphanumeric characters and a valid separator)
-%global release_suffix %{git_commit_sha}
-
-Version:        %{base_version}
-Release:        9%{?dist}.git%{release_suffix}
+Version:        1.0.0
+Release:        %autorelease
 Summary:        Control your Roku device with your desktop!
 
 License:        AGPL-3.0-or-later
