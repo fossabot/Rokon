@@ -116,5 +116,14 @@ parts:
     source-type: git
     override-pull: |
       craftctl default
-      # snapcraftctl set-version \
-      # "$(git describe --long --tags --always --match=v*.*.* | sed 's/v//')"
+      # Get the current version from snapcraft.yaml
+      current_version=$(snapcraftctl get-version)
+
+      # Get the Git commit SHA
+      git_commit_sha=$(git rev-parse --short HEAD)
+
+      # Extract the base version before the '+' and handle cases with or without '+'
+      base_version=$(echo "$current_version" | sed -E 's/\+.*//')
+
+      # Set the new version with the updated commit SHA
+      snapcraftctl set-version "${base_version}+${git_commit_sha}"
