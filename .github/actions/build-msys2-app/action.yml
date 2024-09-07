@@ -33,7 +33,7 @@ runs:
           p7zip
           ${{ inputs.msys-dependencies }}
     - name: Cache Go modules and build cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
           path: |
             C:/msys64/var/cache/pacman/pkg             # Cache MSYS2 packages
