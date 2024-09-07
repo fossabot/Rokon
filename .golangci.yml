@@ -54,7 +54,3 @@ linters:
     - unparam
     - unused
     - whitespace
-
-issues:
-  exclude:
-    - EXC0001
