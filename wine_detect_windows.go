@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"syscall"
 	"unsafe"
 
@@ -13,7 +12,7 @@ import (
 // Linux cannot build this normally, as it's using Windows-specific functions
 // To build this you must do `GOOS=windows go build`
 
-func main() {
+func wine_detect() {
 	// Load the ntdll.dll module
 	hntdll, err := windows.LoadLibrary("ntdll.dll")
 	if err != nil {
@@ -49,5 +48,4 @@ func main() {
 
 	fmt.Printf("Running under Wine %s under %s %s.\n", version, sysnameStr, releaseStr)
 	// Now error out, to let the caller know
-	os.Exit(1)
 }
