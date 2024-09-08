@@ -28,11 +28,6 @@
         "editor.codeActionsOnSave": {
             "source.organizeImports": "explicit"
         }
-    },
-    "files.associations": {
-      "*.ejs": "html",
-      ".env*": "dotenv",
-      "cstdarg": "cpp"
     }
 
 }
