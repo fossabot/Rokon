@@ -1,0 +1,54 @@
+id: io.github.brycensranch.Rokon
+runtime: org.gnome.Platform
+runtime-version: "47beta"
+sdk: org.gnome.Sdk
+command: rokon
+
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.golang
+
+finish-args:
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --socket=pulseaudio
+  - --share=ipc
+  - --share=network
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.secrets
+  - --talk-name=org.kde.kwalletd5
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --filesystem=xdg-run/keyring
+  - --device=dri
+
+modules:
+  - name: rokon
+    buildsystem: simple
+    # TODO: Add End to End testing
+    # run-tests: true
+    # test-rule: ''
+    # test-commands:
+    #   - xvfb-run tests/test_foo
+    build-options:
+      # test-args:
+      #   - "--socket=x11"
+      #   - "--share=network"
+      append-path: /usr/lib/sdk/golang/bin
+      env:
+        GOBIN: /app/bin
+        GOROOT: /usr/lib/sdk/golang
+    build-commands:
+      - go install -mod=vendor ./...
+      - desktop-file-edit --set-icon=$FLATPAK_ID --remove-key=DBusActivatable usr/share/applications/$FLATPAK_ID.desktop
+      - install -Dm644 usr/share/applications/$FLATPAK_ID.desktop /app/share/applications/$FLATPAK_ID.desktop
+      - install -Dm644 usr/share/icons/hicolor/scalable/apps/$FLATPAK_ID.svg /app/share/icons/hicolor/scalable/apps/$FLATPAK_ID.svg
+      - install -Dm644 $FLATPAK_ID.metainfo.xml /app/share/metainfo/$FLATPAK_ID.metainfo.xml
+    sources:
+      - type: git
+        url: https://github.com/BrycensRanch/Rokon.git
+        branch: master
+
+      - type: file
+        url: https://raw.githubusercontent.com/BrycensRanch/Rokon/bef9d9994e64d7dfe81a5eb24753a3dd2c9632f9/usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+        sha256: 4eec42630d4032225e2b693d0e7dbb31c39b5a5ca3556de5299d5aecae2204a3
+
+      - go.mod.yml
