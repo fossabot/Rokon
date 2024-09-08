@@ -19,6 +19,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
+          token: ${{ secrets.GH_TOKEN }}
           validateSingleCommit:
             true
             # Configure additional validation for the subject based on a regex.
