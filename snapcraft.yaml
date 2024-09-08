@@ -9,7 +9,7 @@ description: |
       It also uses SSDP to discover Roku devices on your network.
       Finally, it is built on GTK4.
 version: '1.0.0'
-license: GPL-3.0
+license: AGPL-3.0-or-later
 source-code: "https://github.com/BrycensRanch/Rokon"
 adopt-info: rokon
 grade: devel
