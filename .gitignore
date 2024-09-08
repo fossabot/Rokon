@@ -66,3 +66,4 @@ dist/
 # env files that usually contain secrets or local config
 .env
 .envrc
+.vscode/c_cpp_properties.json
