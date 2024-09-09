@@ -11,4 +11,5 @@
         <param name="file">*.tar</param>
     </service>
     <service name="set_version" mode="buildtime"/>
+    <service name="appimage"/>
 </services>
