@@ -89,7 +89,7 @@ This application provides a remote control interface for Roku devices, utilizing
 
 Below is an example screenshot of the application:
 
-![Example Screenshot](screenshots/example.png)
+![Example Screenshot](screenshots/desktop.png)
 
 _(Screenshot taken on March 11, 2024)_
 
