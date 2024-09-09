@@ -1,8 +1,9 @@
 <services>
-    <service name="obs_scm">
+    <service name="tar_scm">
         <param name="scm">git</param>
         <param name="url">https://github.com/BrycensRanch/Rokon.git</param>
         <param name="changesgenerate">enable</param>
+        <param name="revision">master</param>
     </service>
     <service name="tar" mode="buildtime"/>
     <service name="recompress" mode="buildtime">
