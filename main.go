@@ -12,6 +12,7 @@ import (
 	"github.com/getsentry/sentry-go"
 )
 
+
 func main() {
 	fmt.Println("Starting Rokon. Now with more telemetry!")
 	err := sentry.Init(sentry.ClientOptions{
@@ -35,9 +36,14 @@ func main() {
 		log.Fatalf("sentry.Init: %s", err)
 	}
 
-	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationFlagsNone)
+	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationHandlesCommandLine)
+	if app.Version() == "" {
+		app.SetVersion("0.0.0-SNAPSHOT")
+	}
 	app.ConnectActivate(func() { activate(app) })
-
+	app.ConnectCommandLine(func(commandLine *gio.ApplicationCommandLine) int {
+		return activateCommandLine(app, commandLine)
+	})
 	// Flush buffered events before the program terminates.
 	// Set the timeout to the maximum duration the program can afford to wait.
 	defer sentry.Flush(2 * time.Second)
@@ -47,7 +53,23 @@ func main() {
 	}
 }
 
-func activate(app *gtk.Application) {
+func activateCommandLine(app *gtk.Application, commandLine *gio.ApplicationCommandLine) int {
+	args := commandLine.Arguments() // Get the command-line arguments
+
+	// Check if --version flag is present
+	for _, arg := range args {
+		if arg == "version" || arg == "--version" {
+			// Print version info
+			// commandLine.PrintLiteral("Now exiting")
+			fmt.Println(applicationInfo(app))
+			return 0 // Return 0 to indicate success
+		}
+	}
+	commandLine.PrintLiteral("HI FROM COMMAND LINE RAHH")
+	return 0 // or return another integer if needed
+}
+
+func applicationInfo(app *gtk.Application) string {
 	qualifier := func() string {
 		switch {
 		case os.Getenv("SNAP") != "":
@@ -62,11 +84,15 @@ func activate(app *gtk.Application) {
 			return ""
 		}
 	}()
+	return fmt.Sprintf("Rokon %s%s", app.Version(), qualifier)
+}
+
+func activate(app *gtk.Application) {
 	window := gtk.NewApplicationWindow(app)
 	window.SetTitle("Rokon: Control your Roku from your desktop")
 	window.SetChild(&gtk.NewLabel("Hello from Go!").Widget)
 	aboutWindow := gtk.NewAboutDialog()
-	aboutWindow.SetProgramName("Rokon " + app.Version() + qualifier)
+	aboutWindow.SetProgramName(applicationInfo(app))
 	aboutWindow.SetVersion(app.Version())
 	aboutWindow.SetComments("Control your Roku TV from your desktop")
 	aboutWindow.SetWebsite("https://github.com/BrycensRanch/Rokon")
