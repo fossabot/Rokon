@@ -36,7 +36,7 @@ func main() {
 		log.Fatalf("sentry.Init: %s", err)
 	}
 
-	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationHandlesCommandLine)
+	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationDefaultFlags)
 	if app.Version() == "" {
 		app.SetVersion("0.0.0-SNAPSHOT")
 	}
