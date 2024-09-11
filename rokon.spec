@@ -16,7 +16,7 @@
 
 Name:           rokon
 Version:        1.0.0
-Release:        9%{?dist}
+Release:        10%{?dist}
 Summary:        Control your Roku device with your desktop!
 License:        AGPL-3.0-or-later
 URL:            https://github.com/BrycensRanch/Rokon

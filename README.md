@@ -114,7 +114,7 @@ The application communicates with Roku devices using the Roku External Control P
 - My assets for example Rokon's logo is licensed under [`CC-BY-SA-4.0`](./assets/LICENSE.md)
 - Rokon's documentation is licensed under [`GFDL-1.3`](https://raw.githubusercontent.com/IQAndreas/markdown-licenses/master/gnu-fdl-v1.3.md)
 
-Rokon is free software as defined by the FSF.
+Rokon is free software as defined by the [FSF](https://fsf.org). It collects telemetry data by default, see [PRIVACY.md](./PRIVACY.md)
 
 ## Undocumented API Calls
 

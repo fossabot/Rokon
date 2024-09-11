@@ -43,6 +43,7 @@ package() {
     install -Dm755 $pkgname $pkgdir/usr/bin/$pkgname
     install -Dm644 LICENSE.md $pkgdir/usr/share/licenses/$pkgname/LICENSE.md
     install -Dm644 README.md $pkgdir/usr/share/doc/$pkgname/README.md
+    install -Dm644 PRIVACY.md $pkgdir/usr/share/doc/$pkgname/PRIVACY.md
     install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $pkgdir/usr/share/applications/io.github.brycensranch.Rokon.desktop
     install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $pkgdir/usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
     install -Dpm 0644 ./usr/share/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png $pkgdir/usr/share/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png
