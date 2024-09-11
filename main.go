@@ -12,6 +12,12 @@ import (
 	"github.com/getsentry/sentry-go"
 )
 
+func chooseNonEmpty(first, second string) string {
+	if first != "" {
+		return first
+	}
+	return second
+}
 
 func main() {
 	fmt.Println("Starting Rokon. Now with more telemetry!")
@@ -26,11 +32,14 @@ func main() {
 		BeforeSend: func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
 			// TRANSPARENT_TELEMETRY is set, so we can log the event and what data it's sending
 			if os.Getenv("TRANSPARENT_TELEMETRY") != "" {
-				fmt.Printf("Sending event: %s\n", event.Message)
+				fmt.Printf("Sending event: %s\n", chooseNonEmpty(event.Type, event.Message))
 				fmt.Printf("Event data: %v\n", event)
 			}
 			return event
 		},
+		// Integrations: [
+		// 	sentry.Integration
+		// ],
 	})
 	if err != nil {
 		log.Fatalf("sentry.Init: %s", err)
@@ -55,7 +64,6 @@ func main() {
 
 func activateCommandLine(app *gtk.Application, commandLine *gio.ApplicationCommandLine) int {
 	args := commandLine.Arguments() // Get the command-line arguments
-
 	// Check if --version flag is present
 	for _, arg := range args {
 		if arg == "version" || arg == "--version" {
@@ -123,11 +131,15 @@ func activate(app *gtk.Application) {
 	default:
 		// Assume native packaging
 		aboutWindow.SetLogoIconName("rokon")
+		sentry.CaptureMessage("Something went wrong " + applicationInfo(app))
+
 		if os.Getenv("CONTAINER") != "" {
 			log.Println("Running in a container, the logo icon may not be displayed due to wrong path")
 		}
 	}
-
+	// Capture an error and send it to Sentry
+	// err := fmt.Errorf("something went wrong!")
+	// sentry.CaptureException(err)
 	// aboutWindow.SetAuthors([]string{"Brycen G. (BrycensRanch)"})
 	aboutWindow.SetLicenseType(gtk.LicenseAGPL30)
 	// window.SetChild(&aboutWindow.Window)
