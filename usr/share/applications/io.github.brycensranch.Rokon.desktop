@@ -5,5 +5,9 @@ Terminal=false
 Exec=/usr/bin/rokon
 Icon=rokon
 Name=Rokon
+GenericName=Roku Remote
 Comment=Roku Remote
-Categories=Utility
+Categories==GNOME;GTK;Utility
+StartupNotify=true
+DBusActivatable=true
+X-GNOME-UsesNotifications=true
