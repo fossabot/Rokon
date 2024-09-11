@@ -50,14 +50,6 @@ platforms:
     build-for: [armhf]
 
 
-
-plugs:
-  dot-config-rokon:
-    interface: personal-files
-    read:
-      - $HOME/.config/rokon
-    write:
-      - $HOME/.config/rokon
 apps:
   rokon:
     # This will make GTK4 and GNOME libraries available to the snap at runtime
@@ -68,7 +60,6 @@ apps:
       SENTRY_ENVIRONMENT: production
     command: usr/bin/rokon
     plugs:
-      - dot-config-rokon
       - network
       - network-status
       - joystick
