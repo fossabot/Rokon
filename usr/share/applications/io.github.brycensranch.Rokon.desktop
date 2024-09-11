@@ -7,7 +7,7 @@ Icon=rokon
 Name=Rokon
 GenericName=Roku Remote
 Comment=Roku Remote
-Categories==GNOME;GTK;Utility
+Categories=GNOME;GTK;Utility
 StartupNotify=true
 DBusActivatable=true
 X-GNOME-UsesNotifications=true
