@@ -49,6 +49,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("sentry.Init: %s", err)
 	}
+
+	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationDefaultFlags)
 	switch runtime.GOOS {
 	case "windows", "darwin":
 		fmt.Println("Running on Windows or macOS.")
@@ -60,8 +62,6 @@ func main() {
 	default:
 		fmt.Println("Running on Linux or other OS.")
 	}
-
-	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationDefaultFlags)
 	if app.Version() == "" {
 		app.SetVersion("0.0.0-SNAPSHOT")
 	}
