@@ -65,7 +65,6 @@ apps:
       - joystick
       - audio-playback
       - raw-input
-      - raw-usb
       # Does not solve 2024/08/31 15:41:44 ERROR Unable to connect to the accessibility bus at 'unix:path=/run/user/1000/at-spi/bus_0': The connection is closed priority=4 code_file=../src/gtk/a11y/gtkatspiroot.c code_line=679 code_func=gtk_at_spi_root_constructed glib_domain=Gtk
 slots:
   rokon:
