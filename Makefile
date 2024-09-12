@@ -56,21 +56,25 @@ install:
 	@echo "Installing $(TARGET) to $(BINDIR)"
 	mkdir -p $(BINDIR)
 	install -Dpm 0755 $(TARGET) $(BINDIR)
-	install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(PREFIX)/applications/io.github.brycensranch.Rokon.desktop
+	desktop-file-install --dir=$(PREFIX)/share/applications ./usr/share/applications/io.github.brycensranch.Rokon.desktop
+	install -Dm644 ./usr/share/applications/io.github.brycensranch.Rokon.service $(PREFIX)/share/dbus-1/services/io.github.brycensranch.Rokon.service
 	install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(PREFIX)/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
 	install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(PREFIX)/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
 	install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(PREFIX)/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
 	install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(PREFIX)/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+	update-desktop-database
 
 .PHONY: uninstall
 uninstall:
 	$(call print-target)
-	rm -f $(BINDIR)
-	rm -f $(PREFIX)/applications/io.github.brycensranch.Rokon.desktop
+	rm -f $(BINDIR)/$(TARGET)
+	rm -f $(PREFIX)/share/dbus-1/services/io.github.brycensranch.Rokon.service
+	rm -f $(PREFIX)/share/applications/io.github.brycensranch.Rokon.desktop
 	rm -f $(PREFIX)/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
 	rm -f $(PREFIX)/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
 	rm -f $(PREFIX)/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
 	rm -f $(PREFIX)/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+	update-desktop-database
 
 .PHONY: gen
 gen: ## go generate

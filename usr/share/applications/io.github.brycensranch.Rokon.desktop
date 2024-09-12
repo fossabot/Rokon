@@ -2,12 +2,15 @@
 Type=Application
 NoDisplay=false
 Terminal=false
-Exec=/usr/bin/rokon
+Exec=rokon
 Icon=rokon
 Name=Rokon
 GenericName=Roku Remote
-Comment=Roku Remote
+Comment=Roku Remote built with GTK4 and Golang
 Categories=GNOME;GTK;Utility
+# Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+Keywords=Roku;remote;utility;control;universal;
 StartupNotify=true
-DBusActivatable=true
+# DBusActivatable=true
+StartupWMClass=Rokon;rokon
 X-GNOME-UsesNotifications=true

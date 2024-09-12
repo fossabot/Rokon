@@ -4,12 +4,19 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
+	"github.com/adrg/xdg"
+
 	"github.com/diamondburned/gotk4/pkg/gio/v2"
+	"github.com/diamondburned/gotk4/pkg/glib/v2"
 	"github.com/diamondburned/gotk4/pkg/gtk/v4"
 	"github.com/getsentry/sentry-go"
+	"github.com/go-resty/resty/v2"
+	"github.com/koron/go-ssdp"
 )
 
 func chooseNonEmpty(first, second string) string {
@@ -37,12 +44,20 @@ func main() {
 			}
 			return event
 		},
-		// Integrations: [
-		// 	sentry.Integration
-		// ],
 	})
 	if err != nil {
 		log.Fatalf("sentry.Init: %s", err)
+	}
+	switch runtime.GOOS {
+	case "windows", "darwin":
+		fmt.Println("Running on Windows or macOS.")
+		// Use GLib to set the GTK_CSD environment variable for Client-Side Decorations
+		glib.Setenv("GTK_CSD", "1", true)
+
+		// Call your GTK-related functions here if needed
+
+	default:
+		fmt.Println("Running on Linux or other OS.")
 	}
 
 	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationDefaultFlags)
@@ -68,7 +83,6 @@ func activateCommandLine(app *gtk.Application, commandLine *gio.ApplicationComma
 	for _, arg := range args {
 		if arg == "version" || arg == "--version" {
 			// Print version info
-			// commandLine.PrintLiteral("Now exiting")
 			fmt.Println(applicationInfo(app))
 			return 0 // Return 0 to indicate success
 		}
@@ -95,10 +109,32 @@ func applicationInfo(app *gtk.Application) string {
 	return fmt.Sprintf("Rokon %s%s", app.Version(), qualifier)
 }
 
-func activate(app *gtk.Application) {
-	window := gtk.NewApplicationWindow(app)
-	window.SetTitle("Rokon: Control your Roku from your desktop")
-	window.SetChild(&gtk.NewLabel("Hello from Go!").Widget)
+// Search for Rokus asynchronously and return via channel
+func searchForRokus() chan []ssdp.Service {
+	resultChan := make(chan []ssdp.Service)
+
+	go func() {
+		defer close(resultChan)
+
+		discoveredRokus, err := ssdp.Search("roku:ecp", 5, "")
+		if err != nil {
+			sentry.CaptureException(err)
+			log.Println("Error discovering Rokus:", err)
+			return
+		}
+
+		if discoveredRokus != nil {
+			resultChan <- discoveredRokus // Send results back to the main thread
+		} else {
+			resultChan <- nil // No Rokus found, send nil
+		}
+	}()
+
+	return resultChan
+}
+
+// Show the "About" window
+func showAboutWindow(parent *gtk.ApplicationWindow, app *gtk.Application) {
 	aboutWindow := gtk.NewAboutDialog()
 	aboutWindow.SetProgramName(applicationInfo(app))
 	aboutWindow.SetVersion(app.Version())
@@ -131,24 +167,171 @@ func activate(app *gtk.Application) {
 	default:
 		// Assume native packaging
 		aboutWindow.SetLogoIconName("rokon")
-		sentry.CaptureMessage("Something went wrong " + applicationInfo(app))
 
 		if os.Getenv("CONTAINER") != "" {
 			log.Println("Running in a container, the logo icon may not be displayed due to wrong path")
 		}
 	}
-	// Capture an error and send it to Sentry
-	// err := fmt.Errorf("something went wrong!")
-	// sentry.CaptureException(err)
-	// aboutWindow.SetAuthors([]string{"Brycen G. (BrycensRanch)"})
+	aboutWindow.SetAuthors([]string{"Brycen G. (BrycensRanch)"})
 	aboutWindow.SetLicenseType(gtk.LicenseAGPL30)
-	// window.SetChild(&aboutWindow.Window)
+	parent.SetChild(&aboutWindow.Window)
 
 	aboutWindow.Present()
 	aboutWindow.Focus()
-	const windowSize = 400
-	window.SetDefaultSize(windowSize, windowSize)
-	// set window position to center
+}
 
-	window.Show()
+// Create the main menu
+func createMenu(window *gtk.ApplicationWindow, app *gtk.Application) *gio.Menu {
+	menu := gio.NewMenu()
+
+	// Create "Example" menu item
+	exampleMenu := gio.NewMenuItem("Example", "example")
+	exampleSubMenu := gio.NewMenu()
+
+	// "About This App" menu item
+	aboutMenuItem := gio.NewMenuItem("About This App", "about")
+	aboutMenuItem.Connect("activate", func() {
+		showAboutWindow(window, app)
+	})
+	exampleSubMenu.AppendItem(aboutMenuItem)
+
+	// "Check For Updates" menu item
+	updateMenuItem := gio.NewMenuItem("Check For Updates", "check-for-updates")
+	updateMenuItem.Connect("activate", func() {
+		fmt.Println("Checking for updates...")
+		// You can integrate update logic here
+	})
+	exampleSubMenu.AppendItem(updateMenuItem)
+
+	// "Quit" menu item
+	quitMenuItem := gio.NewMenuItem("Quit", "quit")
+	quitMenuItem.Connect("activate", func() {
+		app.Quit()
+	})
+	exampleSubMenu.AppendItem(quitMenuItem)
+
+	exampleMenu.SetSubmenu(exampleSubMenu)
+	menu.AppendItem(exampleMenu)
+	return menu
+}
+
+func fetchImageAsPaintable(url string) (string, error) {
+	tempDir := filepath.Join(xdg.CacheHome, "rokon")
+	client := resty.New()
+	resp, err := client.SetOutputDirectory(tempDir).EnableTrace().R().
+		// SetDebug(true).
+		EnableTrace().
+		SetOutput(filepath.Join(tempDir, "device-image.png")).
+		Get(url)
+	if err != nil {
+		return "", err
+	}
+	// Check if the request was successful
+	if resp.StatusCode() != 200 {
+		return "", fmt.Errorf("failed to get image: status code %d", resp.StatusCode())
+	}
+	imagePath := filepath.Join(tempDir, "device-image.png")
+	println(imagePath)
+	// image := gtk.NewImageFromFile(imagePath)
+
+	return imagePath, nil
+}
+
+func activate(app *gtk.Application) {
+	window := gtk.NewApplicationWindow(app)
+	window.SetTitle("Rokon: Control your Roku from your desktop")
+	window.SetChild(&gtk.NewLabel("Searching for Rokus on your network...").Widget)
+	const windowSize = 400
+	window.SetDefaultSize(800, windowSize)
+	// Start searching for Rokus when the app is activated
+	rokuChan := searchForRokus()
+
+	// Goroutine that waits for Roku discovery to finish
+	go func() {
+		discoveredRokus := <-rokuChan // Receive the result from the Roku discovery
+
+		// Use glib.IdleAdd to ensure UI updates happen on the main thread
+		glib.IdleAdd(func() {
+			if discoveredRokus != nil {
+				fmt.Println("Discovered Rokus:", discoveredRokus)
+				window.SetChild(&gtk.NewLabel("Discovered Rokus:").Widget)
+			} else {
+				window.SetChild(&gtk.NewLabel("No Rokus discovered via SSDP!").Widget)
+			}
+		})
+
+		// Once Roku discovery completes, run Resty logic
+		if discoveredRokus != nil {
+			client := resty.New()
+			resp, err := client.R().
+				EnableTrace().
+				Get(discoveredRokus[0].Location + "/")
+
+			if err != nil {
+				fmt.Println("Error:", err)
+				sentry.CaptureException(err)
+			} else {
+				fmt.Println("Trace Info:", resp.Request.TraceInfo())
+				fmt.Println("Status Code:", resp.StatusCode())
+				fmt.Println("Status:", resp.Status())
+				fmt.Println("Proto:", resp.Proto())
+				fmt.Println("Time:", resp.Time())
+				fmt.Println("Received At:", resp.ReceivedAt())
+				fmt.Println("Body:", resp)
+			}
+			notification := gio.NewNotification("Roku discovered")
+			// Convert the list of Rokus into a single string
+			var rokuList []string
+			for _, roku := range discoveredRokus {
+				// Assuming `USN` is the identifier you want to display for each Roku
+				rokuList = append(rokuList, fmt.Sprintf("%s (%s)", roku.USN, roku.Location))
+			}
+
+			// Join the list into a single string, each on a new line
+			rokuListString := strings.Join(rokuList, "\n")
+			notification.SetBody(rokuListString)
+
+			url := discoveredRokus[0].Location + "/device-image.png"
+			// Create a new GIcon from the file
+			imagePath, err := fetchImageAsPaintable(url)
+			if err != nil {
+				log.Println("Error getting image from URL:", err)
+				return
+			}
+			// if bytesIcon.Icon == null {
+			// 	log.Fatalln("bytesIcon is nil!")
+			// }
+			notification.SetIcon(gio.NewFileIcon(gio.NewFileForPath(imagePath)))
+			// Set the icon for the notification
+			notification.SetCategory("device")
+			app.SendNotification("roku-discovered", notification)
+		}
+	}()
+
+	window.SetVisible(true)
+	// Create the main menu
+	menu := createMenu(window, app)
+	app.SetMenubar(menu)
+	window.SetShowMenubar(true)
+
+	keyController := gtk.NewEventControllerKey()
+	keyController.SetName("keyController")
+	window.AddController(keyController)
+
+	keyController.Connect("key-pressed", func(controller *gtk.EventControllerKey, code uint) {
+		println(code)
+		if code == 93 { // Right-click
+			println("right clicked")
+		}
+	})
+	focusController := gtk.NewEventControllerFocus()
+	focusController.SetName("focusController")
+	window.AddController(focusController)
+	gestureClick := gtk.NewGestureClick()
+	gestureClick.SetName("gestureClick")
+	gestureClick.Connect("pressed", func(_, numberOfPresses uint) {
+		fmt.Println("Number of presses %s", numberOfPresses)
+	})
+	window.AddController(gestureClick)
+	// window.Maximize()
 }
