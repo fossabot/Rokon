@@ -31,6 +31,7 @@ rokon_puregotk4
 *.zip
 *.apk
 *.pacman
+AppDir
 flathub/.flatpak-builder
 flathub/repo
 
