@@ -130,7 +130,7 @@ func activate(app *gtk.Application) {
 		}
 	default:
 		// Assume native packaging
-		aboutWindow.SetLogoIconName("rokon")
+		aboutWindow.SetLogoIconName("io.github.brycensranch.Rokon")
 		sentry.CaptureMessage("Something went wrong " + applicationInfo(app))
 
 		if os.Getenv("CONTAINER") != "" {
