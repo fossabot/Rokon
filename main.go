@@ -167,7 +167,7 @@ func showAboutWindow(parent *gtk.ApplicationWindow, app *gtk.Application) {
 		}
 	default:
 		// Assume native packaging
-		aboutWindow.SetLogoIconName("rokon")
+		aboutWindow.SetLogoIconName("io.github.brycensranch.Rokon")
 
 		if os.Getenv("CONTAINER") != "" {
 			log.Println("Running in a container, the logo icon may not be displayed due to wrong path")
