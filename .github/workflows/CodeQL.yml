@@ -40,7 +40,8 @@ jobs:
         # Override language selection by uncommenting this and choosing your languages
         # with:
         #   languages: go, javascript, csharp, python, cpp, java, ruby
-
+      - name: Install needed dependencies
+        run: sudo apt update && sudo apt install -y libgtk-4-dev libgirepository1.0-dev
       # Autobuild attempts to build any compiled languages (C/C++, C#, Go, or Java).
       # If this step fails, then you should remove it and run the build manually (see below).
       - name: Autobuild
