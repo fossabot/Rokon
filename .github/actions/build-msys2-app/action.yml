@@ -12,7 +12,7 @@ inputs:
     default: result
   msys-system:
     description: MSYS2 system to use
-    default: MINGW64
+    default: UCRT64
   msys-dependencies:
     description: MSYS2 packages to install
     required: true
@@ -25,7 +25,7 @@ runs:
     - name: Install MSYS2 Environment
       uses: msys2/setup-msys2@v2
       with:
-        msystem: MINGW64
+        msystem: UCRT64
         update: true
         install: |
           git
@@ -36,9 +36,9 @@ runs:
       uses: actions/cache@v4
       with:
           path: |
-            D:/a/msys64/var/cache/pacman/pkg             # Cache MSYS2 packages
-            D:/a/msys64/mingw64/lib/go                   # Cache Go
-            D:/a/msys64/tmp/go-build                     # Cache Go build cache
+            C:/a/msys64/var/cache/pacman/pkg             # Cache MSYS2 packages
+            C:/a/msys64/ucrt64/lib/go                   # Cache Go
+            C:/a/msys64/tmp/go-build                     # Cache Go build cache
           key: go-msys2-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             go-msys2-${{ runner.os }}-
@@ -46,7 +46,7 @@ runs:
     - name: Build
       id: build
       run: |
-        export PATH="/mingw64/bin:$PATH"
+        export PATH="/ucrt64/bin:$PATH"
 
         mkdir "$OUT_PATH"
         out=$(realpath "$OUT_PATH")
@@ -58,9 +58,9 @@ runs:
         # result directory.
         copyDLLs() {
           ldd "$@" \
-            | { grep "=> /mingw64/bin/" || true; } \
+            | { grep "=> /ucrt64/bin/" || true; } \
             | cut -d ' ' -f1 \
-            | xargs -I{} cp /mingw64/bin/{} $out/
+            | xargs -I{} cp /ucrt64/bin/{} $out/
         }
 
         # Copy all of the binary's dependencies to the result directory.
@@ -85,13 +85,13 @@ runs:
 
         # Copy the RSVG and GDBus stuff.
         cp \
-          /mingw64/bin/librsvg*.dll \
-          /mingw64/bin/gdbus.exe \
+          /ucrt64/bin/librsvg*.dll \
+          /ucrt64/bin/gdbus.exe \
           $out
 
         # Copy the GLib schemas and GTK resources.
         (
-          cd /mingw64
+          cd /ucrt64
           cp --parents -r \
             share/glib-2.0/schemas/gschemas.compiled \
             share/gtk-4.0 \
@@ -101,8 +101,8 @@ runs:
         )
       shell: msys2 {0}
       env:
-        GOROOT: /mingw64/lib/go
-        GOPATH: /mingw64
+        GOROOT: /ucrt64/lib/go
+        GOPATH: /ucrt64
         EXE_NAME: ${{ inputs.exe-name }}
         OUT_PATH: ${{ inputs.out-path }}
         BUILD_TAGS: ${{ inputs.build-tags }}
