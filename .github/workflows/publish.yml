@@ -141,7 +141,6 @@ jobs:
         uses: ./.github/actions/build-msys2-app
         with:
           msys-dependencies: |
-            tree
             mingw-w64-clang-x86_64-gcc
             mingw-w64-clang-x86_64-pkg-config
             mingw-w64-clang-x86_64-gtk4
