@@ -12,7 +12,7 @@ inputs:
     default: result
   msys-system:
     description: MSYS2 system to use
-    default: UCRT64
+    default: CLANG64
   msys-dependencies:
     description: MSYS2 packages to install
     required: true
@@ -25,7 +25,7 @@ runs:
     - name: Install MSYS2 Environment
       uses: msys2/setup-msys2@v2
       with:
-        msystem: UCRT64
+        msystem: CLANG64
         update: true
         install: |
           git
@@ -37,7 +37,7 @@ runs:
       with:
           path: |
             C:/a/msys64/var/cache/pacman/pkg             # Cache MSYS2 packages
-            C:/a/msys64/ucrt64/lib/go                   # Cache Go
+            C:/a/msys64/clang64/lib/go                   # Cache Go
             C:/a/msys64/tmp/go-build                     # Cache Go build cache
           key: go-msys2-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
           restore-keys: |
@@ -46,7 +46,7 @@ runs:
     - name: Build
       id: build
       run: |
-        export PATH="/ucrt64/bin:$PATH"
+        export PATH="/clang64/bin:$PATH"
 
         mkdir "$OUT_PATH"
         out=$(realpath "$OUT_PATH")
@@ -58,9 +58,9 @@ runs:
         # result directory.
         copyDLLs() {
           ldd "$@" \
-            | { grep "=> /ucrt64/bin/" || true; } \
+            | { grep "=> /clang64/bin/" || true; } \
             | cut -d ' ' -f1 \
-            | xargs -I{} cp /ucrt64/bin/{} $out/
+            | xargs -I{} cp /clang64/bin/{} $out/
         }
 
         # Copy all of the binary's dependencies to the result directory.
@@ -85,13 +85,13 @@ runs:
 
         # Copy the RSVG and GDBus stuff.
         cp \
-          /ucrt64/bin/librsvg*.dll \
-          /ucrt64/bin/gdbus.exe \
+          /clang64/bin/librsvg*.dll \
+          /clang64/bin/gdbus.exe \
           $out
 
         # Copy the GLib schemas and GTK resources.
         (
-          cd /ucrt64
+          cd /clang64
           cp --parents -r \
             share/glib-2.0/schemas/gschemas.compiled \
             share/gtk-4.0 \
@@ -101,8 +101,8 @@ runs:
         )
       shell: msys2 {0}
       env:
-        GOROOT: /ucrt64/lib/go
-        GOPATH: /ucrt64
+        GOROOT: /clang64/lib/go
+        GOPATH: /clang64
         EXE_NAME: ${{ inputs.exe-name }}
         OUT_PATH: ${{ inputs.out-path }}
         BUILD_TAGS: ${{ inputs.build-tags }}
