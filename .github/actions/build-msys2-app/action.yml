@@ -65,7 +65,7 @@ runs:
 
         # Copy all of the binary's dependencies to the result directory.
         copyDLLs "$out/$EXE_NAME"
-        find $out -type f -name "*.dll" | upx --best --force-overwrite
+        find $out -type f -name "*.dll" -exec upx --best --force-overwrite {} +
         # countDLLs returns the number of DLLs in the result directory.
         # We use this to recursively copy dependencies until no new DLLs are
         # found.
