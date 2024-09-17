@@ -170,7 +170,7 @@ jobs:
 
           cat<<EOF >> "$GITHUB_OUTPUT"
           version=$version
-          name=rokon-${{ runner.os }}-${{ runner.arch }}
+          name=Rokon-${{ runner.os }}-Setup-${{ runner.arch }}
           EOF
 
       - name: Make MSI installer
