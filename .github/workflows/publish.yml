@@ -190,7 +190,7 @@ jobs:
           out-name: ${{ steps.prepare.outputs.name }}
       - name: Make Portable
         run: |
-          p7zip a Rokon-Portable.7z ${{ runner.temp }}/exe
+          7z a Rokon-Portable.7z ${{ runner.temp }}/exe
 
       - name: 🗃️ Upload Built Binaries
         uses: actions/upload-artifact@v4
