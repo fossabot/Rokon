@@ -52,7 +52,7 @@ runs:
         out=$(realpath "$OUT_PATH")
 
         # Build Rokon
-        go build -ldflags "-X main.version=1.0.0 -X main.commit=$(git rev-parse --short HEAD) -X main.packaged=true -X main.packageFormat=msi -X main.branch=$(git rev-parse --abbrev-ref HEAD) -X main.date=$(date -u +%Y-%m-%d) -H windowsgui" -o "$out/$EXE_NAME" -tags "$BUILD_TAGS"
+        go build -ldflags "-s -w -X main.version=1.0.0 -X main.commit=$(git rev-parse --short HEAD) -X main.packaged=true -X main.packageFormat=msi -X main.branch=$(git rev-parse --abbrev-ref HEAD) -X main.date=$(date -u +%Y-%m-%d) -H windowsgui" -o "$out/$EXE_NAME" -tags "$BUILD_TAGS"
 
         # copyDLLs copies all required DLLs of the given binaries to the
         # result directory.
@@ -65,7 +65,7 @@ runs:
 
         # Copy all of the binary's dependencies to the result directory.
         copyDLLs "$out/$EXE_NAME"
-
+        find $out -type f -name "*.dll" | upx --best --force-overwrite
         # countDLLs returns the number of DLLs in the result directory.
         # We use this to recursively copy dependencies until no new DLLs are
         # found.

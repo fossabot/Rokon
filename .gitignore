@@ -29,6 +29,7 @@ rokon_puregotk4
 *.tar**
 *.tgz
 *.zip
+*.msi
 *.apk
 *.pacman
 AppDir
