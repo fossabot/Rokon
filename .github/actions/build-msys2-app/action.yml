@@ -40,6 +40,7 @@ runs:
             C:/a/msys64/clang64/lib/go                   # Cache Go
             C:/a/msys64/tmp/go-build                     # Cache Go build cache
             ${{ runner.temp }}
+            !${{ runner.temp }}/exe
           key: go-msys2-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             go-msys2-${{ runner.os }}-
