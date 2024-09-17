@@ -151,8 +151,9 @@ jobs:
           out-path: ${{ runner.temp }}/exe
           exe-name: Rokon.exe
       - name: Minimize executable size using upx
+        working-directory: ${{ runner.temp }}/exe
         run: |
-           upx ./Rokon.exe
+           upx ./*.exe
       - name: Prepare
         id: prepare
         run: |
