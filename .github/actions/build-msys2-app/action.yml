@@ -49,7 +49,7 @@ runs:
       run: |
         export PATH="/clang64/bin:$PATH"
 
-        mkdir "$OUT_PATH"
+        mkdir -p "$OUT_PATH"
         out=$(realpath "$OUT_PATH")
 
         # Build Rokon
