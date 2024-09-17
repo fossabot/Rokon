@@ -39,6 +39,7 @@ runs:
             C:/a/msys64/var/cache/pacman/pkg             # Cache MSYS2 packages
             C:/a/msys64/clang64/lib/go                   # Cache Go
             C:/a/msys64/tmp/go-build                     # Cache Go build cache
+            ${{ runner.temp }}
           key: go-msys2-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             go-msys2-${{ runner.os }}-
