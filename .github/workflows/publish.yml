@@ -191,15 +191,20 @@ jobs:
           out-name: ${{ steps.prepare.outputs.name }}
       - name: Make Portable
         run: |
-          tree
-          7z a result/Rokon-Portable.7z "${{ runner.temp }}/exe"
+          cp windows/portable.txt ${{ runner.temp }}/exe
 
-      - name: 🗃️ Upload Built Binaries
+      - name: 🗃️ Upload Built Result
         uses: actions/upload-artifact@v4
         if: ${{ !github.event.act }}
         with:
           name: rokon-${{ runner.os }}-${{ matrix.arch }}
           path: result
+      - name: 🗃️ Upload Portable
+        uses: actions/upload-artifact@v4
+        if: ${{ !github.event.act }}
+        with:
+          name: rokon-${{ runner.os }}-Portable-${{ matrix.arch }}
+          path: ${{ runner.temp }}/exe
   macos:
     timeout-minutes: 45
     strategy:
