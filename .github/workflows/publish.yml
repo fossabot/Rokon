@@ -170,7 +170,7 @@ jobs:
 
           cat<<EOF >> "$GITHUB_OUTPUT"
           version=$version
-          name=Rokon-${{ runner.os }}-Setup-${{ runner.arch }}
+          name=Rokon-Setup-${{ runner.arch }}
           EOF
 
       - name: Make MSI installer
@@ -183,7 +183,7 @@ jobs:
           app-version: ${{ steps.prepare.outputs.version }}
           icon-file: windows/assets/rokon.ico
           out-path: result
-          out-name: ${{ steps.prepare.outputs.name }}.msi
+          out-name: ${{ steps.prepare.outputs.name }}
 
       - name: 🗃️ Upload Built Binaries
         uses: actions/upload-artifact@v4
