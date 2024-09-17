@@ -190,7 +190,7 @@ jobs:
           out-name: ${{ steps.prepare.outputs.name }}
       - name: Make Portable
         run: |
-          cp windows/portable.txt ${{ runner.temp }}/exe
+          cp windows/portable.txt "${{ runner.temp }}/exe"
 
       - name: 🗃️ Upload Built Result
         uses: actions/upload-artifact@v4
