@@ -5,7 +5,7 @@
 	"image": "./Dockerfile",
 	"customizations": {
 		"vscode": {
-			"extensions": ["golang.Go"]
+			"extensions": ["golang.Go", "davidanson.vscode-markdownlint", "ms-azuretools.vscode-docker", "vivaxy.vscode-conventional-commits", "rangav.vscode-thunder-client", "code-thunder-client", "ms-vscode.makefile-tools"]
 		}
 	}
 }

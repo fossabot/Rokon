@@ -1,5 +1,16 @@
 {
     "recommendations": [
-        "golang.Go"
+        "golang.Go",
+        "ms-vscode.makefile-tools",
+        "shakram02.bash-beautify",
+        "rogalmic.bash-debug",
+        "mads-hartmann.bash-ide-vscode",
+        "aaron-bond.better-comments",
+        "jeff-hykin.better-dockerfile-syntax",
+        "vivaxy.vscode-conventional-commits",
+        "ms-vscode-remote.remote-containers",
+        "ms-azuretools.vscode-docker",
+        "formulahendry.docker-extension-pack",
+        "davidanson.vscode-markdownlint"
     ]
 }
