@@ -141,6 +141,7 @@ jobs:
         uses: ./.github/actions/build-msys2-app
         with:
           msys-dependencies: |
+            tree
             mingw-w64-clang-x86_64-gcc
             mingw-w64-clang-x86_64-pkg-config
             mingw-w64-clang-x86_64-gtk4
@@ -190,7 +191,8 @@ jobs:
           out-name: ${{ steps.prepare.outputs.name }}
       - name: Make Portable
         run: |
-          7z a Rokon-Portable.7z ${{ runner.temp }}/exe
+          tree
+          7z a result/Rokon-Portable.7z "${{ runner.temp }}/exe"
 
       - name: 🗃️ Upload Built Binaries
         uses: actions/upload-artifact@v4
