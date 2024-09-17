@@ -33,7 +33,7 @@ runs:
   steps:
     - uses: caphyon/advinst-github-action@v2.0
       with:
-        advinst-version: 22.0
+        advinst-version: '22.0'
         advinst-enable-automation: true
 
     - run: |
