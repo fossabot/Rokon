@@ -28,6 +28,7 @@ rokon_puregotk4
 *.tar.lz
 *.tar**
 *.tgz
+*.7z
 *.zip
 *.msi
 *.apk
