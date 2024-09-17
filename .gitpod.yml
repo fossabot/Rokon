@@ -24,7 +24,7 @@ image: nberlette/gitpod-enhanced:latest
 vscode:
   extensions:
     - golang.Go
-    - code-thunder-client
+    - rangav.vscode-thunder-client
     - ms-azuretools.vscode-docker
     - davidanson.vscode-markdownlint
     - vivaxy.vscode-conventional-commits

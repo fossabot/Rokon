@@ -11,6 +11,7 @@
         "ms-vscode-remote.remote-containers",
         "ms-azuretools.vscode-docker",
         "formulahendry.docker-extension-pack",
-        "davidanson.vscode-markdownlint"
+        "davidanson.vscode-markdownlint",
+        "rangav.vscode-thunder-client"
     ]
 }
