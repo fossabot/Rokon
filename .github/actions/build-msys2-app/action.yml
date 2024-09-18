@@ -49,6 +49,7 @@ runs:
       id: build
       run: |
         export PATH="/clang64/bin:$PATH"
+        rm -rf "${{ runner.temp }}/exe"
 
         mkdir -p "$OUT_PATH"
         out=$(realpath "$OUT_PATH")
