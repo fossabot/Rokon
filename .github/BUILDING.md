@@ -7,7 +7,7 @@ Thank you for your interest in contributing to Rokon! We appreciate your help in
 Before you start contributing, please make sure you have the following:
 
 - [Go](https://golang.org) installed
-- [GTK4](https://www.gtk.org) installed
+- [GTK4](https://www.gtk.org) installed (don't forget gobject-introspection-1.0)
 - [Git](https://git-scm.com) installed and configured with your GitHub account and your commits signed
 - [Roku device](https://www.roku.com/products/roku-tv) (for local testing, not required for building)
 - Builiding the application for Windows requires [MSYS2](https://www.msys2.org/) with the dependencies for GTK4, Golang, and Rust (with cargo) installed.
@@ -22,7 +22,7 @@ Before you start contributing, please make sure you have the following:
 
 ### 🪟 Windows
 
-#### AMD64 ONLY
+#### Traditional processors (AMD64 or x64 architecture)
 
 This application was developed on Linux. While it was built on Linux, you can use it on Windows. However, building the application on Windows is not recommended. If you want to build the application on Windows, you will need to install MSYS2 and the dependencies for GTK4, Golang
 
@@ -30,57 +30,31 @@ This can be accomplished with:
 
 ```powershell
 winget install --id=MSYS2.MSYS2 -e
-
 ```
 
-Then, open the MSYS2 MINGW64 terminal and run the following commands:
+Then, open the MSYS2 CLANG64 terminal and run the following commands:
 
 ```bash
 pacman -Syu
-pacman -S --noconfirm git mingw-w64-x86_64-go mingw-w64-x86_64-gtk4 mingw-w64-x86_64-gobject-introspection
+pacman -S --noconfirm git mingw-w64-clang-x86_64-go mingw-w64-clang-x86_64-gtk4 mingw-w64-clang-x86_64-gobject-introspection
 ```
 
-#### Windows on ARM (laughably untested, glhf)
+#### Windows on ARM (like Snapdragon X Elite) (aarch64 or ARM64)
 
-If you're using Windows on ARM, you will need to do something a bit different. Make sure you're using Windows 11 and have Docker setup and installed. You can use the following powershell script (.ps1) to build the application for ARM64 on Windows:
+Windows 11 is **required** for Windows on ARM.
 
 ```powershell
-# filename: build.ps1
-# Define Go version and build flags
-$GO_VERSION = "latest"  # or "1.22" for bare minimum Go version
-$GO_BUILD_FLAGS = "-x"
-
-# Get GOCACHE and GOPATH using Go commands
-$GOCACHE = go env GOCACHE
-$GOPATH = go env GOPATH
-
-function docker_build {
-    param (
-        [string]$GOARCH
-    )
-
-    Write-Host ":: Building for $GOARCH in MinGW container..."
-
-    # Docker command to run Go build inside the MinGW container
-    docker run --rm -it `
-        -e GOCACHE=/go/.cache `
-        -e GOARCH=$GOARCH `
-        -v "$GOCACHE:/go/.cache" `
-        -v "$GOPATH/src:/go/src" `
-        -v "$GOPATH/pkg:/go/pkg" `
-        -v "$(Get-Location):/go/work" `
-        -w /go/work `
-        "x1unix/go-mingw:$GO_VERSION" `
-        go build $GO_BUILD_FLAGS -ldflags "-H windowsgui" -v -o "rokon-$GOARCH.exe" .
-}
-
-# Example usage of the docker_build function
-docker_build "arm64"  # or any architecture like "386", "amd64", etc.
+winget install --id=MSYS2.MSYS2 -e
 ```
 
-After you've done that, you're done. Do not read any further, go have a coffee or whatever Windows users do.
+Then, open the MSYS2 CLANGARM64 terminal and run the following commands:
 
-### 🍎 macOS (ultra proprietary garbage)
+```bash
+pacman -Syu
+pacman -S --noconfirm git mingw-w64-clang-aarch64-go mingw-w64-clang-aarch64-gtk4 mingw-w64-clang-aarch64-gobject-introspection
+```
+
+### 🍎 macOS
 
 > macOS: `brew install git go gtk4 gobject-introspection`
 
@@ -126,8 +100,12 @@ git clone https://github.com/BrycensRanch/Rokon
 cd Rokon
 # If your internet is slow, this WILL take awhile.
 go mod download all
-# This will may take a while, CGO is slow.
+# This may take a while, CGO is slow.
 go build -v -o rokon .
+# If on Windows, do not add "sudo"
+# If on macOS, do not add "sudo"
+# On Windows & macOS it does not natively integrate with your operating system. 
+# All it does is add rokon to your path 
 sudo make install
 ```
 
