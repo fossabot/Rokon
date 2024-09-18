@@ -181,9 +181,11 @@ jobs:
           name=Rokon-Setup-${{ runner.arch }}
           EOF
       - name: install bloated node_modules
+        working-directory: .github
         run: |
           npm install
       - name: Generate rich text files from Markdown
+        working-directory: .github
         run: |
           node .github/generate-rtf.js
       - name: Make MSI installer
