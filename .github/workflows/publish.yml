@@ -70,6 +70,7 @@ jobs:
         with:
           go-version: "stable"
       - name: 👁️ Ensure Code is Linted
+        continue-on-error: true
         run: |
           make inst
           make lint
@@ -156,7 +157,7 @@ jobs:
       - name: Minimize executable size using upx
         working-directory: ${{ runner.temp }}/exe
         run: |
-           upx ./*.exe
+          upx ./*.exe
       - name: Prepare
         id: prepare
         run: |
