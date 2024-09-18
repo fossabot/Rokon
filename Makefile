@@ -5,6 +5,9 @@ PREFIX ?= /usr/local
 # Define install directories
 BINDIR = $(PREFIX)/bin
 DATADIR = $(PREFIX)/share/rokon
+APPLICATIONSDIR = $(PREFIX)/applications
+ICONDIR = $(PREFIX)/icons/hicolor
+METAINFODIR = $(PREFIX)/metainfo
 
 # Define target binary
 TARGET = rokon
@@ -56,21 +59,21 @@ install:
 	@echo "Installing $(TARGET) to $(BINDIR)"
 	mkdir -p $(BINDIR)
 	install -Dpm 0755 $(TARGET) $(BINDIR)
-	install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(PREFIX)/applications/io.github.brycensranch.Rokon.desktop
-	install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(PREFIX)/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
-	install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(PREFIX)/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
-	install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(PREFIX)/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
-	install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(PREFIX)/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+	install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop
+	install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
+	install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png
+	install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg
+	install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml
 
 .PHONY: uninstall
 uninstall:
 	$(call print-target)
 	rm -f $(BINDIR)/$(TARGET)
-	rm -f $(PREFIX)/applications/io.github.brycensranch.Rokon.desktop
-	rm -f $(PREFIX)/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
-	rm -f $(PREFIX)/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
-	rm -f $(PREFIX)/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
-	rm -f $(PREFIX)/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+	rm -f $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop
+	rm -f $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
+	rm -f $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png
+	rm -f $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg
+	rm -f $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml
 
 .PHONY: gen
 gen: ## go generate
