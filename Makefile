@@ -65,7 +65,7 @@ install:
 .PHONY: uninstall
 uninstall:
 	$(call print-target)
-	rm -f $(BINDIR)
+	rm -f $(BINDIR)/$(TARGET)
 	rm -f $(PREFIX)/applications/io.github.brycensranch.Rokon.desktop
 	rm -f $(PREFIX)/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
 	rm -f $(PREFIX)/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
