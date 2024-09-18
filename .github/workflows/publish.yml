@@ -69,9 +69,11 @@ jobs:
         uses: magnetikonline/action-golang-cache@v5
         with:
           go-version: "stable"
-      # - name: 👁️ Ensure Code is Linted
-      #   run: |
-      #     pnpm lint:check
+      - name: 👁️ Ensure Code is Linted
+        run: |
+          make inst
+          make lint
+          make spell
       # - name: 🚧 Ensure Code is Formatted
       #   run: |
       #     pnpm format:check
@@ -80,7 +82,7 @@ jobs:
           go mod download all
       - name: 🤖 Build Project
         run: |
-          CGO_ENABLED=1 go build -v -o rokon main.go
+          make build
       # - name: 📤 Upload Code coverage to Codecov
       #   if: ${{ !github.event.act }}
       #   uses: codecov/codecov-action@v4
@@ -220,13 +222,13 @@ jobs:
           fetch-depth: 0
       - name: Install GTK4 Golang
         run: |
-          brew install gtk4 gobject-introspection pkg-config go gtkmm4 cairomm
+          brew install gtk4 gobject-introspection go gtkmm4 cairomm
       - name: 📦 Install Dependencies
         run: |
           go mod download all
       - name: 🤖 Build Project
         run: |
-          CGO_ENABLED=1 go build -v -o rokon main.go
+          make build
       - name: 🗃️ Upload Built Binaries
         uses: actions/upload-artifact@v4
         if: ${{ !github.event.act }}
