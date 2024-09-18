@@ -5,6 +5,9 @@ PREFIX ?= /usr/local
 # Define install directories
 BINDIR = $(PREFIX)/bin
 DATADIR = $(PREFIX)/share/rokon
+APPLICATIONSDIR = $(PREFIX)/applications
+ICONDIR = $(PREFIX)/icons/hicolor
+METAINFODIR = $(PREFIX)/metainfo
 
 # Define target binary
 TARGET = rokon
