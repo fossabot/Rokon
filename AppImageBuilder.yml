@@ -1,0 +1,25 @@
+version: 1
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: io.github.brycensranch.Rokon
+    name: rokon
+    icon: io.github.brycensranch.Rokon
+    version: 1.0.0
+    exec: usr/bin/rokon
+
+  apt:
+    arch: amd64
+    sources:
+      - sourceline: 'deb [arch=amd64] http://mx.archive.ubuntu.com/ubuntu/ noble main restricted universe multiverse'
+        key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
+
+    include:
+      - rokon
+      - librsvg2-common
+
+
+AppImage:
+  arch: x86_64
