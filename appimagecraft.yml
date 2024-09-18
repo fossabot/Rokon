@@ -1,0 +1,24 @@
+version: 1
+
+project:
+  name: io.github.brycensranch.Rokon
+  # version: 1.0.0
+  # alternatively, you can specify a command that is run by appimagecraft to generate some version information, e.g.:
+  # version_command: echo 1.2.3
+  version_command: cd "$PROJECT_ROOT" && echo "1.0.0+$(git rev-parse --short HEAD)"
+  # the command is run in your repository directory
+
+build:
+  script:
+    commands:
+      # - sudo dnf in go gtk4-devel -y
+      - cd "$PROJECT_ROOT"  && make build
+      - make PREFIX="$PROJECT_ROOT/AppDir" install
+
+appimage:
+  linuxdeploy:
+    plugins:
+      - gtk
+    environment:
+      DEPLOY_GTK_VERSION: 4
+      # - checkrt
