@@ -139,15 +139,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: latest
-      - name: install bloated node_modules
-        run: |
-          npm install
-      - name: Generate rich text files from Markdown
-        run: |
-          node .github/generate-rtf.js
       - name: Build using MSYS2
         uses: ./.github/actions/build-msys2-app
         with:
@@ -159,6 +150,7 @@ jobs:
             mingw-w64-clang-x86_64-glib2
             mingw-w64-clang-x86_64-go
             mingw-w64-clang-x86_64-upx
+            mingw-w64-clang-x86_64-nodejs
           out-path: ${{ runner.temp }}/exe
           exe-name: Rokon.exe
       - name: Minimize executable size using upx
@@ -187,7 +179,12 @@ jobs:
           version=$version
           name=Rokon-Setup-${{ runner.arch }}
           EOF
-
+      - name: install bloated node_modules
+        run: |
+          npm install
+      - name: Generate rich text files from Markdown
+        run: |
+          node .github/generate-rtf.js
       - name: Make MSI installer
         uses: ./.github/actions/make-advinst-app
         with:
