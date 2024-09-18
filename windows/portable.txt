@@ -1,4 +1,4 @@
-This file enables the portable mode for the launcher.
+This file enables the portable mode for Rokon.
 
-If this file is present in the root directory of the launcher, it will store all data here. Otherwise it will store your data in your appdata directory.
-You can safely delete this file, if you don't want the launcher to store your data here.
+If this file is present in the root directory of Rokon's folder, it will store all data here. Otherwise it will store your data in your appdata directory.
+You can safely delete this file, if you don't want Rokon to store your data here.
