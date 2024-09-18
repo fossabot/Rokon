@@ -37,7 +37,14 @@ rokon_puregotk4
 AppDir
 flathub/.flatpak-builder
 flathub/repo
+**/node_modules/**
+.github/node_modules
 
+# NO LONGER SHALL I WRITE RTF LIKE A MORTAL MAN.
+# NODEJS SHALL GENERATE IT AND NEVER COMMIT IT TO THE REPOSITORY.
+# GLORY
+*.rtf
+windows/*.rtf
 
 # Arch Linux MAKEPKG
 pkg/
