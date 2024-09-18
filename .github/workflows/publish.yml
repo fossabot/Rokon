@@ -187,7 +187,7 @@ jobs:
       - name: Generate rich text files from Markdown
         working-directory: .github
         run: |
-          node .github/generate-rtf.js
+          node ./generate-rtf.js
       - name: Make MSI installer
         uses: ./.github/actions/make-advinst-app
         with:
@@ -221,7 +221,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - macos-15
+          - macos-latest
           - macos-13 # macOS 13 is Monterey and it runs on amd64
     runs-on: ${{ matrix.os }}
     steps:
