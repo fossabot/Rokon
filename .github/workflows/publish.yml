@@ -84,6 +84,9 @@ jobs:
       - name: 🤖 Build Project
         run: |
           make build
+      - name: 🖼️ Assemble the AppImage
+        run:
+          make appimage
       # - name: 📤 Upload Code coverage to Codecov
       #   if: ${{ !github.event.act }}
       #   uses: codecov/codecov-action@v4
@@ -92,7 +95,10 @@ jobs:
         if: ${{ !github.event.act }}
         with:
           name: rokon-${{ runner.os }}-${{ matrix.arch }}
-          path: ./rokon
+          path: |
+            rokon
+            *.AppImage
+            *.zsync
       # - name: Import GPG key
       #   id: import_gpg
       #   if: ${{ !github.event.act }} && github.event_name != 'pull_request'
