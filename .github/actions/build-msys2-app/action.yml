@@ -55,7 +55,7 @@ runs:
         out=$(realpath "$OUT_PATH")
 
         # Build Rokon
-        go build -ldflags "-s -w -X main.version=1.0.0 -X main.commit=$(git rev-parse --short HEAD) -X main.packaged=true -X main.packageFormat=msi -X main.branch=$(git rev-parse --abbrev-ref HEAD) -X main.date=$(date -u +%Y-%m-%d) -H windowsgui" -o "$out/$EXE_NAME" -tags "$BUILD_TAGS"
+        mingw32-make TARGET=$out/$EXE_NAME EXTRALDFLAGS="-s -w -H windowsgui" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=msi PACKAGED=true build
 
         # copyDLLs copies all required DLLs of the given binaries to the
         # result directory.
