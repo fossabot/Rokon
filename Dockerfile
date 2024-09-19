@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN go build -v -o rokon .
+RUN make build
 
 FROM alpine:edge AS runner
 

@@ -201,6 +201,7 @@ jobs:
           out-name: ${{ steps.prepare.outputs.name }}
       - name: Make Portable
         run: |
+          make TARGET="${{ runner.temp }}/exe/Rokon.exe" EXTRALDFLAGS="-H windowsgui" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=portable PACKAGED=true build
           cp windows/portable.txt windows/LICENSE.rtf windows/README.rtf windows/PRIVACY.rtf "${{ runner.temp }}/exe"
 
       - name: 🗃️ Upload Built Result

@@ -74,11 +74,11 @@ slots:
 
 parts:
   rokon:
-    parse-info: [./usr/share/metainfo/io.github.brycensranch.Rokon.xml]
+    parse-info: [./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml]
     plugin: go
     override-build: |
       go mod download all
-      go build -v -ldflags="-X main.version=$SNAPCRAFT_PROJECT_VERSION -X main.commit=$(git rev-parse --short HEAD) -X main.packaged=true -X main.packageFormat=snap -X main.branch=$(git rev-parse --abbrev-ref HEAD) -X main.date=$(date -u +%Y-%m-%d)" -o $SNAPCRAFT_PART_INSTALL/usr/bin/rokon main.go
+      make VERSION=$SNAPCRAFT_PROJECT_VERSION PACKAGED=true PACKAGEFORMAT=snap TARGET=$SNAPCRAFT_PART_INSTALL/usr/bin/rokon build
     build-snaps: [go/latest/stable, gnome-46-2404-sdk/latest/edge]
     build-packages:
       # For goreleaser or git information in general.
