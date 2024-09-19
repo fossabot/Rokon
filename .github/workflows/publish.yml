@@ -86,7 +86,7 @@ jobs:
           make build
       - name: 🖼️ Assemble the AppImage
         run: |
-          sudo pip3 install appimage-builder
+          sudo pip3 install appimage-builder --break-system-packages
           sudo apt install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           make appimage
       # - name: 📤 Upload Code coverage to Codecov
