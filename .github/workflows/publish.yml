@@ -212,10 +212,9 @@ jobs:
           out-name: ${{ steps.prepare.outputs.name }}
       - name: Make Portable
         run: |
-          mingw32-make TARGET="${{ runner.temp }}/exe/Rokon.exe" EXTRALDFLAGS="-s -w -H windowsgui" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=portable PACKAGED=true build
+          mingw32-make TARGET="${{ runner.temp }}/exe/Rokon.exe" EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=portable PACKAGED=true build
           cp windows/portable.txt windows/*.rtf "${{ runner.temp }}/exe"
       - name: Minimize portable executable size using upx
-        working-directory: ${{ runner.temp }}/exe
         run: |
           upx ./*.exe
       - name: 🗃️ Upload Built Result
