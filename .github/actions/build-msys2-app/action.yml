@@ -55,7 +55,7 @@ runs:
         out=$(realpath "$OUT_PATH")
 
         # Build Rokon
-        mingw32-make TARGET=$out/$EXE_NAME EXTRALDFLAGS="-s -w -H windowsgui" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=msi PACKAGED=true build
+        mingw32-make TARGET=$out/$EXE_NAME EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=msi PACKAGED=true build
 
         # copyDLLs copies all required DLLs of the given binaries to the
         # result directory.

@@ -41,7 +41,7 @@ Rokon is a GTK4 application that allows you to control your Roku device with you
 %build
 go mod download all
 ls
-make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-X main.rpmRelease=%{rel}" build
+make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-s -w -X main.rpmRelease=%{rel}" EXTRAGOFLAGS="-trimpath" build
 
 %install
 make PREFIX=%{buildroot}/usr install

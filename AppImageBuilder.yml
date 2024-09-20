@@ -19,7 +19,7 @@ AppDir:
     allow_unauthenticated: true
 
     include:
-      - libgtk-4-dev
+      - libgtk-4-1
       - librsvg2-common
 
   files:

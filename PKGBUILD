@@ -34,6 +34,7 @@ changelog() {
 build() {
     cd Rokon
     go mod download all
+    # Since this is Arch Linux BTW, it is the only native package that gets debug symbols in it's package.
     make TARGET=$pkgname PACKAGED=true PACKAGEFORMAT=arch build
 }
 
