@@ -31,7 +31,8 @@ BuildRequires:  gobject-introspection-devel
 Requires:       gtk4
 
 %description
-Rokon is a GTK4 application that allows you to control your Roku device with your desktop or controller!
+Rokon is a GTK4 application that control your Roku.
+Whether that be with your keyboard, mouse, or controller. 
 
 %global debug_package %{nil}
 
