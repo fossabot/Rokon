@@ -17,7 +17,7 @@ AppDir:
         key_url: 'http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x3b4fe6acc0b21f32'
 
     include:
-      - rokon
+      - libgtk-4-1
       - librsvg2-common
 
 

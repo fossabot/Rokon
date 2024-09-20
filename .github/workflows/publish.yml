@@ -63,7 +63,7 @@ jobs:
       - name: Install GTK4
         run: |
           sudo apt update
-          sudo apt install -y libgtk-4-dev libgirepository1.0-dev
+          sudo apt install -y libgtk-4-dev libgirepository1.0-dev upx
 
       - name: ❤️‍🔥 Setup Golang
         uses: magnetikonline/action-golang-cache@v5
@@ -83,7 +83,10 @@ jobs:
           go mod download all
       - name: 🤖 Build Project
         run: |
-          make build
+          make EXTRALDFLAGS="-s -w" EXTRAGOFLAGS="-trimpath" build
+      - name: 🚄 Optimize executable
+        run: |
+          upx -f --best --force-overwrite ./rokon
       - name: 🖼️ Assemble the AppImage
         run: |
           sudo pip3 install appimage-builder --break-system-packages
@@ -165,7 +168,7 @@ jobs:
       - name: Minimize executable size using upx
         working-directory: ${{ runner.temp }}/exe
         run: |
-          upx ./*.exe
+          upx -f --best --force-overwrite ./*.exe
       - name: Prepare
         id: prepare
         run: |
@@ -243,13 +246,16 @@ jobs:
           fetch-depth: 0
       - name: Install GTK4 Golang
         run: |
-          brew install gtk4 gobject-introspection go gtkmm4 cairomm
+          brew install gtk4 gobject-introspection go gtkmm4 cairomm upx
       - name: 📦 Install Dependencies
         run: |
           go mod download all
       - name: 🤖 Build Project
         run: |
-          make build
+          make EXTRALDFLAGS="-s -w" EXTRAGOFLAGS="-trimpath" build
+      - name: 🚄 Optimize executable
+        run: |
+          upx -f --best --force-overwrite ./rokon
       - name: 🗃️ Upload Built Binaries
         uses: actions/upload-artifact@v4
         if: ${{ !github.event.act }}

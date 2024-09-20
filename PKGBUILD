@@ -35,7 +35,8 @@ changelog() {
 build() {
     cd Rokon
     go mod download all
-    go build -v -ldflags="-X main.version=$pkgver -X main.commit=$(git rev-parse --short HEAD) -X main.packaged=true -X main.packageFormat=arch -X main.branch=$(git rev-parse --abbrev-ref HEAD) -X main.date=$(date -u +%Y-%m-%d)" -o $pkgname
+    # Since this is Arch Linux BTW, it is the only native package that gets debug symbols in it's package.
+    make TARGET=$pkgname PACKAGED=true PACKAGEFORMAT=arch build
 }
 
 package() {
