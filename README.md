@@ -80,7 +80,7 @@ Unless it violates a packaging policy.
 
 - Homebrew
 - MacPorts
-- *.dmg*.app
+- .dmg, .app package formats
 
 </br>
 
