@@ -37,6 +37,11 @@ rokon_puregotk4
 AppDir
 flathub/.flatpak-builder
 flathub/repo
+**/node_modules/**
+.github/node_modules
+appimage-build
+*.zsync
+appimagetool
 
 
 # Arch Linux MAKEPKG

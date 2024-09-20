@@ -13,7 +13,7 @@ build:
     commands:
       # - sudo dnf in go gtk4-devel -y
       - cd "$PROJECT_ROOT"  && make build
-      - make PREFIX="$PROJECT_ROOT/AppDir" install
+      - make PREFIX="$PROJECT_ROOT/AppDir/usr" install
 
 appimage:
   linuxdeploy:
