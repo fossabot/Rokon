@@ -47,7 +47,7 @@ const processDirectory = (dir) => {
           processDirectory(filePath); // Recursively process directories
         }
       } else if (path.extname(file) === '.md') {
-        console.log(`Processing ${filePath}`);
+        console.log(`Processing ${path.basename(filePath)}`);
 
         convertMdToRtf(filePath).then(rtfContent => {
           const rtfFileName = path.basename(file, '.md') + '.rtf';
