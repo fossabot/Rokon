@@ -10,7 +10,7 @@ Before you start contributing, please make sure you have the following:
 - [GTK4](https://www.gtk.org) installed (don't forget gobject-introspection-1.0)
 - [Git](https://git-scm.com) installed and configured with your GitHub account and your commits signed
 - [Roku device](https://www.roku.com/products/roku-tv) (for local testing, not required for building)
-- Builiding the application for Windows requires [MSYS2](https://www.msys2.org/) with the dependencies for GTK4, Golang, and Rust (with cargo) installed.
+- Building the application for Windows requires [MSYS2](https://www.msys2.org/) with the dependencies for GTK4, Golang, and Rust (with cargo) installed.
 - Building the application for Windows from Linux/MacOS requires [cross-compiling](https://github.com/diamondburned/gotk4/issues/147) which is not supported by the project. That's not to say it's impossible, but it's not recommended. There's libraries missing from Fedora's repositories that are required for cross-compiling GTK4 Golang applications. It's best to let the CI/CD pipeline handle the Windows builds. Commit and push your changes to the repository and let the CI/CD pipeline handle the rest.
 - Patience and a willingness to learn
 
@@ -41,7 +41,7 @@ pacman -S --noconfirm git mingw-w64-clang-x86_64-go mingw-w64-clang-x86_64-gtk4 
 
 #### Windows on ARM (like Snapdragon X Elite) (aarch64 or ARM64)
 
-Windows 11 is **required** for Windows on ARM.
+Windows 11 is **required** for Windows on ARM. The results binaries from `make` will be native.
 
 ```powershell
 winget install --id=MSYS2.MSYS2 -e
@@ -66,7 +66,7 @@ After that, follow the Linux build instructions, as they are the same for macOS 
 
 > You cannot build the application on Debian Stable, Ubuntu 22.04, PopOS, Linux Mint  or older distributions due to packages being too old in the software repositories. This applies to RHEL, OpenSUSE Leap, Mageia,and CentOS as well. You will need to use a newer distribution like Fedora, Ubuntu 24.04, Linux Mint 22, or OpenSUSE Tumbleweed/Slowroll.
 
-> If you don't wnat to use a newer distribution, you can use a containerized build and runtime environment. This gets around your ancient software repositories. For this, you'll need [Distrobox](https://wiki.archlinux.org/title/Distrobox) (container) and choose the Fedora 40 image and then follow the instructions for Fedora.
+> If you don't want to use a newer distribution, you can use a containerized build and runtime environment. This gets around your ancient software repositories. For this, you'll need [Distrobox](https://wiki.archlinux.org/title/Distrobox) (container) and choose the Fedora 40 image and then follow the instructions for Fedora.
 
 > If you don't want to use Distrobox, you can always use our prebuilt AppImage which works on old and new distributions. Or our Snap package or Flatpak package.
 
@@ -101,7 +101,7 @@ cd Rokon
 # If your internet is slow, this WILL take awhile.
 go mod download all
 # This may take a while, CGO is slow.
-go build -v -o rokon .
+make build
 # If on Windows, do not add "sudo"
 # If on macOS, do not add "sudo"
 # On Windows & macOS it does not natively integrate with your operating system. 
@@ -109,7 +109,7 @@ go build -v -o rokon .
 sudo make install
 ```
 
-2. Run the app in development mode:
+Run the app in development mode:
 
 ```bash
 wgo go run -v .
