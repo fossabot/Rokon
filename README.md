@@ -23,7 +23,7 @@
   <a href="https://copr.fedorainfracloud.org/coprs/brycensranch/rokon">
   <img alt="Get it on Fedora COPR" src="https://img.shields.io/badge/dynamic/json?color=blue&style=for-the-badge&label=copr build&query=builds.latest.state&url=https%3A%2F%2Fcopr.fedorainfracloud.org%2Fapi_3%2Fpackage%3Fownername%3Dbrycensranch%26projectname%3Drokon%26packagename%3Drokon%26with_latest_build%3DTrue">
   </a>
-    <a aria-label="License" href="ttps://github.com/BrycensRanch/Rokon/blob/master/LICENSE.md">
+    <a aria-label="License" href="https://github.com/BrycensRanch/Rokon/blob/master/LICENSE.md">
       <img alt="License Badge" src="https://img.shields.io/github/license/BrycensRanch/Rokon?style=for-the-badge&labelColor=000000" />
     </a>
   <a href="https://wakatime.com/badge/github/BrycensRanch/Rokon"><img src="https://wakatime.com/badge/github/BrycensRanch/Rokon.svg?style=for-the-badge" alt="Time spent coding this repository"></a>
