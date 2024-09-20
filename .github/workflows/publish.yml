@@ -210,7 +210,7 @@ jobs:
       - name: Make Portable
         run: |
           mingw32-make TARGET="${{ runner.temp }}/exe/Rokon.exe" EXTRALDFLAGS="-s -w -H windowsgui" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=portable PACKAGED=true build
-          cp windows/portable.txt windows/LICENSE.rtf windows/README.rtf windows/PRIVACY.rtf "${{ runner.temp }}/exe"
+          cp windows/portable.txt windows/*.rtf "${{ runner.temp }}/exe"
       - name: Minimize portable executable size using upx
         working-directory: ${{ runner.temp }}/exe
         run: |

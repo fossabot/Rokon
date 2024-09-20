@@ -9,7 +9,7 @@ const markdownDir = path.resolve('..');
 const outputDir = path.resolve('../windows');
 
 // Excluded directories
-const excludedDirs = ['node_modules', 'vendor', 'AppDir', 'repo', 'pkg', 'flatpak-'];
+const excludedDirs = ['node_modules', 'vendor', 'AppDir', 'repo', 'pkg', 'flatpak-', '.github'];
 
 if (!fs.existsSync(outputDir)) {
   fs.mkdirSync(outputDir);
