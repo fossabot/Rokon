@@ -1,5 +1,5 @@
-  <p align="center">
-      <img src="assets/Rokon.png" width="240" />
+  <h1 align="center">
+      <img alt="Rokon logo" src="assets/Rokon.png" width="240" />
       <h1 align="center" >Rokon (Roku Remote for your computer) </h1>
   </p>
   <p align="center">
@@ -20,13 +20,13 @@
     <a aria-label="Build Status" href="https://github.com/BrycensRanch/Rokon/actions/workflows/publish.yml">
       <img alt="GitHub Workflow Status Badge" src="https://img.shields.io/github/actions/workflow/status/BrycensRanch/Rokon/publish.yml?label=BUILD&logo=github&style=for-the-badge">
     </a>
-		<a href="https://copr.fedorainfracloud.org/coprs/brycensranch/rokon">
-		<img alt="Get it on Fedora COPR" src="https://img.shields.io/badge/dynamic/json?color=blue&style=for-the-badge&label=copr build&query=builds.latest.state&url=https%3A%2F%2Fcopr.fedorainfracloud.org%2Fapi_3%2Fpackage%3Fownername%3Dbrycensranch%26projectname%3Drokon%26packagename%3Drokon%26with_latest_build%3DTrue">
-		</a>
+  <a href="https://copr.fedorainfracloud.org/coprs/brycensranch/rokon">
+  <img alt="Get it on Fedora COPR" src="https://img.shields.io/badge/dynamic/json?color=blue&style=for-the-badge&label=copr build&query=builds.latest.state&url=https%3A%2F%2Fcopr.fedorainfracloud.org%2Fapi_3%2Fpackage%3Fownername%3Dbrycensranch%26projectname%3Drokon%26packagename%3Drokon%26with_latest_build%3DTrue">
+  </a>
     <a aria-label="License" href="https://github.com/BrycensRanch/Rokon/blob/master/LICENSE">
       <img alt="License Badge" src="https://img.shields.io/github/license/BrycensRanch/Rokon?style=for-the-badge&labelColor=000000" />
     </a>
-		<a href="https://wakatime.com/badge/github/BrycensRanch/Rokon"><img src="https://wakatime.com/badge/github/BrycensRanch/Rokon.svg?style=for-the-badge" alt="Time spent coding this repository"></a>
+  <a href="https://wakatime.com/badge/github/BrycensRanch/Rokon"><img src="https://wakatime.com/badge/github/BrycensRanch/Rokon.svg?style=for-the-badge" alt="Time spent coding this repository"></a>
     <a aria-label="CodeFactor Grade" href="https://www.codefactor.io/repository/github/BrycensRanch/Rokon">
       <img alt="CodeFactor Grade Badge" src="https://img.shields.io/codefactor/grade/github/BrycensRanch/Rokon?style=for-the-badge" />
     </a>
@@ -56,8 +56,11 @@
 <h2>Get it on Windows</h2>
 
 Windows 10+ is supported. Old versions of Windows are not.
+If you're using Windows on ARM, Windows 11 is only supported.
 
 Packages for Windows are a WIP. I plan to target:
+
+With a portable version and a MSI installer.
 
 - Winget
 - Scoop
@@ -71,13 +74,13 @@ macOS Monterey+ is supported. Old versions of macOS are not.
 
 Packages for macOS are a WIP. I plan to target:
 
-All the packages on macOS should be fat, meaning they contain support for Apple's M series (aarch64) processors and Apple's macbooks that contain Intel processors (x86_64)
+All the packages on macOS should be fat, meaning they contain support for Apple's M series (aarch64) processors and Apple devices that contain Intel processors (x86_64)
 
 Unless it violates a packaging policy.
 
 - Homebrew
 - MacPorts
-- *.dmg *.app
+- *.dmg*.app
 
 </br>
 
@@ -102,7 +105,7 @@ This application provides a remote control interface for Roku devices, utilizing
 - Option to run on startup and optionally turn on your Roku
 - Use open source LLM to convert speech to text for voice control (Roadmap)
 - Use your Xbox or PlayStation controller to control your Roku (Roadmap)
-- Scripting functionatlity (Roadmap)
+- Scripting functionality (Roadmap)
 - CLI (Roadmap)
 - Run actions such as auto scanning at a certain time (Roadmap)
 - Webhook support (Roadmap)
@@ -115,8 +118,6 @@ This application provides a remote control interface for Roku devices, utilizing
 Below is an example screenshot of the application:
 
 ![Example Screenshot](screenshots/desktop.png)
-
-_(Screenshot taken on March 11, 2024)_
 
 ## Installation
 

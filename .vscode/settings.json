@@ -39,6 +39,39 @@
         "pkg": true,
         "**/.flatpak-builder/**": true,
         "**/repo/**": true
-    }
+    },
+    "cSpell.words": [
+        "aarch",
+        "apkrepos",
+        "appimage",
+        "appimagecraft",
+        "backports",
+        "blazingly",
+        "brycensranch",
+        "checkrt",
+        "Chocolately",
+        "CLANGARM",
+        "Codespaces",
+        "COPR",
+        "devel",
+        "Distrobox",
+        "Flathub",
+        "Flatpak",
+        "gobject",
+        "libgirepository",
+        "libgtk",
+        "linuxdeploy",
+        "longsleep",
+        "Mageia",
+        "MSYS",
+        "Neovim",
+        "noconfirm",
+        "pacman",
+        "pacstall",
+        "Rokon",
+        "Slowroll",
+        "SSDP",
+        "winget"
+    ]
 
 }
