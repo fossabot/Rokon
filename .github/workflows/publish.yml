@@ -246,16 +246,13 @@ jobs:
           fetch-depth: 0
       - name: Install GTK4 Golang
         run: |
-          brew install gtk4 gobject-introspection go gtkmm4 cairomm upx
+          brew install gtk4 gobject-introspection go gtkmm4 cairomm
       - name: 📦 Install Dependencies
         run: |
           go mod download all
       - name: 🤖 Build Project
         run: |
           make EXTRALDFLAGS="-s -w" EXTRAGOFLAGS="-trimpath" build
-      - name: 🚄 Optimize executable
-        run: |
-          upx -f --best --force-overwrite ./rokon
       - name: 🗃️ Upload Built Binaries
         uses: actions/upload-artifact@v4
         if: ${{ !github.event.act }}
