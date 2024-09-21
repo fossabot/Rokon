@@ -215,17 +215,18 @@ jobs:
           mingw32-make TARGET="${{ runner.temp }}/exe/Rokon.exe" EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=portable PACKAGED=true build
           cp windows/portable.txt windows/*.rtf "${{ runner.temp }}/exe"
       - name: Minimize portable executable size using upx
+        working-directory: "${{ runner.temp }}/exe"
         run: |
           upx ./*.exe
       - name: 🗃️ Upload Built Result
         uses: actions/upload-artifact@v4
-        if: ${{ !github.event.act }}
+        if: always()
         with:
           name: rokon-${{ runner.os }}-${{ matrix.arch }}
           path: result
       - name: 🗃️ Upload Portable
         uses: actions/upload-artifact@v4
-        if: ${{ !github.event.act }}
+        if: always()
         with:
           name: rokon-${{ runner.os }}-Portable-${{ matrix.arch }}
           path: ${{ runner.temp }}/exe
