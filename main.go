@@ -30,7 +30,7 @@ func chooseNonEmpty(first, second string) string {
 func main() {
 	fmt.Println("Starting Rokon. Now with more telemetry!")
 	err := sentry.Init(sentry.ClientOptions{
-		Dsn:                "https://63c6c95f892988509925aaff62c839b3@o4504136997928960.ingest.us.sentry.io/4506838451945472",
+		Dsn:                "https://04484623ba4aa6cbb830e852178e9358@o4504136997928960.ingest.us.sentry.io/4507991443439616",
 		EnableTracing:      true,
 		AttachStacktrace:   true,
 		TracesSampleRate:   1.0,
@@ -41,6 +41,7 @@ func main() {
 			// TRANSPARENT_TELEMETRY is set, so we can log the event and what data it's sending
 			if os.Getenv("TRANSPARENT_TELEMETRY") != "" {
 				fmt.Printf("Sending event: %s\n", chooseNonEmpty(event.Type, event.Message))
+				fmt.Printf("Event ID: %v\n", hint.EventID)
 				fmt.Printf("Event data: %v\n", event)
 			}
 			return event
