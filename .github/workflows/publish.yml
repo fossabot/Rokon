@@ -210,6 +210,8 @@ jobs:
           icon-file: windows/assets/rokon.ico
           out-path: result
           out-name: ${{ steps.prepare.outputs.name }}
+      - name: Remove msi executable
+        run: rm "${{ runner.temp }}/exe/Rokon.exe"
       - name: Make Portable
         run: |
           mingw32-make TARGET="${{ runner.temp }}/exe/Rokon.exe" EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=portable PACKAGED=true build
@@ -217,7 +219,7 @@ jobs:
       - name: Minimize portable executable size using upx
         working-directory: "${{ runner.temp }}/exe"
         run: |
-          upx ./*.exe
+          upx ./Rokon.exe
       - name: 🗃️ Upload Built Result
         uses: actions/upload-artifact@v4
         if: always()

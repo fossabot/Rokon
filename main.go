@@ -41,7 +41,7 @@ func main() {
 			// TRANSPARENT_TELEMETRY is set, so we can log the event and what data it's sending
 			if os.Getenv("TRANSPARENT_TELEMETRY") != "" {
 				fmt.Printf("Sending event: %s\n", chooseNonEmpty(event.Type, event.Message))
-				fmt.Printf("Event ID: %v\n", hint.EventID)
+				fmt.Printf("Event ID: %v\n", chooseNonEmpty(hint.EventID, string(event.EventID)))
 				fmt.Printf("Event data: %v\n", event)
 			}
 			return event
