@@ -4,7 +4,7 @@
   "build": { "dockerfile": "Dockerfile" },
 	"customizations": {
 		"vscode": {
-			"extensions": ["golang.Go", "davidanson.vscode-markdownlint", "ms-azuretools.vscode-docker", "vivaxy.vscode-conventional-commits", "rangav.vscode-thunder-client", "code-thunder-client", "ms-vscode.makefile-tools"]
+			"extensions": ["golang.Go", "davidanson.vscode-markdownlint", "ms-azuretools.vscode-docker", "vivaxy.vscode-conventional-commits", "rangav.vscode-thunder-client", "rangav.code-thunder-client", "ms-vscode.makefile-tools"]
 		}
 	}
 }
