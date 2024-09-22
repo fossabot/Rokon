@@ -65,6 +65,12 @@ appimage: ## build AppImage using appimage-builder
 	@echo "Building AppImage version: $(VERSION)"
 	rm -rf AppDir
 	$(MAKE) PACKAGED=true PACKAGEFORMAT=AppImage EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w" build
+	@if command -v upx >/dev/null 2>&1; then \
+		echo "UPX is available. Compressing binary..."; \
+		upx -f --best --force-overwrite ./rokon || 0; \
+	else \
+		echo "UPX is not available. Skipping compression."; \
+	fi
 	$(MAKE) PREFIX=AppDir/usr BINDIR=AppDir install
 	APPIMAGELAUNCHER_DISABLE=1 appimage-builder
 
