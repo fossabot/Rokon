@@ -142,9 +142,9 @@ func main() {
 		}
 
 		createEvent("windows_run", map[string]interface{}{
-			"arch":               arch,
-			"version":            version, // Replace with your app version logic
-			"packageFormat": 	  packageFormat,
+			"arch":          arch,
+			"version":       version, // Replace with your app version logic
+			"packageFormat": packageFormat,
 		})
 	case "darwin":
 		release := getOSRelease()
@@ -281,7 +281,7 @@ func isRunningWithFirejail() bool {
 		(appDir != "" && contains(appDir, "/run/firejail"))
 }
 
-// Helper function to check if a string contains a substring
+// Helper function to check if a string contains a substring.
 func contains(s, substr string) bool {
 	return strings.Contains(s, substr)
 }
