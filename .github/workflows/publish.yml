@@ -89,7 +89,7 @@ jobs:
           rm flathub/go.mod.yml flathub/modules.txt
           go mod vendor
           go run github.com/dennwc/flatpak-go-mod@latest .
-          cp modules.txt go.mod.yml flathub/
+          mv modules.txt go.mod.yml flathub/
           rm -rf vendor/
       - name: COMMIT!
         uses: stefanzweifel/git-auto-commit-action@v5
