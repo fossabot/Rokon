@@ -316,6 +316,7 @@ func showAboutWindow(parent *gtk.ApplicationWindow, app *gtk.Application) {
 	aboutWindow.Focus()
 }
 
+<<<<<<< HEAD
 // Create the main menu
 func createMenu(window *gtk.ApplicationWindow, app *gtk.Application) *gio.Menu {
 	menu := gio.NewMenu()
@@ -470,6 +471,9 @@ func activate(app *gtk.Application) {
 	})
 	window.AddController(gestureClick)
 	// window.Maximize()
+=======
+	window.SetVisible(true)
+>>>>>>> e2d14b4 (refactor: use window set visible instead of deprecated method)
 }
 
 func isRunningWithFirejail() bool {
