@@ -64,8 +64,8 @@ appimage: ## build AppImage using appimage-builder
 	$(call print-target)
 	@echo "Building AppImage version: $(VERSION)"
 	rm -rf AppDir
-	$(MAKE) PACKAGED=true PACKAGEFORMAT=AppImage build
-	$(MAKE) install EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w" PREFIX=AppDir/usr
+	$(MAKE) PACKAGED=true PACKAGEFORMAT=AppImage EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w" build
+	$(MAKE) PREFIX=AppDir/usr install
 	APPIMAGELAUNCHER_DISABLE=1 appimage-builder
 
 .PHONY: mod
