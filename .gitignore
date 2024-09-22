@@ -42,6 +42,8 @@ flathub/repo
 appimage-build
 *.zsync
 appimagetool
+*.upx
+*.000
 
 # NO LONGER SHALL I WRITE RTF LIKE A MORTAL MAN.
 # NODEJS SHALL GENERATE IT AND NEVER COMMIT IT TO THE REPOSITORY.

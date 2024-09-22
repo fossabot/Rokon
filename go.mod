@@ -1,11 +1,11 @@
 module rokon
 
-go 1.23.1
+go 1.22.0
 
 require (
-	github.com/brycensranch/go-aptabase/pkg v0.0.0-20240922165544-1cc925fade83
+	github.com/brycensranch/go-aptabase/pkg v0.0.0-20240922234930-fbe230afcf7e
 	github.com/diamondburned/gotk4/pkg v0.3.1
-	github.com/getsentry/sentry-go v0.28.1
+	github.com/getsentry/sentry-go v0.29.0
 	github.com/ianlancetaylor/cgosymbolizer v0.0.0-20240805235558-330cf6901bf7
 	golang.org/x/sys v0.25.0
 )

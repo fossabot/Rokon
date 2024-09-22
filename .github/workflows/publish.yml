@@ -87,6 +87,7 @@ jobs:
       - name: 🔷 Update Flatpak Data
         run: |
           rm flathub/go.mod.yml flathub/modules.txt
+          go mod tidy -go=1.21.6
           go mod vendor
           go run github.com/dennwc/flatpak-go-mod@latest .
           mv modules.txt go.mod.yml flathub/
