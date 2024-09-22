@@ -84,6 +84,19 @@ jobs:
       - name: 🤖 Build Project
         run: |
           make EXTRALDFLAGS="-s -w" EXTRAGOFLAGS="-trimpath" build
+      - name: 🔷 Update Flatpak Data
+        run: |
+          rm flathub/go.mod.yml flathub/modules.txt
+          go mod vendor
+          go run github.com/dennwc/flatpak-go-mod@latest .
+          cp modules.txt go.mod.yml flathub/
+          rm -rf vendor/
+      - name: COMMIT!
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          # Optional. Commit message for the created commit.
+          # Defaults to "Apply automatic changes"
+          commit_message: "build(flathub): update go vendor modules [skip ci]"
       - name: 🚄 Optimize executable
         continue-on-error: true
         run: |
