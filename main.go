@@ -206,7 +206,7 @@ func main() {
 	// Set the timeout to the maximum duration the program can afford to wait.
 	defer sentry.Flush(2 * time.Second)
 	aptabaseClient.Quit = true
-	defer aptabaseClient.Stop()
+	aptabaseClient.Stop()
 	if code := app.Run(os.Args); code > 0 {
 		os.Exit(code)
 	}
