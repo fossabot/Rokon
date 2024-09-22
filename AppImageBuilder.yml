@@ -8,7 +8,12 @@ AppDir:
     name: rokon
     icon: io.github.brycensranch.Rokon
     version: 1.0.0
+<<<<<<< HEAD
     exec: usr/bin/rokon
+=======
+    exec: rokon
+    # exec_args: $@
+>>>>>>> 665385e (build(appimage): make AppImage work again)
 
   apt:
     arch: amd64
