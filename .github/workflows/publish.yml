@@ -98,7 +98,7 @@ jobs:
           # Optional. Commit message for the created commit.
           # Defaults to "Apply automatic changes"
           commit_message: "build(flathub): update go vendor modules [skip ci]"
-          commit_author: "41898282+github-actions[bot]@users.noreply.github.com"
+          commit_author: "github-actions <41898282+github-actions[bot]@users.noreply.github.com>"
       - name: 🚄 Optimize executable
         continue-on-error: true
         run: |
