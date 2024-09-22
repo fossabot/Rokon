@@ -53,7 +53,7 @@ appimage: ## build AppImage using appimage-builder
 	@echo "Building AppImage version: $(VERSION)"
 	rm -rf AppDir
 	$(MAKE) PACKAGED=true PACKAGEFORMAT=AppImage EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w" build
-	$(MAKE) PREFIX=AppDir/usr install
+	$(MAKE) PREFIX=AppDir/usr BINDIR=AppDir install
 	APPIMAGELAUNCHER_DISABLE=1 appimage-builder
 
 >>>>>>> 50639a3 (build(appimage): actually put build properties on right commands)
