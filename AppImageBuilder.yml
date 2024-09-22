@@ -8,8 +8,8 @@ AppDir:
     name: Rokon
     icon: io.github.brycensranch.Rokon
     version: 1.0.0
-    exec: usr/bin/rokon
-    exec_args: $@
+    exec: rokon
+    # exec_args: $@
 
   apt:
     arch: amd64
