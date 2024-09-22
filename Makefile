@@ -41,6 +41,22 @@ clean: ## remove files created during build pipeline
 	rm -f '"$(shell go env GOCACHE)/../golangci-lint"'
 	go clean -i -cache -testcache -modcache -fuzzcache -x
 
+<<<<<<< HEAD
+=======
+.PHONY: version
+version: ## software version e.g 1.0.0
+	@echo "Version: $(VERSION)"
+
+.PHONY: appimage
+appimage: ## build AppImage using appimage-builder
+	$(call print-target)
+	@echo "Building AppImage version: $(VERSION)"
+	rm -rf AppDir
+	$(MAKE) PACKAGED=true PACKAGEFORMAT=AppImage EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w" build
+	$(MAKE) PREFIX=AppDir/usr install
+	APPIMAGELAUNCHER_DISABLE=1 appimage-builder
+
+>>>>>>> 50639a3 (build(appimage): actually put build properties on right commands)
 .PHONY: mod
 mod: ## go mod tidy
 	$(call print-target)
