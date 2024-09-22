@@ -276,7 +276,7 @@ func activate(app *gtk.Application) {
 	window.SetDefaultSize(windowSize, windowSize)
 	// set window position to center
 
-	window.Show()
+	window.SetVisible(true)
 }
 
 func isRunningWithFirejail() bool {
