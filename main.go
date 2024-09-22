@@ -42,6 +42,7 @@ func createEvent(eventName string, eventData map[string]interface{}) aptabase.Ev
 func main() {
 	version := "0.0.0-SNAPSHOT"
 	isPackaged := "false"
+	packageFormat := "native"
 
 	fmt.Println("Starting Rokon. Now with more telemetry!")
 	err := sentry.Init(sentry.ClientOptions{
@@ -90,7 +91,6 @@ func main() {
 			release, arch, desktop, os.Getenv("DESKTOP_SESSION"), kdeSessionVersion, sessionType)
 
 		createEvent("linux_run", map[string]interface{}{
-			"release":     release,
 			"arch":        arch,
 			"desktop":     desktop,
 			"sessionType": sessionType,
@@ -134,20 +134,17 @@ func main() {
 	case "windows":
 		release := getOSRelease()
 		arch := runtime.GOARCH
-		log.Printf("Running on Windows %s %s with %s\n",
-			release, arch, os.Getenv("WINDOWS_TRACING_FLAGS"))
+		log.Printf("Running on Windows %s %s\n",
+			release, arch)
 
-		if portable := os.Getenv("PORTABLE_EXECUTABLE_FILE"); portable != "" {
+		if portable := packageFormat; portable == "portable" {
 			log.Println("Running from a portable executable")
 		}
 
 		createEvent("windows_run", map[string]interface{}{
-			"release":            release,
 			"arch":               arch,
-			"tracingFlags":       os.Getenv("WINDOWS_TRACING_FLAGS"),
 			"version":            version, // Replace with your app version logic
-			"portableExecutable": os.Getenv("PORTABLE_EXECUTABLE_FILE"),
-			"store":              os.Getenv("STORE"),
+			"packageFormat": 	  packageFormat,
 		})
 	case "darwin":
 		release := getOSRelease()
@@ -156,7 +153,6 @@ func main() {
 			release, arch, os.Getenv("XPC_FLAGS"))
 
 		createEvent("macos_run", map[string]interface{}{
-			"release": release,
 			"arch":    arch,
 			"mas":     os.Getenv("MAS"),
 			"version": version, // Replace with your app version logic
@@ -167,7 +163,6 @@ func main() {
 			runtime.GOOS, getOSRelease(), runtime.GOARCH)
 		createEvent("unsupported_platform", map[string]interface{}{
 			"platform": runtime.GOOS,
-			"release":  getOSRelease(),
 			"arch":     runtime.GOARCH,
 			"version":  version, // Replace with your app version logic
 			"path":     os.Args[0],
