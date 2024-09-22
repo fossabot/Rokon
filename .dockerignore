@@ -1,0 +1,77 @@
+# Ignore Go build artifacts
+/bin
+/pkg
+/build
+/target
+/dist
+
+# Ignore local dependencies
+/vendor/
+
+# Ignore configuration, environment, and log files
+*.log
+*.env
+*.toml
+*.yaml
+*.yml
+*.ini
+*.config
+
+# Ignore compiled binary files (common across platforms)
+*.exe     # Windows binaries
+*.dll     # Windows dynamic libraries
+*.so      # Linux shared objects
+*.dylib   # macOS dynamic libraries
+*.out     # Generic output
+*.o       # Object files
+*.a       # Archive files
+*.app     # macOS application bundles
+*.dmg     # macOS disk images
+*.pkg     # macOS installer packages
+*.deb     # Debian packages
+*.rpm     # Red Hat/Fedora packages
+*.zip     # Compressed files
+*.rar
+*.tar     # Generic tar files, including Arch Linux tarballs
+*.tar.gz  # Tarballs (common across Linux)
+*.tgz
+
+# Ignore AppImage files
+*.AppImage
+/AppDir
+/appimage
+/AppImageBuild
+*.squashfs
+
+# Ignore Flatpak build directories and packages
+/.flatpak-builder
+/.flatpak
+*.flatpakref
+*.flatpakrepo
+*.flatpak
+
+# Ignore temporary files
+/tmp
+*.swp
+*.swo
+*.bak
+*.temp
+*.tmp
+*.old
+
+# Ignore caches and other unwanted directories
+/cache
+*.cache
+
+# Ignore common macOS metadata files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Ignore macOS Finder directory attributes
+__MACOSX/
+
+# Ignore Windows-specific files
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
