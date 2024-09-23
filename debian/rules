@@ -9,11 +9,6 @@ override_dh_auto_build:
 	# Call your Makefile's build target
 	$(MAKE) EXTRALDFLAGS="-s -w" EXTRAGOFLAGS="-trimpath" PACKAGED=true PACKAGEFORMAT=deb build
 
-# Override the install step to use your Makefile's install target
-override_dh_auto_install:
-	# Install using the install target of your Makefile
-	$(MAKE) PREFIX=$(DESTDIR)/usr install
-
 # Disable tests
 override_dh_auto_test:
 	# Do nothing to skip tests

@@ -18,6 +18,7 @@ TARGET = rokon
 >>>>>>> d2f1c75 (build(debian): initial package)
 
 # Define install directories
+<<<<<<< HEAD
 BINDIR = $(PREFIX)/bin
 DATADIR = $(PREFIX)/share/rokon
 APPLICATIONSDIR = $(PREFIX)/applications
@@ -27,6 +28,14 @@ METAINFODIR = $(PREFIX)/metainfo
 # Define target binary
 TARGET = rokon
 
+=======
+BINDIR = $(DESTDIR)$(PREFIX)/bin
+DATADIR = $(DESTDIR)$(PREFIX)/share/rokon
+DOCDIR = $(DESTDIR)$(PREFIX)/share/doc/rokon
+APPLICATIONSDIR = $(DESTDIR)$(PREFIX)/share/applications
+ICONDIR = $(DESTDIR)$(PREFIX)/share/icons/hicolor
+METAINFODIR = $(DESTDIR)$(PREFIX)/share/metainfo
+>>>>>>> 21b3760 (build(debian): standardize makefile)
 
 .DEFAULT_GOAL := all
 .PHONY: all
@@ -110,6 +119,7 @@ install:
 	@echo "Installing $(TARGET) to $(BINDIR)"
 	mkdir -p $(BINDIR)
 	install -Dpm 0755 $(TARGET) $(BINDIR)
+<<<<<<< HEAD
 	desktop-file-install --dir=$(PREFIX)/share/applications ./usr/share/applications/io.github.brycensranch.Rokon.desktop
 	install -Dm644 ./usr/share/applications/io.github.brycensranch.Rokon.service $(PREFIX)/share/dbus-1/services/io.github.brycensranch.Rokon.service
 	install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(PREFIX)/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
@@ -117,11 +127,22 @@ install:
 	install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(PREFIX)/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
 	install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(PREFIX)/metainfo/io.github.brycensranch.Rokon.metainfo.xml
 	update-desktop-database
+=======
+	install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop
+	install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
+	install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png
+	install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg
+	install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml
+	install -Dpm 0644 ./LICENSE.md $(DESTDIR)$(PREFIX)/share/licenses/rokon/LICENSE.md
+	install -Dpm 0644 ./README.md $(DESTDIR)$(PREFIX)/share/doc/rokon/README.md
+	install -Dpm 0644 ./PRIVACY.md $(DESTDIR)$(PREFIX)/share/doc/rokon/PRIVACY.md
+>>>>>>> 21b3760 (build(debian): standardize makefile)
 
 .PHONY: uninstall
 uninstall:
 	$(call print-target)
 	rm -f $(BINDIR)/$(TARGET)
+<<<<<<< HEAD
 	rm -f $(PREFIX)/share/dbus-1/services/io.github.brycensranch.Rokon.service
 	rm -f $(PREFIX)/share/applications/io.github.brycensranch.Rokon.desktop
 	rm -f $(PREFIX)/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
@@ -129,6 +150,15 @@ uninstall:
 	rm -f $(PREFIX)/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
 	rm -f $(PREFIX)/metainfo/io.github.brycensranch.Rokon.metainfo.xml
 	update-desktop-database
+=======
+	rm -f $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop
+	rm -f $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
+	rm -f $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png
+	rm -f $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg
+	rm -f $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml
+	rm -rf $(DOCDIR)/rokon
+	rm -rf $(DESTDIR)$(PREFIX)/share/licenses/rokon
+>>>>>>> 21b3760 (build(debian): standardize makefile)
 
 .PHONY: gen
 gen: ## go generate
