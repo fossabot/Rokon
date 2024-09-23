@@ -64,11 +64,11 @@ jobs:
         run: |
           sudo apt update
           sudo add-apt-repository -y ppa:flatpak/stable
-          sudo apt install -y libgtk-4-dev libgirepository1.0-dev upx flatpak flatpak-builder rpm build-essential devscripts debhelper dh-make
+          sudo apt install -y libgtk-4-dev libgirepository1.0-dev upx flatpak flatpak-builder rpm build-essential devscripts debhelper dh-make snap
           flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
           flatpak remote-add --if-not-exists flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
           flatpak install -y flathub org.flatpak.Builder
-
+          sudo snap install snapcraft
       - name: ❤️‍🔥 Setup Golang
         uses: magnetikonline/action-golang-cache@v5
         with:
@@ -117,7 +117,7 @@ jobs:
           make appimage
       - name: 🤠 Assemble the RPM
         run: |
-          rpmbuild -ba --build-in-place --define "_topdir $(pwd)/rpm" helloworld.spec
+          rpmbuild -ba --build-in-place --define "_topdir $(pwd)/rpm" rokon.spec
           mv rpm/SRPMS/*.rpm .
           mv rpm/RPMS/*/*.rpm .
           rm -rf rpm
@@ -128,6 +128,9 @@ jobs:
           rm -rf build debian/build
           # Move the DEB files to the root of the repository
           mv ../*.deb .
+      - name: 🫰 Assemble the Snap
+        run: |
+          snapcraft
       - name: ⚙️ Assemble the Flatpaks!
         working-directory: flathub
         run: |
