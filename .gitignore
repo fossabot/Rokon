@@ -19,6 +19,7 @@ rokon_puregotk4
 *.deb
 *.rpm
 *.AppImage
+*.flatpak
 *.dmg
 *.pkg
 *.nupkg
