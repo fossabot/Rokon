@@ -53,14 +53,24 @@ appimage: ## build AppImage using appimage-builder
 	@echo "Building AppImage version: $(VERSION)"
 	rm -rf AppDir
 	$(MAKE) PACKAGED=true PACKAGEFORMAT=AppImage EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w" build
-	@if command -v upx >/dev/null 2>&1; then \
-		echo "UPX is available. Compressing binary..."; \
-		upx -f --best --force-overwrite ./rokon || 0; \
-	else \
-		echo "UPX is not available. Skipping compression."; \
-	fi
 	$(MAKE) PREFIX=AppDir/usr BINDIR=AppDir install
-	APPIMAGELAUNCHER_DISABLE=1 appimage-builder
+	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 appimage-builder
+
+.PHONY: fatimage
+fatimage: ## build self contained AppImage that can run on older Linux systems while CI is on development branch
+	$(call print-target)
+	@echo "Building AppImage version: $(VERSION) (FAT)"
+	rm -rf AppDir
+	$(MAKE) PACKAGED=true PACKAGEFORMAT=AppImage EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w" build
+	$(MAKE) PREFIX=AppDir/usr install
+	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 appimagetool -s deploy ./AppDir/usr/share/applications/io.github.brycensranch.Rokon.desktop
+	# My application follows the https://docs.fedoraproject.org/en-US/packaging-guidelines/AppData/ but this tool doesn't care lol
+	mv AppDir/usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml AppDir/usr/share/metainfo/io.github.brycensranch.Rokon.appdata.xml
+	cp ./AppDir/usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png ./AppDir
+	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 mkappimage -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-*x86_64.AppImage.zsync" ./AppDir
+
+
+
 
 >>>>>>> 50639a3 (build(appimage): actually put build properties on right commands)
 .PHONY: mod
