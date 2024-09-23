@@ -115,11 +115,10 @@ jobs:
           sudo apt install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           make appimage
       - name: 🤠 Assemble the RPM
-        run: |
-          rpmbuild -ba --build-in-place --define "_topdir $(pwd)/rpm" rokon.spec
-          mv rpm/SRPMS/*.rpm .
-          mv rpm/RPMS/*/*.rpm .
-          rm -rf rpm
+        id: rpm
+        uses: naveenrajm7/rpmbuild@master
+        with:
+          spec_file: "rokon.spec"
       - name: 🤠 Assemble the DEB
         run: |
           debuild -S -i -I
@@ -152,6 +151,7 @@ jobs:
             *.zsync
             *.rpm
             *.deb
+            ${{ steps.rpm.outputs.rpm_dir_path }}
             *.snap
             flathub/*.flatpak
       # - name: Import GPG key
