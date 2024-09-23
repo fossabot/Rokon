@@ -2,9 +2,10 @@
 # While it may say it's using the 47beta runtime, it relies on 24.08.
 id: io.github.brycensranch.Rokon
 runtime: org.gnome.Platform
-runtime-version: "47beta"
+runtime-version: "47"
 sdk: org.gnome.Sdk
 command: rokon
+branch: "beta"
 
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.golang
@@ -38,11 +39,9 @@ modules:
         GOBIN: /app/bin
         GOROOT: /usr/lib/sdk/golang
     build-commands:
-      - go install -mod=vendor ./...
-      - desktop-file-edit --set-icon=$FLATPAK_ID --remove-key=DBusActivatable usr/share/applications/$FLATPAK_ID.desktop
-      - install -Dm644 usr/share/applications/$FLATPAK_ID.desktop /app/share/applications/$FLATPAK_ID.desktop
-      - install -Dm644 usr/share/icons/hicolor/scalable/apps/$FLATPAK_ID.svg /app/share/icons/hicolor/scalable/apps/$FLATPAK_ID.svg
-      - install -Dm644 usr/share/metainfo/$FLATPAK_ID.metainfo.xml /app/share/metainfo/$FLATPAK_ID.metainfo.xml
+      - make EXTRAGOFLAGS="-mod=vendor" build
+      - desktop-file-edit --set-icon=$FLATPAK_ID --set-key=Exec --set-value=$GOBIN/rokon --remove-key=DBusActivatable usr/share/applications/$FLATPAK_ID.desktop
+      - make PREFIX=/app BINDIR=$GOBIN install
     sources:
       - type: git
         url: https://github.com/BrycensRanch/Rokon.git

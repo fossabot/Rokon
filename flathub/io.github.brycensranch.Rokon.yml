@@ -29,18 +29,12 @@ modules:
         GOBIN: /app/bin
         GOROOT: /usr/lib/sdk/golang
     build-commands:
-      - go install -mod=vendor ./...
-      - desktop-file-edit --set-icon=$FLATPAK_ID --remove-key=DBusActivatable usr/share/applications/$FLATPAK_ID.desktop
-      - install -Dm644 usr/share/applications/$FLATPAK_ID.desktop /app/share/applications/$FLATPAK_ID.desktop
-      - install -Dm644 usr/share/icons/hicolor/scalable/apps/$FLATPAK_ID.svg /app/share/icons/hicolor/scalable/apps/$FLATPAK_ID.svg
-      - install -Dm644 $FLATPAK_ID.metainfo.xml /app/share/metainfo/$FLATPAK_ID.metainfo.xml
+      - make EXTRAGOFLAGS="-mod=vendor" build
+      - desktop-file-edit --set-icon=$FLATPAK_ID --set-key=Exec --set-value=$GOBIN/rokon --remove-key=DBusActivatable usr/share/applications/$FLATPAK_ID.desktop
+      - make PREFIX=/app BINDIR=$GOBIN install
     sources:
       - type: archive
-        url: https://github.com/BrycensRanch/Rokon/archive/master.tar.gz
-        sha256: 3bf15f3d1e73a83c82dab869bd96c0395dbd68a3c9dbd27c78824943b92fbec9
-
-      - type: file
-        url: https://raw.githubusercontent.com/BrycensRanch/Rokon/bef9d9994e64d7dfe81a5eb24753a3dd2c9632f9/usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
-        sha256: 4eec42630d4032225e2b693d0e7dbb31c39b5a5ca3556de5299d5aecae2204a3
+        url: https://github.com/BrycensRanch/Rokon/archive/8c1f9d3.tar.gz
+        sha256: a3773dc0434681b858b92015a37968db52ead1a0f6b73e811896e3f77946ddcb
 
       - go.mod.yml
