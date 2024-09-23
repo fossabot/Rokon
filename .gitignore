@@ -44,7 +44,21 @@ appimage-build
 appimagetool
 *.upx
 *.000
+.flatpak-builder
+flathub/build
+flathub/export
+flathub/builddir
+rpm
+debian/.debhelper
 
+
+<<<<<<< HEAD
+=======
+# NO LONGER SHALL I WRITE RTF LIKE A MORTAL MAN.
+# NODEJS SHALL GENERATE IT AND NEVER COMMIT IT TO THE REPOSITORY.
+# GLORY
+*.rtf
+>>>>>>> d2f1c75 (build(debian): initial package)
 
 # Arch Linux MAKEPKG
 pkg/

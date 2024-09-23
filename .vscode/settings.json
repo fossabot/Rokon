@@ -38,7 +38,8 @@
         "_build/**": true,
         "pkg": true,
         "**/.flatpak-builder/**": true,
-        "**/repo/**": true
+        "**/repo/**": true,
+        "debian/.debhelper/**": true
     },
     "cSpell.words": [
         "aarch",

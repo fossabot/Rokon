@@ -1,6 +1,21 @@
 SHELL := /bin/bash
 # Define the default install directory
 PREFIX ?= /usr/local
+<<<<<<< HEAD
+=======
+VERSION ?= $(shell cat VERSION)
+COMMIT := $(shell git rev-parse --short HEAD)
+BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
+DATE := $(shell date -u +%Y-%m-%d)
+PACKAGED ?= false
+PACKAGEFORMAT ?=
+EXTRALDFLAGS :=
+EXTRAGOFLAGS :=
+BUILDTAGS :=
+
+# Define target binary
+TARGET = rokon
+>>>>>>> d2f1c75 (build(debian): initial package)
 
 # Define install directories
 BINDIR = $(PREFIX)/bin
@@ -33,12 +48,16 @@ help:
 .PHONY: clean
 clean: ## remove files created during build pipeline
 	$(call print-target)
+<<<<<<< HEAD
 	rm -rf dist
 	rm -rf pkg/
 	rm *.pkg.tar.zst
 	rm *.snap
 	rm -f coverage.*
 	rm -f '"$(shell go env GOCACHE)/../golangci-lint"'
+=======
+	rm -rf dist .flatpak flathub/.flatpak-builder flathub/repo AppDir pkg/ *.pkg.tar.zst *.snap coverage.* '"$(shell go env GOCACHE)/../golangci-lint"'
+>>>>>>> d2f1c75 (build(debian): initial package)
 	go clean -i -cache -testcache -modcache -fuzzcache -x
 
 <<<<<<< HEAD
