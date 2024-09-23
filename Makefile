@@ -7,7 +7,7 @@ COMMIT := $(shell git rev-parse --short HEAD)
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 DATE := $(shell date -u +%Y-%m-%d)
 PACKAGED ?= false
-PACKAGEFORMAT :=
+PACKAGEFORMAT ?=
 EXTRALDFLAGS :=
 EXTRAGOFLAGS :=
 BUILDTAGS :=
@@ -43,16 +43,7 @@ help:
 .PHONY: clean
 clean: ## remove files created during build pipeline
 	$(call print-target)
-	rm -rf dist
-	rm -r *.rtf
-	rm -rf .flatpak
-	rm -rf flathub/.flatpak-builder flathub/repo
-	rm -rf AppDir
-	rm -rf pkg/
-	rm *.pkg.tar.zst
-	rm *.snap
-	rm -f coverage.*
-	rm -f '"$(shell go env GOCACHE)/../golangci-lint"'
+	rm -rf dist .flatpak flathub/.flatpak-builder flathub/repo AppDir pkg/ *.pkg.tar.zst *.snap coverage.* '"$(shell go env GOCACHE)/../golangci-lint"'
 	go clean -i -cache -testcache -modcache -fuzzcache -x
 
 .PHONY: version
