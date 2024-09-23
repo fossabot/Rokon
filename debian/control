@@ -5,7 +5,7 @@ Maintainer: Brycen Granville <brycengranville@outlook.com>
 Build-Depends: libgtk-4-1, golang-go, pkgconf, make, debhelper (>= 11.2)
 Standards-Version: 4.0.0
 Homepage: https://github.com/BrycensRanch/Rokon
-Version: 1.0.0-1
+Version: 1.0.0
 
 Package: rokon
 Architecture: any
