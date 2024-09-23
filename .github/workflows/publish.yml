@@ -114,11 +114,6 @@ jobs:
           sudo pip3 install appimage-builder --break-system-packages
           sudo apt install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           make appimage
-      - name: 🤠 Assemble the RPM
-        id: rpm
-        uses: naveenrajm7/rpmbuild@master
-        with:
-          spec_file: "rokon.spec"
       - name: 🤠 Assemble the DEB
         run: |
           debuild -S -i -I
@@ -151,7 +146,6 @@ jobs:
             *.zsync
             *.rpm
             *.deb
-            ${{ steps.rpm.outputs.rpm_dir_path }}
             *.snap
             flathub/*.flatpak
       # - name: Import GPG key
