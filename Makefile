@@ -16,12 +16,12 @@ BUILDTAGS :=
 TARGET = rokon
 
 # Define install directories
-BINDIR = $(PREFIX)/bin
-DATADIR = $(PREFIX)/share/rokon
-DOCDIR = $(PREFIX)/share/doc/rokon
-APPLICATIONSDIR = $(PREFIX)/share/applications
-ICONDIR = $(PREFIX)/share/icons/hicolor
-METAINFODIR = $(PREFIX)/share/metainfo
+BINDIR = $(DESTDIR)$(PREFIX)/bin
+DATADIR = $(DESTDIR)$(PREFIX)/share/rokon
+DOCDIR = $(DESTDIR)$(PREFIX)/share/doc/rokon
+APPLICATIONSDIR = $(DESTDIR)$(PREFIX)/share/applications
+ICONDIR = $(DESTDIR)$(PREFIX)/share/icons/hicolor
+METAINFODIR = $(DESTDIR)$(PREFIX)/share/metainfo
 
 .DEFAULT_GOAL := all
 .PHONY: all
@@ -99,9 +99,9 @@ install:
 	install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png
 	install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg
 	install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml
-	install -Dpm 0644 ./LICENSE.md $(PREFIX)/share/licenses/rokon/LICENSE.md
-	install -Dpm 0644 ./README.md $(PREFIX)/share/doc/rokon/README.md
-	install -Dpm 0644 ./PRIVACY.md $(PREFIX)/share/doc/rokon/PRIVACY.md
+	install -Dpm 0644 ./LICENSE.md $(DESTDIR)$(PREFIX)/share/licenses/rokon/LICENSE.md
+	install -Dpm 0644 ./README.md $(DESTDIR)$(PREFIX)/share/doc/rokon/README.md
+	install -Dpm 0644 ./PRIVACY.md $(DESTDIR)$(PREFIX)/share/doc/rokon/PRIVACY.md
 
 .PHONY: uninstall
 uninstall:
@@ -114,7 +114,7 @@ uninstall:
 	rm -f $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg
 	rm -f $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml
 	rm -rf $(DOCDIR)/rokon
-	rm -rf $(PREFIX)/share/licenses/rokon
+	rm -rf $(DESTDIR)$(PREFIX)/share/licenses/rokon
 
 .PHONY: gen
 gen: ## go generate
