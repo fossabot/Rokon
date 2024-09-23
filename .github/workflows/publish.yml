@@ -116,7 +116,7 @@ jobs:
           make appimage
       - name: 🤠 Assemble the DEB
         run: |
-          debuild -S -i -I
+          debuild -S -i -I -d
           # Clean up any previous builds
           rm -rf build debian/build
           # Move the DEB files to the root of the repository
