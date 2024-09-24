@@ -1,5 +1,5 @@
 #!/usr/bin/make -f
-SHELL := /bin/bash
+SHELL := $(shell which bash)
 # Define the default install directory
 PREFIX ?= /usr/local
 VERSION ?= $(shell cat VERSION)
