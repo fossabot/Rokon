@@ -179,7 +179,6 @@ jobs:
             *.zsync
             *.rpm
             *.deb
-            ../artifacts
             *.snap
             flathub/*.flatpak
       # - name: Login to GitHub Container Registry
