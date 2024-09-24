@@ -16,6 +16,49 @@ on:
       - reopened
 
 jobs:
+  docker:
+    timeout-minutes: 125
+    strategy:
+      fail-fast: false
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out current repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            ghcr.io/${{ github.repository_owner }}/Rokon
+          # generate Docker tags based on the following events/attribute
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Docker Container and push
+        uses: docker/build-push-action@v6
+        with:
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
   build:
     timeout-minutes: 125
     strategy:
@@ -23,43 +66,18 @@ jobs:
       matrix:
         os:
           # ubuntu 24.04 is in beta. ubuntu-latest is 22.04 at time of writing. Our application won't build on 22.04.
-          - ubuntu-24.04
+          - self-hosted
         arch:
           - amd64
+          - arm64
 
     runs-on: self-hosted
-    # Service containers to run with `container-job`
-    # services:
-    #   # Label used to access the service container
-    #   postgres:
-    #     # Docker Hub image
-    #     image: 'postgres:alpine'
-    #     # Provide the password for postgres
-    #     env:
-    #       POSTGRES_USER: prisma_user
-    #       POSTGRES_PASSWORD: CHANGE_ME_PLEASE_OR_I_WILL_CRY
-    #       POSTGRES_DB: prisma
-    #     # Set health checks to wait until postgres has started
-    #     options: >-
-    #       --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
-    #   redis:
-    #     # Docker Hub image
-    #     image: redis:alpine
-    #     # Set health checks to wait until redis has started
-    #     options: >-
-    #       --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-
-    #     ports:
-    #       # Maps port 6379 on service container to the host
-    #       - 6379:6379
 
     steps:
       - name: Check out current repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - name: Install Required System Packages
         run: |
           sudo apt update
@@ -110,39 +128,6 @@ jobs:
           git_commit_gpgsign: true
           git_tag_gpgsign: true
           git_push_gpgsign: true
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          # list of Docker images to use as base name for tags
-          images: |
-            ghcr.io/${{ github.repository_owner }}/rokon
-          # generate Docker tags based on the following events/attribute
-          tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
-      # - name: Set up QEMU
-      #   uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Login to GHCR
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build Docker Container and push
-        uses: docker/build-push-action@v6
-        with:
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
       - name: 🖼️ Assemble the AppImage
         run: |
           wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
