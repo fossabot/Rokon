@@ -16,7 +16,7 @@
 
 Name:           rokon
 Version:        1.0.0
-Release:        10%{?dist}
+Release:        11%{?dist}
 Summary:        Control your Roku device with your desktop!
 License:        AGPL-3.0-or-later
 URL:            https://github.com/BrycensRanch/Rokon
@@ -32,9 +32,7 @@ Requires:       gtk4
 
 %description
 Rokon is a GTK4 application that control your Roku.
-Whether that be with your keyboard, mouse, or controller. 
-
-%global debug_package %{nil}
+Whether that be with your keyboard, mouse, or controller.
 
 %prep
 %autosetup -n Rokon-master
@@ -42,6 +40,7 @@ Whether that be with your keyboard, mouse, or controller.
 %build
 go mod download all
 ls
+<<<<<<< HEAD
 <<<<<<< HEAD
 go build -v -ldflags="-X main.version=%{version} -X main.commit=$(git rev-parse --short HEAD) -X main.packaged=true -X main.packageFormat=rpm -X main.rpmRelease=%{rel} -X main.branch=$(git rev-parse --abbrev-ref HEAD) -X main.date=$(date -u +%Y-%m-%d)" -o %{name}
 =======
@@ -55,6 +54,12 @@ install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Ro
 install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png %{buildroot}%{_datadir}/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
 install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
 install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml %{buildroot}%{_datadir}/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+=======
+make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-X main.rpmRelease=%{rel}" EXTRAGOFLAGS="-trimpath" build
+
+%install
+make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
+>>>>>>> c08ac53 (refactor: fix build on opensuse & remove unnecessary comments)
 
 %files
 %{_bindir}/%{name}

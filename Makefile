@@ -14,6 +14,7 @@ BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 DATE := $(shell date -u +%Y-%m-%d)
 PACKAGED ?= false
 PACKAGEFORMAT ?=
+NODOCUMENTATION ?= 0
 EXTRALDFLAGS :=
 EXTRAGOFLAGS :=
 BUILDTAGS :=
@@ -127,6 +128,7 @@ install:
 	$(call print-target)
 	@echo "Installing $(TARGET) to $(BINDIR)"
 	mkdir -p $(BINDIR)
+	mkdir -p $(DESTDIR)$(PREFIX)/share/doc/rokon
 	install -Dpm 0755 $(TARGET) $(BINDIR)
 <<<<<<< HEAD
 	desktop-file-install --dir=$(PREFIX)/share/applications ./usr/share/applications/io.github.brycensranch.Rokon.desktop
@@ -143,9 +145,19 @@ install:
 	install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg
 	install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml
 	install -Dpm 0644 ./LICENSE.md $(DESTDIR)$(PREFIX)/share/licenses/rokon/LICENSE.md
+<<<<<<< HEAD
 	install -Dpm 0644 ./README.md $(DESTDIR)$(PREFIX)/share/doc/rokon/README.md
 	install -Dpm 0644 ./PRIVACY.md $(DESTDIR)$(PREFIX)/share/doc/rokon/PRIVACY.md
 >>>>>>> 21b3760 (build(debian): standardize makefile)
+=======
+	# Check if NODOCUMENTATION is set to 1
+	@if [ "$(NODOCUMENTATION)" != "1" ]; then \
+		install -Dpm 0644 ./PRIVACY.md ./README.md $(DESTDIR)$(PREFIX)/share/doc/rokon; \
+	else \
+		echo "Skipping documentation installation. Please make sure you include PRIVACY notice."; \
+	fi
+
+>>>>>>> c08ac53 (refactor: fix build on opensuse & remove unnecessary comments)
 
 .PHONY: uninstall
 uninstall:
