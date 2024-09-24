@@ -9,6 +9,9 @@ override_dh_auto_build:
 	# Call your Makefile's build target
 	$(MAKE) EXTRALDFLAGS="-s -w" EXTRAGOFLAGS="-trimpath" PACKAGED=true PACKAGEFORMAT=deb build
 
+override_dh_auto_install:
+	dh_auto_install -- PREFIX=/usr
+
 # Disable tests
 override_dh_auto_test:
 	# Do nothing to skip tests
