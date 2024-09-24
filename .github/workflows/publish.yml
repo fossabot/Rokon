@@ -108,7 +108,14 @@ jobs:
           upx -f --best --force-overwrite ./rokon
       - name: 🖼️ Assemble the AppImage
         run: |
-          sudo pip3 install appimage-builder --break-system-packages
+          wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+          chmod +x appimagetool-*.AppImage
+          mv appimagetool-* appimagetool
+          sudo mv appimagetool /usr/bin
+          wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+          chmod +x mkappimage-*.AppImage
+          mv mkappimage-* mkappimage
+          sudo mv mkappimage /usr/bin
           sudo apt install -y binutils coreutils desktop-file-utils fakeroot fuse libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           make fatimage
       - name: 🤠 Assemble the DEB
