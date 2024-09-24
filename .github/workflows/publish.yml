@@ -115,7 +115,8 @@ jobs:
         with:
           # Optional. Commit message for the created commit.
           # Defaults to "Apply automatic changes"
-          commit_options: '--no-verify --no-gpg-sign'
+          commit_options: "--no-verify --no-gpg-sign"
+          push_options: "--no-gpg-sign"
           commit_message: "build(flathub): update go vendor modules [skip ci]"
           commit_author: "github-actions <41898282+github-actions[bot]@users.noreply.github.com>"
       - name: Import GPG key
@@ -128,7 +129,7 @@ jobs:
           git_user_signingkey: true
           git_commit_gpgsign: true
           git_tag_gpgsign: true
-          git_push_gpgsign: true
+          git_push_gpgsign: false
       - name: 🖼️ Assemble the AppImage
         run: |
           wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
