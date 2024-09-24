@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
-          go-version: "latest"
+          go-version: "stable"
       - name: Cancel previous COPR builds
         env:
           COPR_TOKEN: ${{ secrets.COPR_TOKEN }}
