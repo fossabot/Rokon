@@ -112,7 +112,7 @@ jobs:
           rm -rf vendor/
       - name: Remove all PGP keys
         run: |
-          rm -rf ~/.gnupg
+          rm -rf ~/.gitconfig ~/.gnupg
       - name: COMMIT!
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
@@ -127,10 +127,10 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_tag_gpgsign: true
-          git_push_gpgsign: true
+          git_user_signingkey: false
+          git_commit_gpgsign: false
+          git_tag_gpgsign: false
+          git_push_gpgsign: false
       - name: 🖼️ Assemble the AppImage
         run: |
           wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
