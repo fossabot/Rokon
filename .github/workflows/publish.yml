@@ -110,14 +110,12 @@ jobs:
           go run github.com/dennwc/flatpak-go-mod@latest .
           mv modules.txt go.mod.yml flathub/
           rm -rf vendor/
-      - name: Remove all PGP keys
-        run: |
-          rm -rf ~/.gitconfig ~/.gnupg
       - name: COMMIT!
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           # Optional. Commit message for the created commit.
           # Defaults to "Apply automatic changes"
+          commit_options: '--no-verify --no-gpg-sign'
           commit_message: "build(flathub): update go vendor modules [skip ci]"
           commit_author: "github-actions <41898282+github-actions[bot]@users.noreply.github.com>"
       - name: Import GPG key
@@ -127,10 +125,10 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
-          git_user_signingkey: false
-          git_commit_gpgsign: false
-          git_tag_gpgsign: false
-          git_push_gpgsign: false
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_tag_gpgsign: true
+          git_push_gpgsign: true
       - name: 🖼️ Assemble the AppImage
         run: |
           wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
