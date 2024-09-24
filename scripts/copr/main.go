@@ -78,7 +78,7 @@ func main() {
 
 
 	// Combine pending and running builds and exclude the latest one
-	allBuilds := append(pendingBuilds, startingBuilds, runningBuilds...)
+	allBuilds := append(append(pendingBuilds, startingBuilds...), runningBuilds...)
 	if len(allBuilds) > 0 {
 		// Sort by SubmittedOn to find the latest build
 		sort.Slice(allBuilds, func(i, j int) bool {
