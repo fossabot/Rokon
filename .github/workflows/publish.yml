@@ -122,8 +122,7 @@ jobs:
       - name: Install Snapcraft
         uses: samuelmeuli/action-snapcraft@v2
       - name: 🫰 Assemble the Snap
-        run: |
-          snapcraft
+        uses: snapcore/action-build@v1
       - name: ⚙️ Assemble the Flatpaks!
         working-directory: flathub
         run: |
