@@ -58,8 +58,16 @@ install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
 make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-X main.rpmRelease=%{rel}" EXTRAGOFLAGS="-trimpath" build
 
 %install
+<<<<<<< HEAD
 make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
 >>>>>>> c08ac53 (refactor: fix build on opensuse & remove unnecessary comments)
+=======
+%if "%{?dist}" == "opensuse"
+    make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
+%else
+    make NODOCUMENTATION="0" PREFIX=%{buildroot}/usr install
+%endif
+>>>>>>> 105b547 (build(spec): fix building on fedora)
 
 %files
 %{_bindir}/%{name}
