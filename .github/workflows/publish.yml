@@ -69,7 +69,7 @@ jobs:
           - ubuntu-24.04
         arch:
           - amd64
-          - arm64
+          # - arm64
 
     runs-on: self-hosted
 
@@ -110,6 +110,13 @@ jobs:
           go run github.com/dennwc/flatpak-go-mod@latest .
           mv modules.txt go.mod.yml flathub/
           rm -rf vendor/
+      - name: Remove all PGP keys
+        run: |
+          # Get all key IDs and delete them
+          for key in $(gpg --list-keys --with-colons | awk -F: '/pub/{print $5}'); do
+            gpg --batch --yes --delete-secret-keys "$key"
+            gpg --batch --yes --delete-keys "$key"
+          done
       - name: COMMIT!
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
