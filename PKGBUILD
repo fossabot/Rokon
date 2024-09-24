@@ -1,4 +1,3 @@
-# Come on, LOCK IN!!
 # Maintainer: Brycen Granville <brycengranville@outlook.com>
 
 pkgname=rokon

@@ -8,6 +8,7 @@ BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 DATE := $(shell date -u +%Y-%m-%d)
 PACKAGED ?= false
 PACKAGEFORMAT ?=
+NODOCUMENTATION ?= 0
 EXTRALDFLAGS :=
 EXTRAGOFLAGS :=
 BUILDTAGS :=
@@ -93,6 +94,7 @@ install:
 	@echo "Installing $(TARGET) to $(BINDIR)"
 	@echo "version $(VERSION)"
 	mkdir -p $(BINDIR)
+	mkdir -p $(DESTDIR)$(PREFIX)/share/doc/rokon
 	install -Dpm 0755 $(TARGET) $(BINDIR)
 	install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop
 	install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
@@ -100,8 +102,13 @@ install:
 	install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg
 	install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml
 	install -Dpm 0644 ./LICENSE.md $(DESTDIR)$(PREFIX)/share/licenses/rokon/LICENSE.md
-	install -Dpm 0644 ./README.md $(DESTDIR)$(PREFIX)/share/doc/rokon/README.md
-	install -Dpm 0644 ./PRIVACY.md $(DESTDIR)$(PREFIX)/share/doc/rokon/PRIVACY.md
+	# Check if NODOCUMENTATION is set to 1
+	@if [ "$(NODOCUMENTATION)" != "1" ]; then \
+		install -Dpm 0644 ./PRIVACY.md ./README.md $(DESTDIR)$(PREFIX)/share/doc/rokon; \
+	else \
+		echo "Skipping documentation installation. Please make sure you include PRIVACY notice."; \
+	fi
+
 
 .PHONY: uninstall
 uninstall:

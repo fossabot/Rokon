@@ -14,9 +14,6 @@ source-code: "https://github.com/BrycensRanch/Rokon"
 adopt-info: rokon
 grade: devel
 base: core24
-# Extension GNOMME does not support confinement classic
-# So uhhh, GTK4's accessibility bus is broken in strict confinement.
-# Suffice to say, uhhh, it's a mess.
 confinement: strict
 compression: lzo
 contact: "brycengranville@outlook.com"
@@ -24,15 +21,7 @@ issues: "https://github.com/BrycensRanch/Rokon/issues"
 icon: "./assets/Rokon.png"
 donation: "https://ko-fi.com/brycensranch"
 # By default, snaps have an epoch of ‘0’. When a new version breaks data compatibility with this old version, incrementing the epoch in the new release stops those old users automatically refreshing to the new version.
-# epoch: 0
-
-
-# Snap package confinement mess up telemetry data from /etc/os-release
-# Unfortunately, there is no cure. lol
-# As hard as the snapd team tries to pretend the host doesn't matter, it does.
-# The snapd team is trying to make the host irrelevant, but it's not.
-# The host is always relevant.
-# https://forum.snapcraft.io/t/snap-package-confinement-mess-up-telemetry-data-from-etc-os-release/27694
+epoch: 0
 
 assumes:
   - snapd2.39
