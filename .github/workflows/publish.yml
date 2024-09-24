@@ -84,9 +84,6 @@ jobs:
       - name: 📦 Install Dependencies
         run: |
           go mod download all
-      - name: 🤖 Build Project
-        run: |
-          make EXTRALDFLAGS="-s -w" EXTRAGOFLAGS="-trimpath" build
       - name: 🔷 Update Flatpak Data
         run: |
           rm flathub/go.mod.yml flathub/modules.txt
