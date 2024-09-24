@@ -1,9 +1,10 @@
 # github.com/KarpelesLab/weak v0.1.1
 ## explicit; go 1.18
 github.com/KarpelesLab/weak
-# github.com/brycensranch/go-aptabase/pkg v0.0.0-20240922234930-fbe230afcf7e
+# github.com/brycensranch/go-aptabase/pkg v0.0.0-20240924102952-bd127abf629c
 ## explicit; go 1.22.0
 github.com/brycensranch/go-aptabase/pkg/aptabase/v1
+github.com/brycensranch/go-aptabase/pkg/device/v1
 github.com/brycensranch/go-aptabase/pkg/locale
 github.com/brycensranch/go-aptabase/pkg/osinfo/v1
 # github.com/diamondburned/gotk4/pkg v0.3.1
