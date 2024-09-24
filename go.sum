@@ -2,6 +2,8 @@ github.com/KarpelesLab/weak v0.1.1 h1:fNnlPo3aypS9tBzoEQluY13XyUfd/eWaSE/vMvo9s4
 github.com/KarpelesLab/weak v0.1.1/go.mod h1:pzXsWs5f2bf+fpgHayTlBE1qJpO3MpJKo5sRaLu1XNw=
 github.com/brycensranch/go-aptabase/pkg v0.0.0-20240922234930-fbe230afcf7e h1:exDkKivpgE8lpAaCJclsqXSRA4ZATbmtA3uq/rMRO18=
 github.com/brycensranch/go-aptabase/pkg v0.0.0-20240922234930-fbe230afcf7e/go.mod h1:yuO/kPUjbBZ+xQzgd3PfJeOYPWu0dsTLD54qSWGRc68=
+github.com/brycensranch/go-aptabase/pkg v0.0.0-20240924102952-bd127abf629c h1:yb77LKjMGqWZxVE7Zds6Ua7nbHz5saVbZVZXQdIDtvc=
+github.com/brycensranch/go-aptabase/pkg v0.0.0-20240924102952-bd127abf629c/go.mod h1:yuO/kPUjbBZ+xQzgd3PfJeOYPWu0dsTLD54qSWGRc68=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/diamondburned/gotk4/pkg v0.3.1 h1:uhkXSUPUsCyz3yujdvl7DSN8jiLS2BgNTQE95hk6ygg=
