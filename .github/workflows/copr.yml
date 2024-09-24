@@ -23,8 +23,10 @@ jobs:
         with:
           go-version: "stable"
       - name: Cancel previous COPR builds
+        working-directory: scripts/copr
         env:
           COPR_TOKEN: ${{ secrets.COPR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          go run -v scripts/copr/main.go
+          go get
+          go run -v .
