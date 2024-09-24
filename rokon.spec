@@ -43,7 +43,11 @@ ls
 make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-X main.rpmRelease=%{rel}" EXTRAGOFLAGS="-trimpath" build
 
 %install
-make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
+%if "%{?dist}" == "opensuse"
+    make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
+%else
+    make NODOCUMENTATION="0" PREFIX=%{buildroot}/usr install
+%endif
 
 %files
 %{_bindir}/%{name}
