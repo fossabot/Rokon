@@ -114,6 +114,7 @@ jobs:
           sudo mv mkappimage /usr/bin
           sudo apt install -y binutils coreutils desktop-file-utils fakeroot libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           make fatimage
+          mv *.AppImage ..
       - name: 🤠 Assemble the DEB
         run: |
           debuild -i -I -d
@@ -135,6 +136,9 @@ jobs:
       # - name: 📤 Upload Code coverage to Codecov
       #   if: ${{ !github.event.act }}
       #   uses: codecov/codecov-action@v4
+      - name: Restore Build Artifacts
+        run: |
+          mv ../*.AppImage .
       - name: 🗃️ Upload Built Binaries
         uses: actions/upload-artifact@v4
         if: always()
