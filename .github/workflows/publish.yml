@@ -99,6 +99,17 @@ jobs:
           # Defaults to "Apply automatic changes"
           commit_message: "build(flathub): update go vendor modules [skip ci]"
           commit_author: "github-actions <41898282+github-actions[bot]@users.noreply.github.com>"
+      - name: Import GPG key
+        id: import_gpg
+        if: ${{ !github.event.act }} && github.event_name != 'pull_request'
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_tag_gpgsign: true
+          git_push_gpgsign: true
       - name: 🖼️ Assemble the AppImage
         run: |
           wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
@@ -111,14 +122,14 @@ jobs:
           sudo mv mkappimage /usr/bin
           sudo apt install -y binutils coreutils desktop-file-utils fakeroot libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           make fatimage
-          mv *.AppImage ..
+          mv *.AppImage ../artifacts
       - name: 🤠 Assemble the DEB
         run: |
           debuild -i -I -d
           # Clean up any previous builds
           rm -rf build debian/build
           # Move the DEB files to the root of the repository
-          mv ../*.deb .
+          mv ../*.deb ../artifacts
       - name: Install Snapcraft
         uses: samuelmeuli/action-snapcraft@v2
       - name: 🫰 Assemble the Snap
@@ -146,19 +157,9 @@ jobs:
             *.zsync
             *.rpm
             *.deb
+            ../artifacts
             *.snap
             flathub/*.flatpak
-      # - name: Import GPG key
-      #   id: import_gpg
-      #   if: ${{ !github.event.act }} && github.event_name != 'pull_request'
-      #   uses: crazy-max/ghaction-import-gpg@v6
-      #   with:
-      #     gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-      #     passphrase: ${{ secrets.PASSPHRASE }}
-      #     git_user_signingkey: true
-      #     git_commit_gpgsign: true
-      #     git_tag_gpgsign: false
-      #     git_push_gpgsign: false
       # - name: Login to GitHub Container Registry
       #   uses: docker/login-action@v3
       #   with:
