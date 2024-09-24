@@ -2,14 +2,14 @@ Source: rokon
 Section: universe/utils
 Priority: optional
 Maintainer: Brycen Granville <brycengranville@outlook.com>
-Build-Depends: libgtk-4-1, golang, pkgconf, make (>= 4), debhelper (>= 13)
+Build-Depends: libgtk-4-1, golang-go, pkgconf, make (>= 4), debhelper (>= 13)
 Standards-Version: 4.5.1
 Homepage: https://github.com/BrycensRanch/Rokon
 
 
 Package: rokon
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libc6, libgtk-4-1
-Description: Rokon is a GTK4 application that control your Roku.
+Depends: ${shlibs:Depends}, ${misc:Depends}, libgtk-4-1
+Description: GTK4 application that controls your Roku TV.
  Whether that be with your keyboard, mouse, or controller.
 
