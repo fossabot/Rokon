@@ -1,7 +1,5 @@
 github.com/KarpelesLab/weak v0.1.1 h1:fNnlPo3aypS9tBzoEQluY13XyUfd/eWaSE/vMvo9s4g=
 github.com/KarpelesLab/weak v0.1.1/go.mod h1:pzXsWs5f2bf+fpgHayTlBE1qJpO3MpJKo5sRaLu1XNw=
-github.com/brycensranch/go-aptabase/pkg v0.0.0-20240924102952-bd127abf629c h1:yb77LKjMGqWZxVE7Zds6Ua7nbHz5saVbZVZXQdIDtvc=
-github.com/brycensranch/go-aptabase/pkg v0.0.0-20240924102952-bd127abf629c/go.mod h1:yuO/kPUjbBZ+xQzgd3PfJeOYPWu0dsTLD54qSWGRc68=
 github.com/brycensranch/go-aptabase/pkg v0.0.0-20240924120449-15c61d10f1f9 h1:N4e4XBrPutsDdVIBgW9WtXRJMwpvbdL0i5REVRWg/sY=
 github.com/brycensranch/go-aptabase/pkg v0.0.0-20240924120449-15c61d10f1f9/go.mod h1:yuO/kPUjbBZ+xQzgd3PfJeOYPWu0dsTLD54qSWGRc68=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
