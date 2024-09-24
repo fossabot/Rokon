@@ -7,7 +7,7 @@
 # Override the build step to use your Makefile
 override_dh_auto_build:
 	# Call your Makefile's build target
-	$(MAKE) EXTRALDFLAGS="-s -Wl,-z,now,-z,relro" EXTRAGOFLAGS="-trimpath -buildmode=pie" PACKAGED=true PACKAGEFORMAT=deb build
+	$(MAKE) EXTRALDFLAGS="-s -w" EXTRAGOFLAGS="-trimpath -buildmode=pie" PACKAGED=true PACKAGEFORMAT=deb build
 
 override_dh_auto_install:
 	dh_auto_install -- PREFIX=/usr
