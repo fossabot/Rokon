@@ -73,9 +73,12 @@ func main() {
 
 	// Fetch running builds
 	runningBuilds := fetchBuilds(coprUsername, coprToken, coprLogin, projectName, packageName, "running")
+	// Fetch starting builds
+	startingBuilds := fetchBuilds(coprUsername, coprToken, coprLogin, projectName, packageName, "starting")
+
 
 	// Combine pending and running builds and exclude the latest one
-	allBuilds := append(pendingBuilds, runningBuilds...)
+	allBuilds := append(pendingBuilds, startingBuilds, runningBuilds...)
 	if len(allBuilds) > 0 {
 		// Sort by SubmittedOn to find the latest build
 		sort.Slice(allBuilds, func(i, j int) bool {
