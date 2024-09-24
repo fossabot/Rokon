@@ -168,8 +168,9 @@ jobs:
       #   if: ${{ !github.event.act }}
       #   uses: codecov/codecov-action@v4
       - name: Restore Build Artifacts
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
-          mv ../*.AppImage .
+          mv ../*.AppImage . || true
       - name: 🗃️ Upload Built Binaries
         uses: actions/upload-artifact@v4
         if: always()
