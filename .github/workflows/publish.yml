@@ -116,7 +116,6 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            romvnly/rokon
             ghcr.io/${{ github.repository_owner }}/rokon
           # generate Docker tags based on the following events/attribute
           tags: |
