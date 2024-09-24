@@ -58,6 +58,7 @@ help:
 clean: ## remove files created during build pipeline
 	$(call print-target)
 <<<<<<< HEAD
+<<<<<<< HEAD
 	rm -rf dist
 	rm -rf pkg/
 	rm *.pkg.tar.zst
@@ -67,6 +68,9 @@ clean: ## remove files created during build pipeline
 =======
 	rm -rf dist .flatpak flathub/.flatpak-builder flathub/repo AppDir pkg/ *.pkg.tar.zst *.snap coverage.* '"$(shell go env GOCACHE)/../golangci-lint"'
 >>>>>>> d2f1c75 (build(debian): initial package)
+=======
+	rm -rf dist .flatpak flathub/.flatpak-builder flathub/repo AppDir *.AppImage *.rpm *.deb *.msi *.exe pkg/ *.pkg.tar.zst *.snap coverage.* '"$(shell go env GOCACHE)/../golangci-lint"'
+>>>>>>> 6048fb1 (build: clean even more built binaries on clean command)
 	go clean -i -cache -testcache -modcache -fuzzcache -x
 
 <<<<<<< HEAD
