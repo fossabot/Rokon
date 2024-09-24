@@ -112,11 +112,7 @@ jobs:
           rm -rf vendor/
       - name: Remove all PGP keys
         run: |
-          # Get all key IDs and delete them
-          for key in $(gpg --list-keys --with-colons | awk -F: '/pub/{print $5}'); do
-            gpg --batch --yes --delete-secret-keys "$key"
-            gpg --batch --yes --delete-keys "$key"
-          done
+          rm -rf ~/.gnupg
       - name: COMMIT!
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
