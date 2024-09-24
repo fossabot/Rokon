@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 SHELL := /bin/bash
+=======
+#!/usr/bin/make -f
+SHELL := $(shell which bash)
+>>>>>>> d80b1e7 (chore: make the makefile use bash wherever it is)
 # Define the default install directory
 PREFIX ?= /usr/local
 <<<<<<< HEAD
