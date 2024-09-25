@@ -1,0 +1,5 @@
+<package name="rokon" project="home:BrycensRanch">
+  <title>Rokon</title>
+  <description>Roku remote for your Linux desktop! Powered by GTK4 and Golang (Gotk4) and a tiny amount of Rust.</description>
+</package>
+
