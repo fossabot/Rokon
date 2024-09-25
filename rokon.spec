@@ -16,7 +16,7 @@
 
 Name:           rokon
 Version:        1.0.0
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        Control your Roku device with your desktop!
 License:        AGPL-3.0-or-later
 URL:            https://github.com/BrycensRanch/Rokon
@@ -40,10 +40,14 @@ Whether that be with your keyboard, mouse, or controller.
 %build
 go mod download all
 ls
-make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-X main.rpmRelease=%{rel}" EXTRAGOFLAGS="-trimpath" build
+# Rokon's Makefile still respects any CFLAGS LDFLAGS CXXFLAGS passed to it. It is compliant.
+# https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/PK5PEKWE65UC5XQ6LTLSMATVPIISQKQS/
+# Do not compress the DWARF debug information, it causes the build to fail!
+# As of Go 1.11, debug information is compressed by default. We're disabling that.
+make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-compressdwarf=false -X main.rpmRelease=%{rel}" EXTRAGOFLAGS="-trimpath" build
 
 %install
-%if "%{?dist}" == "opensuse"
+%if 0%{?suse_version}
     make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
 %else
     make NODOCUMENTATION="0" PREFIX=%{buildroot}/usr install
