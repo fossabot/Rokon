@@ -16,7 +16,7 @@
 
 Name:           rokon
 Version:        1.0.0
-Release:        11%{?dist}
+Release:        12%{?dist}
 Summary:        Control your Roku device with your desktop!
 License:        AGPL-3.0-or-later
 URL:            https://github.com/BrycensRanch/Rokon
@@ -42,6 +42,7 @@ go mod download all
 ls
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 go build -v -ldflags="-X main.version=%{version} -X main.commit=$(git rev-parse --short HEAD) -X main.packaged=true -X main.packageFormat=rpm -X main.rpmRelease=%{rel} -X main.branch=$(git rev-parse --abbrev-ref HEAD) -X main.date=$(date -u +%Y-%m-%d)" -o %{name}
 =======
 make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-s -w -X main.rpmRelease=%{rel}" EXTRAGOFLAGS="-trimpath" build
@@ -63,6 +64,16 @@ make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
 >>>>>>> c08ac53 (refactor: fix build on opensuse & remove unnecessary comments)
 =======
 %if "%{?dist}" == "opensuse"
+=======
+# Rokon's Makefile still respects any CFLAGS LDFLAGS CXXFLAGS passed to it. It is compliant.
+# https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/PK5PEKWE65UC5XQ6LTLSMATVPIISQKQS/
+# Do not compress the DWARF debug information, it causes the build to fail!
+# As of Go 1.11, debug information is compressed by default. We're disabling that.
+make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-compressdwarf=false -X main.rpmRelease=%{rel}" EXTRAGOFLAGS="-trimpath" build
+
+%install
+%if 0%{?suse_version}
+>>>>>>> 9b029b0 (build(spec): produce proper debug package)
     make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
 %else
     make NODOCUMENTATION="0" PREFIX=%{buildroot}/usr install
