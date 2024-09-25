@@ -71,11 +71,25 @@ make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
 # As of Go 1.11, debug information is compressed by default. We're disabling that.
 
 %if 0%{?mageia}
-    # Setup the correct compilation flags for the environment
-    %set_build_flags
-%endif
+# Setup the correct compilation flags for the environment
+%set_build_flags
 
-make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-compressdwarf=false -X main.rpmRelease=%{rel}" EXTRAGOFLAGS="-trimpath" build
+# Use the %gobuild macro for Mageia
+%gobuild \
+    -o %{_bindir}/%{name} \
+    -trimpath \
+    -ldflags "-compressdwarf=false -X main.rpmRelease=%{rel} %{build_ldflags}" \
+    %{name}
+
+%else
+# For other systems, use the regular make command with custom flags
+make TARGET=%{name} \
+     PACKAGED=true \
+     PACKAGEFORMAT=rpm \
+     EXTRALDFLAGS="-compressdwarf=false -X main.rpmRelease=%{rel}" \
+     EXTRAGOFLAGS="-trimpath" \
+     build
+%endif
 
 %install
 %if 0%{?suse_version}
