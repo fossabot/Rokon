@@ -22,5 +22,4 @@ override_dh_auto_clean:
 	$(MAKE) clean
 
 override_dh_strip:
-    # Use the default dh_strip but ensure debug symbols are kept for the -dbg package
-    dh_strip --dbg-package=rokon-dbg
+	dh_strip --dbg-package=rokon-dbg
