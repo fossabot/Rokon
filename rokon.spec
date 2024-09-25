@@ -71,25 +71,15 @@ make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
 # As of Go 1.11, debug information is compressed by default. We're disabling that.
 
 %if 0%{?mageia}
-# Setup the correct compilation flags for the environment
-%set_build_flags
-
-# Use the %gobuild macro for Mageia
-%gobuild \
-    -o %{_bindir}/%{name} \
-    -trimpath \
-    -ldflags "-compressdwarf=false -X main.rpmRelease=%{rel} %{build_ldflags}" \
-    %{name}
-
-%else
-# For other systems, use the regular make command with custom flags
-make TARGET=%{name} \
-     PACKAGED=true \
-     PACKAGEFORMAT=rpm \
-     EXTRALDFLAGS="-compressdwarf=false -X main.rpmRelease=%{rel}" \
-     EXTRAGOFLAGS="-trimpath" \
-     build
+    # Setup the correct compilation flags for the environment
+    %set_build_flags
+    # Fixes RPM build errors:
+    # error: Empty %files file /builddir/build/BUILD/Rokon-master/debugsourcefiles.list
+    # Empty %files file /builddir/build/BUILD/Rokon-master/debugsourcefiles.list
+    %define _debugsource_template %{nil}
 %endif
+
+make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-compressdwarf=false -X main.rpmRelease=%{rel}" EXTRAGOFLAGS="-trimpath" build
 
 %install
 %if 0%{?suse_version}
