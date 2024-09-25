@@ -34,7 +34,7 @@ changelog() {
 build() {
     cd Rokon
     go mod download all
-    make TARGET=$pkgname PACKAGED=true PACKAGEFORMAT=arch EXTRAGOFLAGS="-compressdwarf=false -buildmode=pie -trimpath -mod=readonly -modcacherw" EXTRALDFLAGS="-linkmode=external" build
+    make TARGET=$pkgname PACKAGED=true PACKAGEFORMAT=arch EXTRAGOFLAGS="-buildmode=pie -trimpath -mod=readonly -modcacherw" EXTRALDFLAGS="-compressdwarf=false -linkmode=external" build
 }
 
 package() {
