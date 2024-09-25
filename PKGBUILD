@@ -39,6 +39,7 @@ build() {
 
 package() {
     cd Rokon
+<<<<<<< HEAD
     install -Dm755 $pkgname $pkgdir/usr/bin/$pkgname
     install -Dm644 LICENSE.md $pkgdir/usr/share/licenses/$pkgname/LICENSE.md
     install -Dm644 README.md $pkgdir/usr/share/doc/$pkgname/README.md
@@ -49,5 +50,8 @@ package() {
     install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $pkgdir/usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
     install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $pkgdir/usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
     install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $pkgdir/usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+=======
+    make TARGET=$pkgname PREFIX=$pkgdir/usr install
+>>>>>>> cf7797c (build(arch): remove repeated build)
 }
 
