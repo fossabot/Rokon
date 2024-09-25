@@ -69,6 +69,12 @@ make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
 # https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/PK5PEKWE65UC5XQ6LTLSMATVPIISQKQS/
 # Do not compress the DWARF debug information, it causes the build to fail!
 # As of Go 1.11, debug information is compressed by default. We're disabling that.
+
+%if 0%{?mageia}
+    # Setup the correct compilation flags for the environment
+    %set_build_flags
+%endif
+
 make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-compressdwarf=false -X main.rpmRelease=%{rel}" EXTRAGOFLAGS="-trimpath" build
 
 %install
