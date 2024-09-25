@@ -19,6 +19,22 @@ EXTRALDFLAGS :=
 EXTRAGOFLAGS :=
 BUILDTAGS :=
 
+
+ifneq ($(CFLAGS),)
+    export CGO_CFLAGS := $(CFLAGS)
+    $(info Using provided CFLAGS: $(CFLAGS))
+endif
+
+ifneq ($(CXXFLAGS),)
+    export CGO_CXXFLAGS := $(CXXFLAGS)
+    $(info Using provided CXXFLAGS: $(CXXFLAGS))
+endif
+
+ifneq ($(LDFLAGS),)
+    export CGO_LDFLAGS := $(LDFLAGS)
+    $(info Using provided LDFLAGS: $(LDFLAGS))
+endif
+
 # Define target binary
 TARGET = rokon
 >>>>>>> d2f1c75 (build(debian): initial package)
