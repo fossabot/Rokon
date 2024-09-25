@@ -2,7 +2,7 @@
 
 # Use debhelper with compatibility level 13
 %:
-	dh $@ --with=golang
+	dh $@
 
 # Override the build step to use your Makefile
 override_dh_auto_build:
