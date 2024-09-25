@@ -76,7 +76,6 @@ func main() {
 	// Fetch starting builds
 	startingBuilds := fetchBuilds(coprUsername, coprToken, coprLogin, projectName, packageName, "starting")
 
-
 	// Combine pending and running builds and exclude the latest one
 	allBuilds := append(append(pendingBuilds, startingBuilds...), runningBuilds...)
 	if len(allBuilds) > 0 {
