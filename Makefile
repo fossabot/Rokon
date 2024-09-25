@@ -205,7 +205,12 @@ gen: ## go generate
 .PHONY: build
 build: ## go build -v -o rokon
 	$(call print-target)
+<<<<<<< HEAD
 	go build -v -o $(TARGET)
+=======
+	@echo "Building version $(VERSION)"
+	go build -v -ldflags="-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.packaged=$(PACKAGED) -X main.packageFormat=$(PACKAGEFORMAT) -X main.branch=$(BRANCH) $(EXTRALDFLAGS)" $(EXTRAGOFLAGS) -o $(TARGET) -tags "$(BUILDTAGS)" .
+>>>>>>> 4e4b211 (build: begin making builds reproducible)
 
 .PHONY: spell
 spell: ## misspell
