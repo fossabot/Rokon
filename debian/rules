@@ -2,12 +2,12 @@
 
 # Use debhelper with compatibility level 13
 %:
-	dh $@
+	dh $@ --with=golang
 
 # Override the build step to use your Makefile
 override_dh_auto_build:
 	# Call your Makefile's build target
-	$(MAKE) EXTRALDFLAGS="-s -w" EXTRAGOFLAGS="-trimpath -buildmode=pie" PACKAGED=true PACKAGEFORMAT=deb build
+	$(MAKE) EXTRALDFLAGS="-s" EXTRAGOFLAGS="-trimpath -buildmode=pie" PACKAGED=true PACKAGEFORMAT=deb build
 
 override_dh_auto_install:
 	dh_auto_install -- PREFIX=/usr
@@ -20,3 +20,7 @@ override_dh_auto_test:
 # Optional: Override the clean step if your Makefile has a custom clean rule
 override_dh_auto_clean:
 	$(MAKE) clean
+
+override_dh_strip:
+    # Use the default dh_strip but ensure debug symbols are kept for the -dbg package
+    dh_strip --dbg-package=rokon-dbg
