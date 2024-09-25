@@ -17,6 +17,6 @@ script:
   - cd $BUILD_APPDIR/Rokon
   - go mod download all
   - ls
-  - go build -v -ldflags="-X main.commit=$(git rev-parse --short HEAD) -X main.packaged=true -X main.packageFormat=appimage -X main.appImageRelease=obs -X main.branch=$(git rev-parse --abbrev-ref HEAD) -X main.date=$(date -u +%Y-%m-%d)" -o rokon
+  - make PACKAGED=true PACKAGEFORMAT=AppImage EXTRALDFLAGS="-compressdwarf=false" EXTRAGOFLAGS="-buildmode=pie -trimpath" build
   - make PREFIX=$BUILD_APPDIR/usr BINDIR=$BUILD_APPDIR install
   - linuxdeployqt $BUILD_APPDIR/usr/share/applications/*.desktop -bundle-non-qt-libs -verbose=2 -no-strip
