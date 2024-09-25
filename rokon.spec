@@ -79,7 +79,7 @@ make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
     %define _debugsource_template %{nil}
 %endif
 
-make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-compressdwarf=false -X main.rpmRelease=%{rel}" EXTRAGOFLAGS="-trimpath" build
+make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-compressdwarf=false -X main.rpmRelease=%{rel}" EXTRAGOFLAGS="-buildmode=pie -trimpath" build
 
 %install
 %if 0%{?suse_version}
