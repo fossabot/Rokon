@@ -25,6 +25,11 @@ ifneq ($(CFLAGS),)
     $(info Using provided CFLAGS: $(CFLAGS))
 endif
 
+ifneq ($(CPPFLAGS),)
+    export CGO_CPPFLAGS := $(CPPFLAGS)
+    $(info Using provided CPPFLAGS: $(CPPFLAGS))
+endif
+
 ifneq ($(CXXFLAGS),)
     export CGO_CXXFLAGS := $(CXXFLAGS)
     $(info Using provided CXXFLAGS: $(CXXFLAGS))
