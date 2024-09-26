@@ -3,10 +3,10 @@
   path: modules.txt
   type: file
 - dest: vendor/github.com/brycensranch/go-aptabase/pkg
-  sha256: 298d7168a9b5b20b64ccba61868eed2a81bcd0759f9893bda2d0f0b642140322
+  sha256: a8423735939812bd96870179ce2212db974b8cf4e4b8ef144ffeaa524da53e45
   strip-components: 4
   type: archive
-  url: https://proxy.golang.org/github.com/brycensranch/go-aptabase/pkg/@v/v0.0.0-20240924165948-e4d38ec10487.zip
+  url: https://proxy.golang.org/github.com/brycensranch/go-aptabase/pkg/@v/v0.0.0-20240926155015-84fb6da2eb17.zip
 - dest: vendor/github.com/diamondburned/gotk4/pkg
   sha256: c9723192c5123d33d85cfbc39631f8246a76f767b44b36fb27f4366e7d8acdcd
   strip-components: 4
