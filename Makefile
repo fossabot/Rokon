@@ -196,6 +196,7 @@ uninstall:
 =======
 	rm -f $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop
 	rm -f $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
+	rm -f $(ICONDIR)/128x128/apps/io.github.brycensranch.Rokon.png
 	rm -f $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png
 	rm -f $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg
 	rm -f $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml
