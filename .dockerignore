@@ -41,6 +41,7 @@
 /AppDir
 /appimage
 /AppImageBuild
+/appimage-build
 *.squashfs
 
 # Ignore Flatpak build directories and packages
