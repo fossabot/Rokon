@@ -260,8 +260,7 @@ jobs:
       - name: Install
         run: |
           export RESULTSDIR=$(realpath "${{ runner.temp }}\\exe")
-          make TARGET="Rokon.exe" PREFIX="$RESULTSDIR" BINDIR="$RESULTSDIR" uninstall || true
-          make TARGET="Rokon.exe" PREFIX="$RESULTSDIR" BINDIR="$RESULTSDIR" install
+          make TARGET="RESULTSDIR/Rokon.exe" PREFIX="$RESULTSDIR" BINDIR="$RESULTSDIR" install || true
 
       - name: Produce plain text files from README AND LICENSE
         working-directory: scripts/rtf2plaintext
