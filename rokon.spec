@@ -35,7 +35,7 @@ Source:         %{url}/archive/master.tar.gz
 %endif
 
 %if 0%{?fedora}
-ExclusiveArch: %{golang_arches}
+%gometa
 %endif
 
 BuildRequires:  git
@@ -56,8 +56,16 @@ BuildRequires:  zstd
 Rokon is a GTK4 application that control your Roku.
 Whether that be with your keyboard, mouse, or controller.
 
-%prep
+%if 0%{?fedora}
+	%goprep
+%else
+    %prep
+%endif
+%if 0%{?opensuse_bs}
+	%autosetup -n Rokon
+%else
 %autosetup -n Rokon-master
+%endif
 
 %build
 # Setup the correct compilation flags for the environment
