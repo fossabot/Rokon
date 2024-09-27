@@ -262,7 +262,7 @@ jobs:
       - name: Install
         working-directory: ${{ runner.temp }}/exe
         run: |
-          make TARGET="Rokon.exe" PREFIX="${{ runner.temp }}\\exe" BINDIR="${{ runner.temp }}\\exe" install
+          make TARGET="${{ runner.temp }}\\exe\\Rokon.exe" PREFIX="${{ runner.temp }}\\exe" BINDIR="${{ runner.temp }}\\exe" install
 
       - name: Produce plain text files from README AND LICENSE
         working-directory: scripts/rtf2plaintext
