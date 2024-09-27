@@ -21,6 +21,9 @@ Summary:        Control your Roku device with your desktop!
 License:        AGPL-3.0-or-later
 URL:            https://github.com/BrycensRanch/Rokon
 Source:         %{url}/archive/master.tar.gz
+%if 0%{?fedora}
+%gometa
+%endif
 
 BuildRequires:  git
 BuildRequires:  go
@@ -29,6 +32,12 @@ BuildRequires:  gcc-c++
 BuildRequires:  gtk4-devel
 BuildRequires:  gobject-introspection-devel
 Requires:       gtk4
+%if 0%{?opensuse_bs}
+# Logic specific to openSUSE Build Service. I imagine this will make it extremely difficult to build the spec locally on OBS.
+Source1:        vendor.tar.zst
+BuildRequires:  golang-packaging
+BuildRequires:  zstd
+%endif
 
 %description
 Rokon is a GTK4 application that control your Roku.
@@ -38,6 +47,15 @@ Whether that be with your keyboard, mouse, or controller.
 %autosetup -n Rokon-master
 
 %build
+# Setup the correct compilation flags for the environment
+# Not all distributions do this automatically
+%if 0%{?fedora}
+    # Fedora specific behavior (no-op or something else)
+    # Do nothing, since Fedora 33 the build flags are already set
+%else
+    %set_build_flags
+%endif
+
 go mod download all
 ls
 <<<<<<< HEAD
@@ -71,22 +89,30 @@ make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
 # As of Go 1.11, debug information is compressed by default. We're disabling that.
 
 %if 0%{?mageia}
-    # Setup the correct compilation flags for the environment
-    %set_build_flags
     # Fixes RPM build errors:
     # error: Empty %files file /builddir/build/BUILD/Rokon-master/debugsourcefiles.list
     # Empty %files file /builddir/build/BUILD/Rokon-master/debugsourcefiles.list
     %define _debugsource_template %{nil}
 %endif
 
-make TARGET=%{name} PACKAGED=true PACKAGEFORMAT=rpm EXTRALDFLAGS="-compressdwarf=false -X main.rpmRelease=%{rel}" EXTRAGOFLAGS="-buildmode=pie -trimpath" build
+%define rpmRelease %{?dist}
+
+%make_build \
+    PACKAGED=true \
+    PACKAGEFORMAT=rpm \
+    EXTRALDFLAGS="-compressdwarf=false -X main.rpmRelease=%{rpmRelease}" \
+    EXTRAGOFLAGS="-mod=vendor -buildmode=pie -trimpath"
 
 %install
 %if 0%{?suse_version}
+<<<<<<< HEAD
 >>>>>>> 9b029b0 (build(spec): produce proper debug package)
     make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
+=======
+    %make_install NODOCUMENTATION="1" PREFIX=%{buildroot}/usr
+>>>>>>> 02a1323 (build(spec): standardize make usage and use go macro)
 %else
-    make NODOCUMENTATION="0" PREFIX=%{buildroot}/usr install
+    %make_install NODOCUMENTATION="0" PREFIX=%{buildroot}/usr
 %endif
 >>>>>>> 105b547 (build(spec): fix building on fedora)
 
