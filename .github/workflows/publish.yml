@@ -260,7 +260,7 @@ jobs:
       - name: Install
         run: |
           export RESULTSDIR=$(realpath "${{ runner.temp }}\\exe")
-          make TARGET="RESULTSDIR/Rokon.exe" PREFIX="$RESULTSDIR" BINDIR="$RESULTSDIR" install || true
+          make TARGET="$RESULTSDIR/Rokon.exe" PREFIX="$RESULTSDIR" BINDIR="$RESULTSDIR" install || true
 
       - name: Produce plain text files from README AND LICENSE
         working-directory: scripts/rtf2plaintext
@@ -284,7 +284,7 @@ jobs:
         run: |
           export RESULTSDIR=$(realpath "${{ runner.temp }}\\exe")
           make TARGET="$RESULTSDIR/Rokon.exe" EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=portable PACKAGED=true build
-          cp windows/*.rtf windows/*.txt "$RESULTSDIR"
+          cp windows/*.txt "$RESULTSDIR"
       - name: Minimize portable executable size using upx
         working-directory: ${{ runner.temp }}\exe
         continue-on-error: true
