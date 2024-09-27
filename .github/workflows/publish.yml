@@ -271,7 +271,8 @@ jobs:
       - name: Install
         continue-on-error: true
         run: |
-          mingw32-make TARGET="${{ runner.temp }}/exe/Rokon.exe" PREFIX="${{ runner.temp }}/exe" BINDIR="${{ runner.temp }}/exe" install
+          mingw32-make TARGET="${{ runner.temp }}\\exe\\Rokon.exe" PREFIX="${{ runner.temp }}\\exe" BINDIR="${{ runner.temp }}\\exe" install
+
       - name: Make MSI installer
         uses: ./.github/actions/make-advinst-app
         with:
