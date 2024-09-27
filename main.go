@@ -139,7 +139,7 @@ func main() {
 		log.Printf("Running on Windows %s %s\n",
 			release, arch)
 
-		if portable := packageFormat; portable == "portable" {
+		if packageFormat == "portable" {
 			log.Println("Running from a portable executable")
 		}
 
@@ -254,7 +254,6 @@ func activate(app *gtk.Application) {
 	default:
 		// Assume native packaging
 		aboutWindow.SetLogoIconName("io.github.brycensranch.Rokon")
-		sentry.CaptureMessage("Something went wrong " + applicationInfo(app))
 
 		if os.Getenv("CONTAINER") != "" {
 			log.Println("Running in a container, the logo icon may not be displayed due to wrong path")
