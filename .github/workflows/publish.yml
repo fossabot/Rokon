@@ -260,7 +260,6 @@ jobs:
           name=Rokon-Setup-${{ runner.arch }}
           EOF
       - name: Install
-        working-directory: ${{ runner.temp }}/exe
         run: |
           make TARGET="${{ runner.temp }}\\exe\\Rokon.exe" PREFIX="${{ runner.temp }}\\exe" BINDIR="${{ runner.temp }}\\exe" install
 
