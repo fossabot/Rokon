@@ -150,6 +150,7 @@ install:
 	@echo "Installing $(TARGET) to $(BINDIR)"
 	mkdir -p $(BINDIR)
 	mkdir -p $(DESTDIR)$(PREFIX)/share/doc/rokon
+<<<<<<< HEAD
 	install -Dpm 0755 $(TARGET) $(BINDIR)
 <<<<<<< HEAD
 	desktop-file-install --dir=$(PREFIX)/share/applications ./usr/share/applications/io.github.brycensranch.Rokon.desktop
@@ -160,6 +161,9 @@ install:
 	install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(PREFIX)/metainfo/io.github.brycensranch.Rokon.metainfo.xml
 	update-desktop-database
 =======
+=======
+	install -Dpm 0755 $(TARGET) $(BINDIR) || true
+>>>>>>> 68370a3 (build: allow binaries to be the same)
 	install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop
 	install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
 	install -Dpm 0644 ./usr/share/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
