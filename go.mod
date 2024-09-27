@@ -1,4 +1,4 @@
-module github.com/BrycensRanch/Rokon
+module github.com/brycensranch/rokon
 
 go 1.22.0
 
