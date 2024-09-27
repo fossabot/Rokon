@@ -35,7 +35,8 @@ URL:            https://github.com/BrycensRanch/Rokon
 %endif
 
 %if 0%{?fedora}
-%gometa -f
+    %gometa -f
+    Source: %{gosource}
 %endif
 
 BuildRequires:  git
@@ -52,9 +53,12 @@ Requires:       gtk4
 	BuildRequires:  zstd
 %endif
 
+%gopkg
+
+
 %generate_buildrequires
 %if 0%{?fedora}
-	%go_generate_buildrequires
+#	%go_generate_buildrequires
 %endif
 
 %description
@@ -62,7 +66,7 @@ Rokon is a GTK4 application that control your Roku.
 Whether that be with your keyboard, mouse, or controller.
 
 %if 0%{?fedora}
-	%goprep
+	%goprep -A
 %else
     %prep
 %endif
