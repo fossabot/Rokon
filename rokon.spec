@@ -14,14 +14,14 @@
 
 # Please submit bugfixes or comments via https://github.com/BrycensRanch/Rokon/issues as I am the developer
 
-%global goipath github.com/brycensranch/go-aptabase/pkg github.com/diamondburned/gotk4/pkg github.com/getsentry/sentry-go github.com/ianlancetaylor/cgosymbolizer github.com/KarpelesLab/weak go4.org/unsafe/assume-no-moving-gc golang.org/x/exp golang.org/x/sync golang.org/x/sys golang.org/x/text
+%global goipath github.com/BrycensRanch/Rokon
 
 %global forgeurl https://github.com/BrycensRanch/Rokon
 
 Name:           rokon
 Version:        1.0.0
 %if 0%{?fedora}
-Release:        %autorelease
+Release:        %autorelease -p
 %else
 Release:        13%{?dist}
 %endif
@@ -35,7 +35,7 @@ Source:         %{url}/archive/master.tar.gz
 %endif
 
 %if 0%{?fedora}
-%gometa
+%gometa -f
 %endif
 
 BuildRequires:  git
@@ -52,6 +52,11 @@ BuildRequires:  golang-packaging
 BuildRequires:  zstd
 %endif
 
+%generate_buildrequires
+%if 0%{?fedora}
+	%go_generate_buildrequires
+%endif
+
 %description
 Rokon is a GTK4 application that control your Roku.
 Whether that be with your keyboard, mouse, or controller.
@@ -64,7 +69,7 @@ Whether that be with your keyboard, mouse, or controller.
 %if 0%{?opensuse_bs}
 	%autosetup -n Rokon
 %else
-%autosetup -n Rokon-master
+	%autosetup -n Rokon-master
 %endif
 
 %build
@@ -77,7 +82,6 @@ Whether that be with your keyboard, mouse, or controller.
     %set_build_flags
 %endif
 
-go mod download all
 ls
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -147,15 +151,18 @@ make NODOCUMENTATION="1" PREFIX=%{buildroot}/usr install
 %license LICENSE.md
 %doc *.md
 
+%if 0%{?fedora}
+	%autochangelog
+%else
 
-
-%changelog
-* Tue Sep 3 2024 Brycen <brycengranville@outlook.com> 1.0.0-6
-- Removed sysinfo package decreasing binary size and portability and startup time
-- Added metainfo file for appstream
-- Added icons to package
-- Added desktop entry
-- Added license file to package
-- Added documentation to package
-* Mon Sep 2 2024 Brycen <brycengranville@outlook.com> 1.0.0-3
-- Initial package
+	%changelog
+	* Tue Sep 3 2024 Brycen <brycengranville@outlook.com> 1.0.0-6
+	- Removed sysinfo package decreasing binary size and portability and startup time
+	- Added metainfo file for appstream
+	- Added icons to package
+	- Added desktop entry
+	- Added license file to package
+	- Added documentation to package
+	* Mon Sep 2 2024 Brycen <brycengranville@outlook.com> 1.0.0-3
+	- Initial package
+%endif
