@@ -45,7 +45,7 @@ APPLICATIONSDIR = $(DESTDIR)$(PREFIX)/share/applications
 ICONDIR = $(DESTDIR)$(PREFIX)/share/icons/hicolor
 METAINFODIR = $(DESTDIR)$(PREFIX)/share/metainfo
 
-.DEFAULT_GOAL := all
+.DEFAULT_GOAL := build
 .PHONY: all
 all: ## build pipeline
 all: mod inst gen build spell lint test
