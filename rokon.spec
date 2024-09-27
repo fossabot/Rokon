@@ -21,17 +21,17 @@
 Name:           rokon
 Version:        1.0.0
 %if 0%{?fedora}
-Release:        %autorelease -p
+	Release:        %autorelease -p
 %else
-Release:        13%{?dist}
+	Release:        13%{?dist}
 %endif
 Summary:        Control your Roku device with your desktop!
 License:        AGPL-3.0-or-later
 URL:            https://github.com/BrycensRanch/Rokon
 %if 0%{?opensuse_bs}
-Source:         Rokon.tar.xz
+	Source:         Rokon.tar.xz
 %else
-Source:         %{url}/archive/master.tar.gz
+	Source:         %{url}/archive/master.tar.gz
 %endif
 
 %if 0%{?fedora}
@@ -46,10 +46,10 @@ BuildRequires:  gtk4-devel
 BuildRequires:  gobject-introspection-devel
 Requires:       gtk4
 %if 0%{?opensuse_bs}
-# Logic specific to openSUSE Build Service. I imagine this will make it extremely difficult to build the spec locally on OBS.
-Source1:        vendor.tar.zst
-BuildRequires:  golang-packaging
-BuildRequires:  zstd
+	# Logic specific to openSUSE Build Service. I imagine this will make it extremely difficult to build the spec locally on OBS.
+	Source1:        vendor.tar.zst
+	BuildRequires:  golang-packaging
+	BuildRequires:  zstd
 %endif
 
 %generate_buildrequires
