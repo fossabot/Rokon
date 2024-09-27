@@ -260,6 +260,7 @@ jobs:
           name=Rokon-Setup-${{ runner.arch }}
           EOF
       - name: Install
+        working-directory: ${{ runner.temp }}/exe
         run: |
           make TARGET="Rokon.exe" PREFIX="${{ runner.temp }}\\exe" BINDIR="${{ runner.temp }}\\exe" install
 
@@ -267,7 +268,6 @@ jobs:
         working-directory: scripts/rtf2plaintext
         run: |
           go run -v .
-
 
       - name: Make MSI installer
         uses: ./.github/actions/make-advinst-app
