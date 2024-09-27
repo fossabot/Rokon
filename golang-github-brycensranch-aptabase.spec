@@ -8,7 +8,7 @@
 %endif
 
 # https://github.com/brycensranch/go-aptabase
-%global goipath         github.com/brycensranch/go-aptabase github.com/brycensranch/go-aptabase/pkg/device/v1 github.com/brycensranch/go-aptabase/pkg/locale github.com/brycensranch/go-aptabase/pkg/osinfo/v1
+%global goipath         github.com/brycensranch/go-aptabase/pkg
 %global commit          b987899e04dd7d42345e74a6427ce11a1abec24e
 
 %gometa -L -f
