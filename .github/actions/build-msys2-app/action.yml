@@ -40,7 +40,7 @@ runs:
             C:/a/msys64/clang64/lib/go                   # Cache Go
             C:/a/msys64/tmp/go-build                     # Cache Go build cache
             ${{ runner.temp }}
-            !${{ runner.temp }}/exe
+            !${{ runner.temp }}\exe
           key: go-msys2-${{ runner.os }}-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             go-msys2-${{ runner.os }}-
@@ -49,13 +49,13 @@ runs:
       id: build
       run: |
         export PATH="/clang64/bin:$PATH"
-        rm -rf "${{ runner.temp }}/exe"
+        rm -rf "${{ runner.temp }}\exe"
 
         mkdir -p "$OUT_PATH"
         out=$(realpath "$OUT_PATH")
 
         # Build Rokon
-        mingw32-make TARGET=$out/$EXE_NAME EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=msi PACKAGED=true build
+        make TARGET=$out/$EXE_NAME EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=msi PACKAGED=true build
 
         # copyDLLs copies all required DLLs of the given binaries to the
         # result directory.
@@ -81,7 +81,7 @@ runs:
           /clang64/bin/librsvg*.dll \
           /clang64/bin/gdbus.exe \
           $out
-          
+
         # Copy DLLs recursively until no new ones are found.
         currentCount=$(countDLLs)
         while true; do
