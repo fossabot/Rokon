@@ -1,7 +1,7 @@
 # github.com/KarpelesLab/weak v0.1.1
 ## explicit; go 1.18
 github.com/KarpelesLab/weak
-# github.com/brycensranch/go-aptabase/pkg v0.0.0-20240926155015-84fb6da2eb17
+# github.com/brycensranch/go-aptabase/pkg v0.0.0-20240927055150-b987899e04dd
 ## explicit; go 1.22.0
 github.com/brycensranch/go-aptabase/pkg/aptabase/v1
 github.com/brycensranch/go-aptabase/pkg/device/v1
@@ -51,6 +51,7 @@ golang.org/x/sync/singleflight
 # golang.org/x/sys v0.25.0
 ## explicit; go 1.18
 golang.org/x/sys/execabs
+golang.org/x/sys/unix
 golang.org/x/sys/windows
 # golang.org/x/text v0.18.0
 ## explicit; go 1.18
