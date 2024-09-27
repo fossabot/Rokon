@@ -1,11 +1,16 @@
 <services>
-    <service name="tar_scm">
+    <service name="obs_scm">
         <param name="scm">git</param>
         <param name="url">https://github.com/BrycensRanch/Rokon.git</param>
         <param name="changesgenerate">enable</param>
         <param name="revision">master</param>
+        <param name="filename">Rokon</param>
     </service>
     <service name="tar" mode="buildtime"/>
+    <service name="extract_file">
+        <param name="archive">*.tar</param>
+        <param name="files">*/debian/* *.changes */rokon.spec */appimage.yml</param>
+    </service>
     <service name="recompress" mode="buildtime">
         <param name="compression">xz</param>
         <param name="file">*.tar</param>
@@ -14,16 +19,5 @@
     <service name="appimage"/>
     <service name="go_modules" mode="disabled">
         <param name="compression">zst</param>
-    </service>
-    <service name="download_url">
-        <param name="host">raw.githubusercontent.com</param>
-        <param name="protocol">https</param>
-        <param name="path">/BrycensRanch/Rokon/master/rokon.spec</param>
-    </service>
-    <service name="download_url">
-        <param name="host">raw.githubusercontent.com</param>
-        <param name="protocol">https</param>
-        <param name="path">/BrycensRanch/Rokon/master/appimage.yml</param>
-        <param name="filename">appimage.yml</param>
     </service>
 </services>
