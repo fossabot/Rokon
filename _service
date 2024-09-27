@@ -12,4 +12,18 @@
     </service>
     <service name="set_version" mode="buildtime"/>
     <service name="appimage"/>
+    <service name="go_modules" mode="disabled">
+        <param name="compression">zst</param>
+    </service>
+    <service name="download_url">
+        <param name="host">raw.githubusercontent.com</param>
+        <param name="protocol">https</param>
+        <param name="path">/BrycensRanch/Rokon/master/rokon.spec</param>
+    </service>
+    <service name="download_url">
+        <param name="host">raw.githubusercontent.com</param>
+        <param name="protocol">https</param>
+        <param name="path">/BrycensRanch/Rokon/master/appimage.yml</param>
+        <param name="filename">appimage.yml</param>
+    </service>
 </services>
