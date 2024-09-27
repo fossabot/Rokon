@@ -59,7 +59,6 @@ runs:
         $shortcut.Name = "tmp" # Can't rename from lowercase: "A file with the same name already exists in this folder"
         $shortcut.Name = $app_name
         $shortcut.Icon($icon_path)
-
         $project.BuildComponent.Builds[0].PackageName = $out_name
         $project.BuildComponent.Builds[0].OutputFolder = $out_path
         $project.ProductDetails.Version = $app_version

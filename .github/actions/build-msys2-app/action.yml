@@ -76,6 +76,12 @@ runs:
           find $out -type f -name "*.dll" | wc -l
         }
 
+        # Copy the RSVG and GDBus stuff.
+        cp \
+          /clang64/bin/librsvg*.dll \
+          /clang64/bin/gdbus.exe \
+          $out
+          
         # Copy DLLs recursively until no new ones are found.
         currentCount=$(countDLLs)
         while true; do
@@ -85,12 +91,6 @@ runs:
           (( newCount == currentCount )) && break
           currentCount=$newCount
         done
-
-        # Copy the RSVG and GDBus stuff.
-        cp \
-          /clang64/bin/*.dll \
-          /clang64/bin/gdbus.exe \
-          $out
 
         # Copy the GLib schemas and GTK resources.
         (
