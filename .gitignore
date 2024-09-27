@@ -52,6 +52,7 @@ flathub/builddir
 rpm
 debian/.debhelper
 
+<<<<<<< HEAD
 
 <<<<<<< HEAD
 =======
@@ -60,6 +61,10 @@ debian/.debhelper
 # GLORY
 *.rtf
 >>>>>>> d2f1c75 (build(debian): initial package)
+=======
+*.rtf
+*.txt
+>>>>>>> a449063 (fix(windows): use txt files instead of rtf and fix application icon not installing)
 
 # Arch Linux MAKEPKG
 pkg/
