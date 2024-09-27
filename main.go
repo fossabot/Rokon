@@ -51,17 +51,18 @@ func createEvent(eventName string, eventData map[string]interface{}) aptabase.Ev
 	return event
 }
 
+var version = "0.0.0-SNAPSHOT"
+var isPackaged = "false"
+var packageFormat = "native"
+
 func main() {
-	version := "0.0.0-SNAPSHOT"
-	isPackaged := "false"
-	packageFormat := "native"
 
 	fmt.Println("Starting Rokon. Now with more telemetry!")
 	err := sentry.Init(sentry.ClientOptions{
-		Dsn:                "https://04484623ba4aa6cbb830e852178e9358@o4504136997928960.ingest.us.sentry.io/4507991443439616",
-		Release:            version,
+		Dsn:     "https://04484623ba4aa6cbb830e852178e9358@o4504136997928960.ingest.us.sentry.io/4507991443439616",
+		Release: version,
 		// Prevents HOSTNAME from being sent to Sentry.io (Is this PII? Anyway, don't need it)
-		ServerName: "",
+		ServerName:         "",
 		EnableTracing:      true,
 		AttachStacktrace:   true,
 		TracesSampleRate:   1.0,
