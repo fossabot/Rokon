@@ -52,11 +52,8 @@ flathub/builddir
 rpm
 debian/.debhelper
 
-
-# NO LONGER SHALL I WRITE RTF LIKE A MORTAL MAN.
-# NODEJS SHALL GENERATE IT AND NEVER COMMIT IT TO THE REPOSITORY.
-# GLORY
 *.rtf
+*.txt
 
 # Arch Linux MAKEPKG
 pkg/

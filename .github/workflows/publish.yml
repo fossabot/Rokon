@@ -230,8 +230,7 @@ jobs:
             mingw-w64-clang-x86_64-gobject-introspection
             mingw-w64-clang-x86_64-go
             mingw-w64-clang-x86_64-upx
-            mingw-w64-clang-x86_64-nodejs
-            mingw-w64-clang-x86_64-make
+            make
           out-path: ${{ runner.temp }}/exe
           exe-name: Rokon.exe
       - name: Minimize executable size using upx
@@ -260,18 +259,15 @@ jobs:
           version=$version
           name=Rokon-Setup-${{ runner.arch }}
           EOF
-      - name: install bloated node_modules
-        working-directory: .github
-        run: |
-          npm install
-      - name: Generate rich text files from Markdown
-        working-directory: .github
-        run: |
-          node ./generate-rtf.js
       - name: Install
-        continue-on-error: true
         run: |
-          mingw32-make TARGET="${{ runner.temp }}\\exe\\Rokon.exe" PREFIX="${{ runner.temp }}\\exe" BINDIR="${{ runner.temp }}\\exe" install
+          make PREFIX="${{ runner.temp }}\\exe" BINDIR="${{ runner.temp }}\\exe" install
+
+      - name: Produce plain text files from README AND LICENSE
+        working-directory: scripts/rtf2plaintext
+        run: |
+          go run -v .
+
 
       - name: Make MSI installer
         uses: ./.github/actions/make-advinst-app
@@ -285,13 +281,13 @@ jobs:
           out-path: result
           out-name: ${{ steps.prepare.outputs.name }}
       - name: Remove msi executable
-        run: rm "${{ runner.temp }}/exe/Rokon.exe"
+        run: rm "${{ runner.temp }}\\exe\\Rokon.exe"
       - name: Make Portable
         run: |
-          mingw32-make TARGET="${{ runner.temp }}/exe/Rokon.exe" EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=portable PACKAGED=true build
-          cp windows/portable.txt windows/*.rtf "${{ runner.temp }}/exe"
+          make TARGET="${{ runner.temp }}\\exe\\Rokon.exe" EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=portable PACKAGED=true build
+          cp windows/portable.txt windows/*.rtf "${{ runner.temp }}\\exe"
       - name: Minimize portable executable size using upx
-        working-directory: ${{ runner.temp }}/exe
+        working-directory: ${{ runner.temp }}\exe
         continue-on-error: true
         run: |
           upx --best -f --force-overwrite ./*.exe
