@@ -14,9 +14,13 @@
 
 # Please submit bugfixes or comments via https://github.com/BrycensRanch/Rokon/issues as I am the developer
 
+%global goipath github.com/brycensranch/go-aptabase/pkg github.com/diamondburned/gotk4/pkg github.com/getsentry/sentry-go github.com/ianlancetaylor/cgosymbolizer github.com/KarpelesLab/weak go4.org/unsafe/assume-no-moving-gc golang.org/x/exp golang.org/x/sync golang.org/x/sys golang.org/x/text
+
 Name:           rokon
 Version:        1.0.0
-Release:        12%{?dist}
+%if 0%{?fedora}
+Release:        %autorelease
+%endif
 Summary:        Control your Roku device with your desktop!
 License:        AGPL-3.0-or-later
 URL:            https://github.com/BrycensRanch/Rokon
