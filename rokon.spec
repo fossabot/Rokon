@@ -14,7 +14,7 @@
 
 # Please submit bugfixes or comments via https://github.com/BrycensRanch/Rokon/issues as I am the developer
 
-%global goipath github.com/BrycensRanch/Rokon
+%global goipath github.com/brycensranch/rokon
 
 %global forgeurl https://github.com/BrycensRanch/Rokon
 
