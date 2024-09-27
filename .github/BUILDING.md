@@ -36,7 +36,7 @@ Then, open the MSYS2 CLANG64 terminal and run the following commands:
 
 ```bash
 pacman -Syu
-pacman -S --noconfirm git mingw-w64-clang-x86_64-go mingw-w64-clang-x86_64-gtk4 mingw-w64-clang-x86_64-gobject-introspection
+pacman -S --noconfirm git mingw-w64-clang-x86_64-go mingw-w64-clang-x86_64-gtk4 mingw-w64-clang-x86_64-gobject-introspection make
 ```
 
 #### Windows on ARM (like Snapdragon X Elite) (aarch64 or ARM64)
@@ -51,12 +51,12 @@ Then, open the MSYS2 CLANGARM64 terminal and run the following commands:
 
 ```bash
 pacman -Syu
-pacman -S --noconfirm git mingw-w64-clang-aarch64-go mingw-w64-clang-aarch64-gtk4 mingw-w64-clang-aarch64-gobject-introspection
+pacman -S --noconfirm git mingw-w64-clang-aarch64-go mingw-w64-clang-aarch64-gtk4 mingw-w64-clang-aarch64-gobject-introspection make
 ```
 
 ### 🍎 macOS
 
-> macOS: `brew install git go gtk4 gobject-introspection`
+> macOS: `brew install git go gtk4 gobject-introspection make`
 
 Note: You will need to install [Homebrew](https://brew.sh) to install the dependencies on macOS.
 
@@ -75,7 +75,7 @@ After that, follow the Linux build instructions, as they are the same for macOS 
 > Ubuntu 24.04+:
 
  ```bash
-sudo apt install -y build-essential git libgtk-4-dev libgirepository1.0-dev software-properties-common
+sudo apt install -y build-essential git libgtk-4-dev libgirepository1.0-dev software-properties-common make
 # If using Rhino Linux, do not add the PPA. Rather just install the go-bin package with pacstall. This PPA is added for newer versions of Go for Ubuntu Stable releases.
 sudo add-apt-repository ppa:longsleep/golang-backports
 sudo apt update
@@ -86,12 +86,12 @@ sudo apt install -y golang-go
 
 ```bash
 sudo setup-apkrepos -c -1
-sudo apk add --no-cache alpine-sdk gtk4.0-dev gobject-introspection-dev go
+sudo apk add --no-cache alpine-sdk gtk4.0-dev gobject-introspection-dev go make
 ```
 
 > Arch Linux: `sudo pacman -S --noconfirm git base-devel go gtk4 gobject-introspection`
 
-> OpenSUSE Tumbleweed/Slowroll: `sudo zypper in -y git go gtk4-devel gobject-introspection-devel`
+> OpenSUSE Tumbleweed/Slowroll: `sudo zypper in -y git go gtk4-devel gobject-introspection-devel make`
 
 ## Cloning and building the project
 
@@ -105,7 +105,7 @@ make build
 # If on Windows, do not add "sudo"
 # If on macOS, do not add "sudo"
 # On Windows & macOS it does not natively integrate with your operating system. 
-# All it does is add rokon to your path 
+# All it does is add rokon to your $PATH 
 sudo make install
 ```
 
