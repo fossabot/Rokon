@@ -261,7 +261,7 @@ jobs:
           EOF
       - name: Install
         run: |
-          make PREFIX="${{ runner.temp }}\\exe" BINDIR="${{ runner.temp }}\\exe" install
+          make TARGET="Rokon.exe" PREFIX="${{ runner.temp }}\\exe" BINDIR="${{ runner.temp }}\\exe" install
 
       - name: Produce plain text files from README AND LICENSE
         working-directory: scripts/rtf2plaintext
