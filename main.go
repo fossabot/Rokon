@@ -163,7 +163,7 @@ func main() {
 		log.Printf("Running on Windows %s %s\n",
 			release, arch)
 
-		if portable := packageFormat; portable == "portable" {
+		if packageFormat == "portable" {
 			log.Println("Running from a portable executable")
 		}
 
