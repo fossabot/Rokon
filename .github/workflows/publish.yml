@@ -335,7 +335,7 @@ jobs:
           mkdir -p $result/lib/gdk-pixbuf-2.0 $result/share/glib-2.0/schemas $result/share/icons
           cp README.md PRIVACY.md LICENSE.md $result
           dylibbundler -b -d $result/lib -x $result/rokon
-          cp -f $brew_prefix/lib/librsvg*.dylib $result/lib
+          cp -f $brew_prefix/lib/*.dylib $result/lib
           cp -r $brew_prefix/lib/gdk-pixbuf-2.0 $result/lib
           sed -i '' "s|$brew_prefix/||" $result/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
           cp -r $brew_prefix/share/glib-2.0/schemas $result/share/glib-2.0
@@ -349,7 +349,7 @@ jobs:
           set +e
           false
           while [ $? -ne 0 ]; do
-            create-dmg --volname Rokon --volicon macos/icon.icns --window-size 600 400 --icon-size 100 --icon "Rokon.app" 200 150 --hide-extension "Rokon.app" --app-drop-link 400 150 rokon_darwin_${{ matrix.arch }}.dmg $result/dmg
+            create-dmg --volname Rokon --volicon macos/icon.icns --window-size 600 400 --icon-size 100 --icon "Rokon.app" 200 150 --hide-extension "Rokon.app" --app-drop-link 400 150 rokon_macOS_${{ matrix.arch }}.dmg $result/dmg
           done
 
       - name: 🗃️ Upload Built Binaries
