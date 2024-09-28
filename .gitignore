@@ -21,6 +21,7 @@ rokon_puregotk4
 *.AppImage
 *.flatpak
 *.dmg
+dmg/
 *.pkg
 *.nupkg
 *.tar.gz
