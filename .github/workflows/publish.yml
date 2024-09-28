@@ -331,6 +331,7 @@ jobs:
         run: |
           result=./macos
           brew_prefix=$(brew --prefix)
+          mv ./rokon $result
           mkdir -p $result/lib/gdk-pixbuf-2.0 $result/share/glib-2.0/schemas $result/share/icons
           cp README.md PRIVACY.md LICENSE.md $result
           dylibbundler -b -d $result/lib -x $result/rokon
