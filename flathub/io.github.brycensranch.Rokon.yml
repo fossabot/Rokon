@@ -29,7 +29,7 @@ modules:
         GOBIN: /app/bin
         GOROOT: /usr/lib/sdk/golang
     build-commands:
-      - make EXTRAGOFLAGS="-mod=vendor -trimpath" build
+      - make PACKAGED=true PACKAGEFORMAT=flatpak EXTRAGOFLAGS="-mod=vendor -trimpath" build
       - desktop-file-edit --set-icon=$FLATPAK_ID --set-key=Exec --set-value=$GOBIN/rokon --remove-key=DBusActivatable usr/share/applications/$FLATPAK_ID.desktop
       - make PREFIX=/app BINDIR=$GOBIN install
     sources:
