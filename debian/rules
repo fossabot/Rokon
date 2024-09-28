@@ -7,7 +7,7 @@
 # Override the build step to use your Makefile
 override_dh_auto_build:
 	# Call your Makefile's build target
-	$(MAKE) EXTRALDFLAGS="-s" EXTRAGOFLAGS="-trimpath -buildmode=pie" PACKAGED=true PACKAGEFORMAT=deb build
+	dh_auto_build -- EXTRALDFLAGS="-s" EXTRAGOFLAGS="-trimpath -buildmode=pie" PACKAGED=true PACKAGEFORMAT=deb
 
 override_dh_auto_install:
 	# DH sets the DESTDIR to the rokon debian folder or something along those lines, yet, has the nerve to complain about the files not being installed. THE NERVE
