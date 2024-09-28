@@ -318,7 +318,7 @@ jobs:
           fetch-depth: 0
       - name: Install GTK4 Golang
         run: |
-          brew install gtk4 gobject-introspection go create-dmg dylibbundler
+          brew install gtk4 gobject-introspection go create-dmg dylibbundler rsync
       - name: 📦 Install Dependencies
         run: |
           go mod download all
@@ -344,12 +344,12 @@ jobs:
           mkdir -p $result/dmg/Rokon.app/Contents/MacOS $result/dmg/Rokon.app/Contents/Resources
           cp macos/icon.icns $result/dmg/Rokon.app/Contents/Resources
           cp macos/io.github.BrycensRanch.Rokon.plist $result/dmg/Rokon.app/Contents
-          cp -r $result/. $result/dmg/Rokon.app/Contents/MacOS
+          rsync -a --exclude "$result/dmg/" "$result/" "$result/dmg/Rokon.app/Contents/MacOS"
 
           set +e
           false
           while [ $? -ne 0 ]; do
-            create-dmg --volname Rokon --volicon macos/icon.icns --window-size 600 400 --icon-size 100 --icon "Rokon.app" 200 150 --hide-extension "Rokon.app" --app-drop-link 400 150 rokon_macOS_${{ matrix.arch }}.dmg $result/dmg
+            create-dmg --volname Rokon --volicon macos/icon.icns --window-size 600 400 --icon-size 100 --icon "Rokon.app" 200 150 --hide-extension "Rokon.app" --app-drop-link 400 150 Rokon_macOS_${{ matrix.arch }}.dmg $result/dmg
           done
 
       - name: 🗃️ Upload Built Binaries
