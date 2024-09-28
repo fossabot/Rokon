@@ -329,7 +329,7 @@ jobs:
       # Word for Word, bar for bar.
       - name: 🗿 Produce DMG
         run: |
-          $result=./macos
+          result=./macos
           brew_prefix=$(brew --prefix)
           mkdir -p $result/lib/gdk-pixbuf-2.0 $result/share/glib-2.0/schemas $result/share/icons
           cp README.md PRIVACY.md LICENSE.md $result
