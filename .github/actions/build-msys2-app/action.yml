@@ -68,7 +68,6 @@ runs:
 
         # Copy all of the binary's dependencies to the result directory.
         copyDLLs "$out/$EXE_NAME"
-        find $out -type f -name "*.dll" -exec upx -f --best --force-overwrite {} +
         # countDLLs returns the number of DLLs in the result directory.
         # We use this to recursively copy dependencies until no new DLLs are
         # found.
@@ -81,7 +80,6 @@ runs:
           /clang64/bin/librsvg*.dll \
           /clang64/bin/gdbus.exe \
           $out
-
         # Copy DLLs recursively until no new ones are found.
         currentCount=$(countDLLs)
         while true; do
@@ -102,6 +100,7 @@ runs:
             lib/gdk-pixbuf-2.0 \
             $out
         )
+        find $out -type f -name "*.dll" -exec upx -f --best --force-overwrite {} +
       shell: msys2 {0}
       env:
         GOROOT: /clang64/lib/go
