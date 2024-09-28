@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
@@ -39,12 +40,14 @@ func createEvent(eventName string, eventData map[string]interface{}) aptabase.Ev
 	return event
 }
 
-var version = "0.0.0-SNAPSHOT"
-var isPackaged = "false"
-var packageFormat = "native"
+var (
+	version              = "0.0.0-SNAPSHOT"
+	isPackaged           = "false"
+	packageFormat        = "native"
+	telemetryOnByDefault = "true"
+)
 
 func main() {
-
 	fmt.Println("Starting Rokon. Now with more telemetry!")
 	err := sentry.Init(sentry.ClientOptions{
 		Dsn:     "https://04484623ba4aa6cbb830e852178e9358@o4504136997928960.ingest.us.sentry.io/4507991443439616",
@@ -75,7 +78,7 @@ func main() {
 	}
 	aptabaseClient = aptabase.NewClient("A-US-0332858461", version, uint64(133), true, "")
 	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationDefaultFlags)
-	if version == "" {
+	if version != "" {
 		app.SetVersion(version)
 	}
 	switch runtime.GOOS {
@@ -90,7 +93,7 @@ func main() {
 			kdeSessionVersion = os.Getenv("KDE_SESSION_VERSION")
 		}
 
-		log.Printf("Running on Linux %s %s with %s %s %s and %s\n",
+		log.Printf("Running on Linux. Specifically: %s %s with %s %s %s and %s\n",
 			release, arch, desktop, os.Getenv("DESKTOP_SESSION"), kdeSessionVersion, sessionType)
 
 		createEvent("linux_run", map[string]interface{}{
@@ -122,7 +125,9 @@ func main() {
 			}
 
 			createEvent("appimage_run", map[string]interface{}{
-				"appimage":           appImage,
+				// The APPIAMGE variable often points to the user's /home/identifyingrealname/Applications
+				// So strip that data out
+				"appimage":           filepath.Base(appImage),
 				"appimageVersion":    version, // Replace with your app version logic
 				"firejail":           firejail,
 				"desktopIntegration": os.Getenv("DESKTOPINTEGRATION"),
@@ -131,13 +136,15 @@ func main() {
 			log.Println("Running from a native package")
 			createEvent("native_run", map[string]interface{}{
 				"nativeVersion": version, // Replace with your app version logic
-				"path":          os.Args[0],
+				// The PATH can sometimes reveal PII
+				// "path":          os.Args[0],
+				"packageFormat": packageFormat,
 			})
 		}
 	case "windows":
 		release := getOSRelease()
 		arch := runtime.GOARCH
-		log.Printf("Running on Windows %s %s\n",
+		log.Printf("Running on Windows. Specifically: %s %s\n",
 			release, arch)
 
 		if packageFormat == "portable" {
@@ -152,8 +159,8 @@ func main() {
 	case "darwin":
 		release := getOSRelease()
 		arch := runtime.GOARCH
-		log.Printf("Running on macOS %s %s with %s\n",
-			release, arch, os.Getenv("XPC_FLAGS"))
+		log.Printf("Running on macOS. Specifically: %s %s\n",
+			release, arch)
 
 		createEvent("macos_run", map[string]interface{}{
 			"arch":    arch,
@@ -211,11 +218,13 @@ func applicationInfo(app *gtk.Application) string {
 			return " (AppImage)"
 		case os.Getenv("CONTAINER") != "":
 			return " (Container)"
+		case strings.Contains(version, "SNAPSHOT"):
+			return " (Development)"
 		default:
 			return ""
 		}
 	}()
-	return fmt.Sprintf("Rokon %s%s", app.Version(), qualifier)
+	return fmt.Sprintf("Rokon%s", qualifier)
 }
 
 func activate(app *gtk.Application) {
@@ -279,7 +288,7 @@ func activate(app *gtk.Application) {
 func isRunningWithFirejail() bool {
 	appImage := os.Getenv("APPIMAGE")
 	appDir := os.Getenv("APPDIR")
-	return (appImage != "" && (appImage[len(appImage)-10:] == "/run/firejail" || contains(appImage, "/run/firejail"))) ||
+	return (appImage != "" && contains(appImage, "/run/firejail")) ||
 		(appDir != "" && contains(appDir, "/run/firejail"))
 }
 
