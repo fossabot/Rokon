@@ -238,7 +238,7 @@ jobs:
       - name: Prepare
         id: prepare
         run: |
-          version="v1.0.0"
+          version="v$(cat VERSION)"
 
           # version is usually in the format vMAJOR.MINOR.PATCH-N-HASH, while
           # Advanced Installer only allows format MAJOR.MINOR.PATCH.REVISION.
@@ -276,7 +276,7 @@ jobs:
           app-name: Rokon
           app-version: ${{ steps.prepare.outputs.version }}
           icon-file: windows/assets/rokon.ico
-          out-path: result
+          out-path: $result
           out-name: ${{ steps.prepare.outputs.name }}
       - name: Remove msi executable
         run: rm "${{ runner.temp }}\\exe\\Rokon.exe"
@@ -295,7 +295,7 @@ jobs:
         if: always()
         with:
           name: rokon-${{ runner.os }}-${{ matrix.arch }}
-          path: result
+          path: $result
       - name: 🗃️ Upload Portable
         uses: actions/upload-artifact@v4
         if: always()
@@ -318,16 +318,46 @@ jobs:
           fetch-depth: 0
       - name: Install GTK4 Golang
         run: |
-          brew install gtk4 gobject-introspection go gtkmm4 cairomm
+          brew install gtk4 gobject-introspection go create-dmg dylibbundler
       - name: 📦 Install Dependencies
         run: |
           go mod download all
       - name: 🤖 Build Project
         run: |
-          make EXTRALDFLAGS="-s -w" EXTRAGOFLAGS="-trimpath" build
+          make PACKAGED=true PACKAGEFORMAT=dmg EXTRALDFLAGS="-s -w" EXTRAGOFLAGS="-trimpath" build
+      # Attribution: https://github.com/getseabird/seabird/blob/main/.github/workflows/release.yaml#L194
+      # Word for Word, bar for bar.
+      - name: 🗿 Produce DMG
+        run: |
+          $result=./macos
+          brew_prefix=$(brew --prefix)
+          mkdir -p $result/lib/gdk-pixbuf-2.0 $result/share/glib-2.0/schemas $result/share/icons
+          cp README.md PRIVACY.md LICENSE.md $result
+          dylibbundler -b -d $result/lib -x $result/rokon
+          cp -f $brew_prefix/lib/librsvg*.dylib $result/lib
+          cp -r $brew_prefix/lib/gdk-pixbuf-2.0 $result/lib
+          sed -i '' "s|$brew_prefix/||" $result/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
+          cp -r $brew_prefix/share/glib-2.0/schemas $result/share/glib-2.0
+          cp -r $brew_prefix/opt/gtk4/share/gtk-4.0 $result/share
+          cp -r $brew_prefix/share/icons/hicolor $brew_prefix/opt/adwaita-icon-theme/share/icons/Adwaita $result/share/icons
+          mkdir -p $result/dmg/Rokon.app/Contents/MacOS $result/dmg/Rokon.app/Contents/Resources
+          cp macos/icon.icns $result/dmg/Rokon.app/Contents/Resources
+          cp macos/io.github.BrycensRanch.Rokon.plist $result/dmg/Rokon.app/Contents
+          cp -r $result/. $result/dmg/Rokon.app/Contents/MacOS
+
+          set +e
+          false
+          while [ $? -ne 0 ]; do
+            create-dmg --volname Rokon --volicon macos/icon.icns --window-size 600 400 --icon-size 100 --icon "Rokon.app" 200 150 --hide-extension "Rokon.app" --app-drop-link 400 150 rokon_darwin_${{ matrix.arch }}.dmg $result/dmg
+          done
+
       - name: 🗃️ Upload Built Binaries
         uses: actions/upload-artifact@v4
-        if: ${{ !github.event.act }}
+        if: always()
         with:
           name: rokon-${{ runner.os }}-${{ runner.arch }}
-          path: ./rokon
+          path: |
+            ./rokon
+            *.dmg
+            *.app
+            *.pkg
