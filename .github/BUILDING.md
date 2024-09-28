@@ -1,22 +1,20 @@
-# Contributing to Rokon
+# Building Guide
 
-Thank you for your interest in contributing to Rokon! We appreciate your help in making our Roku remote app even better.
+Looking to contribute? Don't forget to check [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## Prerequisites
 
 Before you start contributing, please make sure you have the following:
 
-- [Go](https://golang.org) installed
+- [Go](https://golang.org) installed for building, not needed at runtime!
 - [GTK4](https://www.gtk.org) installed (don't forget gobject-introspection-1.0)
 - [Git](https://git-scm.com) installed and configured with your GitHub account and your commits signed
 - [Roku device](https://www.roku.com/products/roku-tv) (for local testing, not required for building)
-- Building the application for Windows requires [MSYS2](https://www.msys2.org/) with the dependencies for GTK4, Golang, and Rust (with cargo) installed.
-- Building the application for Windows from Linux/MacOS requires [cross-compiling](https://github.com/diamondburned/gotk4/issues/147) which is not supported by the project. That's not to say it's impossible, but it's not recommended. There's libraries missing from Fedora's repositories that are required for cross-compiling GTK4 Golang applications. It's best to let the CI/CD pipeline handle the Windows builds. Commit and push your changes to the repository and let the CI/CD pipeline handle the rest.
+- Building the application for Windows requires [MSYS2](https://www.msys2.org/) with the dependencies for GTK4, Golang  installed.
+- Building the application for Windows from Linux/MacOS requires [cross-compiling](https://github.com/diamondburned/gotk4/issues/147) which is not supported by this project. There's libraries missing from Fedora's repositories that are required for cross-compiling GTK4 Golang applications. It's best to let the CI/CD pipeline handle the Windows builds. Commit and push your changes to the repository and let the CI/CD pipeline handle the rest.
 - Patience and a willingness to learn
 
 ## Development Setup
-
-> Installing the dependencies depends on your operating system. Here, we have the most common operating systems and their package managers.
 
 > Keep in mind that building the project took 12 minutes on my blazingly fast i7-11800H processor with 16GB of RAM. It will take longer on slower hardware. Good luck!
 
@@ -24,7 +22,7 @@ Before you start contributing, please make sure you have the following:
 
 #### Traditional processors (AMD64 or x64 architecture)
 
-This application was developed on Linux. While it was built on Linux, you can use it on Windows. However, building the application on Windows is not recommended. If you want to build the application on Windows, you will need to install MSYS2 and the dependencies for GTK4, Golang
+If you want to build the application on Windows, you will need to install [MSYS2](https://www.msys2.org/) and the dependencies for GTK4, Golang.
 
 This can be accomplished with:
 
@@ -64,7 +62,7 @@ After that, follow the Linux build instructions, as they are the same for macOS 
 
 ### 🐧 Linux
 
-> You cannot build the application on Debian Stable, Ubuntu 22.04, PopOS, Linux Mint  or older distributions due to packages being too old in the software repositories. This applies to RHEL, OpenSUSE Leap, Mageia,and CentOS as well. You will need to use a newer distribution like Fedora, Ubuntu 24.04, Linux Mint 22, or OpenSUSE Tumbleweed/Slowroll.
+> You cannot build the application on Debian Stable, Ubuntu 22.04, PopOS, Linux Mint  or older distributions due to packages being too old in the software repositories. This applies to RHEL, OpenSUSE Leap, Mageia 9, and CentOS as well. You will need to use a newer distribution like Fedora, Ubuntu 24.04, Linux Mint 22, or OpenSUSE Tumbleweed/Slowroll.
 
 > If you don't want to use a newer distribution, you can use a containerized build and runtime environment. This gets around your ancient software repositories. For this, you'll need [Distrobox](https://wiki.archlinux.org/title/Distrobox) (container) and choose the Fedora 40 image and then follow the instructions for Fedora.
 
@@ -76,11 +74,18 @@ After that, follow the Linux build instructions, as they are the same for macOS 
 
  ```bash
 sudo apt install -y build-essential git libgtk-4-dev libgirepository1.0-dev software-properties-common make
-# If using Rhino Linux, do not add the PPA. Rather just install the go-bin package with pacstall. This PPA is added for newer versions of Go for Ubuntu Stable releases.
+# If using Rhino Linux, do not add the PPA. You already have a modern version of Golang 100% of the time.
 sudo add-apt-repository ppa:longsleep/golang-backports
 sudo apt update
 sudo apt install -y golang-go
 ```
+
+> Rhino Linux:
+
+```bash
+sudo nala install -y build-essential git libgtk-4-dev golang-go libgirepository1.0-dev make
+```
+
 
 > Alpine Linux:
 
@@ -104,8 +109,9 @@ go mod download all
 make build
 # If on Windows, do not add "sudo"
 # If on macOS, do not add "sudo"
-# On Windows & macOS it does not natively integrate with your operating system. 
-# All it does is add rokon to your $PATH 
+# On Windows & macOS make install does not natively integrate with your operating system. 
+# All it does is add rokon to your $PATH.
+# On most Linux distributions, it actually *properly* installs as any normal application as you'd expect.
 sudo make install
 ```
 
