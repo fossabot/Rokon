@@ -108,7 +108,6 @@ go mod download all
 # This may take a while, CGO is slow.
 make build
 # If on Windows, do not add "sudo"
-# If on macOS, do not add "sudo"
 # On Windows & macOS make install does not natively integrate with your operating system. 
 # All it does is add rokon to your $PATH.
 # On most Linux distributions, it actually *properly* installs as any normal application as you'd expect.
