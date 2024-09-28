@@ -349,7 +349,7 @@ jobs:
           set +e
           false
           while [ $? -ne 0 ]; do
-            create-dmg --volname Rokon --volicon macos/icon.icns --window-size 600 400 --icon-size 100 --icon "Rokon.app" 200 150 --hide-extension "Rokon.app" --app-drop-link 400 150 Rokon_macOS_${{ matrix.arch }}.dmg $result/dmg
+            create-dmg --volname Rokon --volicon macos/icon.icns --window-size 600 400 --icon-size 100 --icon "Rokon.app" 200 150 --hide-extension "Rokon.app" --app-drop-link 400 150 Rokon_macOS_${{ runner.arch }}.dmg $result/dmg
           done
 
       - name: 🗃️ Upload Built Binaries
