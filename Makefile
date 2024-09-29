@@ -117,7 +117,8 @@ install:
 	mkdir -p $(BINDIR)
 	mkdir -p $(DESTDIR)$(PREFIX)/share/doc/rokon
 	install -Dpm 0755 $(TARGET) $(BINDIR) || true
-	install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop
+	desktop-file-install --dir=$(DESTDIR)$(PREFIX)/share/applications ./usr/share/applications/io.github.brycensranch.Rokon.desktop
+	install -Dm644 ./usr/share/applications/io.github.brycensranch.Rokon.service $(PREFIX)/share/dbus-1/services/io.github.brycensranch.Rokon.service || true
 	install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
 	install -Dpm 0644 ./usr/share/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
 	install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png
@@ -130,7 +131,7 @@ install:
 	else \
 		echo "Skipping documentation installation. Please make sure you include PRIVACY notice."; \
 	fi
-
+	update-desktop-database || true
 
 .PHONY: uninstall
 uninstall:

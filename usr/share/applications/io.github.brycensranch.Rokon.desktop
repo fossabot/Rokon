@@ -13,5 +13,6 @@ Comment=Control your Roku TV
 Categories=GNOME;GTK;Utility
 Keywords=remote;roku;rremote;remote control
 StartupNotify=true
-DBusActivatable=true
+# DBusActivatable=true
+StartupWMClass=Rokon;rokon
 X-GNOME-UsesNotifications=true
