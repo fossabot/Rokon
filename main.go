@@ -137,6 +137,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("sentry.Init: %s", err)
 	}
+
+	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationDefaultFlags)
 	switch runtime.GOOS {
 	case "windows", "darwin":
 		fmt.Println("Running on Windows or macOS.")
@@ -147,9 +149,7 @@ func main() {
 
 	default:
 	}
-	aptabaseClient = aptabase.NewClient("A-US-0332858461", version, uint64(133), true, "")
-	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationDefaultFlags)
-	if version != "" {
+	aptabaseClient = aptabase.NewClient("A-US-0332858461", version, uint64(133), true, "")	if version != "" {
 		app.SetVersion(version)
 	}
 	switch runtime.GOOS {
