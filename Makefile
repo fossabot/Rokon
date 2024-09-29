@@ -163,8 +163,13 @@ install:
 =======
 =======
 	install -Dpm 0755 $(TARGET) $(BINDIR) || true
+<<<<<<< HEAD
 >>>>>>> 68370a3 (build: allow binaries to be the same)
 	install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop
+=======
+	desktop-file-install --dir=$(DESTDIR)$(PREFIX)/share/applications ./usr/share/applications/io.github.brycensranch.Rokon.desktop
+	install -Dm644 ./usr/share/applications/io.github.brycensranch.Rokon.service $(PREFIX)/share/dbus-1/services/io.github.brycensranch.Rokon.service || true
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 	install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
 	install -Dpm 0644 ./usr/share/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
 	install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png
@@ -182,8 +187,12 @@ install:
 	else \
 		echo "Skipping documentation installation. Please make sure you include PRIVACY notice."; \
 	fi
+<<<<<<< HEAD
 
 >>>>>>> c08ac53 (refactor: fix build on opensuse & remove unnecessary comments)
+=======
+	update-desktop-database || true
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 
 .PHONY: uninstall
 uninstall:

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: AGPL-3.0-or-later
 package main
 
 import (
@@ -18,9 +19,14 @@ import (
 	"time"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	"github.com/adrg/xdg"
 
 =======
+=======
+	"github.com/adrg/xdg"
+
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 	"github.com/brycensranch/go-aptabase/pkg/aptabase/v1"
 	"github.com/brycensranch/go-aptabase/pkg/osinfo/v1"
 >>>>>>> 82d6e8e (fix: add user analytics telemetry)
@@ -30,9 +36,70 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/go-resty/resty/v2"
 	"github.com/koron/go-ssdp"
+<<<<<<< HEAD
+=======
+	"encoding/xml"
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 )
 
 var aptabaseClient *aptabase.Client // Package-level variable
+
+// Root represents the root element of the XML.
+type Root struct {
+	XMLName    xml.Name  `xml:"root"`
+	SpecVersion SpecVersion `xml:"specVersion"`
+	Device      Device      `xml:"device"`
+}
+
+// SpecVersion holds the major and minor version numbers.
+type SpecVersion struct {
+	Major int `xml:"major"`
+	Minor int `xml:"minor"`
+}
+
+// Device represents the device details.
+type Device struct {
+	DeviceType        string      `xml:"deviceType"`
+	FriendlyName      string      `xml:"friendlyName"`
+	Manufacturer      string      `xml:"manufacturer"`
+	ManufacturerURL   string      `xml:"manufacturerURL"`
+	ModelDescription  string      `xml:"modelDescription"`
+	ModelName         string      `xml:"modelName"`
+	ModelNumber       string      `xml:"modelNumber"`
+	ModelURL          string      `xml:"modelURL"`
+	SerialNumber      string      `xml:"serialNumber"`
+	UDN               string      `xml:"UDN"`
+	IconList          IconList    `xml:"iconList"`
+	ServiceList       ServiceList  `xml:"serviceList"`
+}
+
+// IconList holds a list of icons.
+type IconList struct {
+	Icons []Icon `xml:"icon"`
+}
+
+// Icon represents an individual icon.
+type Icon struct {
+	MimeType string `xml:"mimetype"`
+	Width    int    `xml:"width"`
+	Height   int    `xml:"height"`
+	Depth    int    `xml:"depth"`
+	URL      string `xml:"url"`
+}
+
+// ServiceList holds a list of services.
+type ServiceList struct {
+	Services []Service `xml:"service"`
+}
+
+// Service represents an individual service.
+type Service struct {
+	ServiceType  string `xml:"serviceType"`
+	ServiceID    string `xml:"serviceId"`
+	ControlURL   string `xml:"controlURL"`
+	EventSubURL  string `xml:"eventSubURL"`
+	SCPDURL      string `xml:"SCPDURL"`
+}
 
 func chooseNonEmpty(first, second string) string {
 	if first != "" {
@@ -88,6 +155,16 @@ func main() {
 	if err != nil {
 		log.Fatalf("sentry.Init: %s", err)
 	}
+	switch runtime.GOOS {
+	case "windows", "darwin":
+		fmt.Println("Running on Windows or macOS.")
+		// Use GLib to set the GTK_CSD environment variable for Client-Side Decorations
+		glib.Setenv("GTK_CSD", "1", true)
+
+		// Call your GTK-related functions here if needed
+
+	default:
+	}
 	aptabaseClient = aptabase.NewClient("A-US-0332858461", version, uint64(133), true, "")
 	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationDefaultFlags)
 <<<<<<< HEAD
@@ -128,9 +205,10 @@ func main() {
 			release, arch, desktop, os.Getenv("DESKTOP_SESSION"), kdeSessionVersion, sessionType)
 
 		createEvent("linux_run", map[string]interface{}{
-			"arch":        arch,
-			"desktop":     desktop,
-			"sessionType": sessionType,
+			"arch":           arch,
+			"desktop":        desktop,
+			"desktopVersion": kdeSessionVersion,
+			"sessionType":    sessionType,
 		})
 
 		container := os.Getenv("container")
@@ -220,6 +298,7 @@ func main() {
 	aptabaseClient.Quit = true
 	aptabaseClient.Stop()
 	if code := app.Run(os.Args); code > 0 {
+		sentry.Flush(2 * time.Second)
 		os.Exit(code)
 	}
 }
@@ -258,6 +337,21 @@ func applicationInfo(app *gtk.Application) string {
 	return fmt.Sprintf("Rokon%s", qualifier)
 }
 
+<<<<<<< HEAD
+=======
+func isRunningWithFirejail() bool {
+	appImage := os.Getenv("APPIMAGE")
+	appDir := os.Getenv("APPDIR")
+	return (appImage != "" && contains(appImage, "/run/firejail")) ||
+		(appDir != "" && contains(appDir, "/run/firejail"))
+}
+
+// Helper function to check if a string contains a substring.
+func contains(s, substr string) bool {
+	return strings.Contains(s, substr)
+}
+
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 // Search for Rokus asynchronously and return via channel
 func searchForRokus() chan []ssdp.Service {
 	resultChan := make(chan []ssdp.Service)
@@ -265,7 +359,11 @@ func searchForRokus() chan []ssdp.Service {
 	go func() {
 		defer close(resultChan)
 
+<<<<<<< HEAD
 		discoveredRokus, err := ssdp.Search("roku:ecp", 5, "")
+=======
+		discoveredRokus, err := ssdp.Search("roku:ecp", 1, "")
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 		if err != nil {
 			sentry.CaptureException(err)
 			log.Println("Error discovering Rokus:", err)
@@ -273,7 +371,25 @@ func searchForRokus() chan []ssdp.Service {
 		}
 
 		if discoveredRokus != nil {
+<<<<<<< HEAD
 			resultChan <- discoveredRokus // Send results back to the main thread
+=======
+			// Deduplicate based on LOCATION
+			// Needed because the SSDP code runs on EVERY interface :)
+			// So, if you have WiFi and Ethernet enabled, it will show two callbacks from your Roku TV.
+			// The code is just that *good*
+			locationMap := make(map[string]ssdp.Service)
+			for _, roku := range discoveredRokus {
+				locationMap[roku.Location] = roku
+			}
+
+			// Convert map back to a slice
+			uniqueRokus := make([]ssdp.Service, 0, len(locationMap))
+			for _, roku := range locationMap {
+				uniqueRokus = append(uniqueRokus, roku)
+			}
+			resultChan <- uniqueRokus // Send results back to the main thread
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 		} else {
 			resultChan <- nil // No Rokus found, send nil
 		}
@@ -294,7 +410,7 @@ func showAboutWindow(parent *gtk.ApplicationWindow, app *gtk.Application) {
 		("GTK: " + strconv.Itoa(int(gtk.GetMajorVersion())) + "." + strconv.Itoa(int(gtk.GetMinorVersion())) + "." + strconv.Itoa(int(gtk.GetMicroVersion()))))
 	aboutWindow.SetCopyright("2024 Brycen G and contributors, but mostly Brycen")
 	aboutWindow.SetWrapLicense(true)
-	aboutWindow.SetModal(true)
+	aboutWindow.SetModal(false)
 	aboutWindow.SetDestroyWithParent(true)
 
 	switch {
@@ -331,11 +447,15 @@ func showAboutWindow(parent *gtk.ApplicationWindow, app *gtk.Application) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 // Create the main menu
 func createMenu(window *gtk.ApplicationWindow, app *gtk.Application) *gio.Menu {
 	menu := gio.NewMenu()
 
 	// Create "Example" menu item
+<<<<<<< HEAD
 	exampleMenu := gio.NewMenuItem("Example", "example")
 	exampleSubMenu := gio.NewMenu()
 
@@ -359,10 +479,44 @@ func createMenu(window *gtk.ApplicationWindow, app *gtk.Application) *gio.Menu {
 	quitMenuItem.Connect("activate", func() {
 		app.Quit()
 	})
+=======
+	exampleMenu := gio.NewMenuItem("Help", "example")
+	exampleSubMenu := gio.NewMenu()
+
+	// Add "About This App" action
+	aboutAction := gio.NewSimpleAction("about", nil)
+	aboutAction.Connect("activate", func() {
+		showAboutWindow(window, app)
+	})
+	app.AddAction(aboutAction)
+	aboutMenuItem := gio.NewMenuItem("About This App", "app.about")
+	exampleSubMenu.AppendItem(aboutMenuItem)
+
+	// Add "Check For Updates" action
+	checkForUpdatesAction := gio.NewSimpleAction("check-for-updates", nil)
+	checkForUpdatesAction.Connect("activate", func() {
+		fmt.Println("Checking for updates...")
+	})
+	app.AddAction(checkForUpdatesAction)
+	updateMenuItem := gio.NewMenuItem("Check For Updates", "app.check-for-updates")
+	exampleSubMenu.AppendItem(updateMenuItem)
+
+	// Add "Quit" action
+	quitAction := gio.NewSimpleAction("quit", nil)
+	quitAction.Connect("activate", func() {
+		app.Quit()
+	})
+	app.AddAction(quitAction)
+	quitMenuItem := gio.NewMenuItem("Quit", "app.quit")
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 	exampleSubMenu.AppendItem(quitMenuItem)
 
 	exampleMenu.SetSubmenu(exampleSubMenu)
 	menu.AppendItem(exampleMenu)
+<<<<<<< HEAD
+=======
+
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 	return menu
 }
 
@@ -390,9 +544,19 @@ func fetchImageAsPaintable(url string) (string, error) {
 
 func activate(app *gtk.Application) {
 	window := gtk.NewApplicationWindow(app)
+<<<<<<< HEAD
 	window.SetTitle("Rokon: Control your Roku from your desktop")
 	window.SetChild(&gtk.NewLabel("Searching for Rokus on your network...").Widget)
 	const windowSize = 400
+=======
+	// Create the main menu
+	menu := createMenu(window, app)
+	app.SetMenubar(menu)
+	window.SetShowMenubar(true)
+	window.SetTitle("Rokon: Control your Roku from your desktop")
+	window.SetChild(&gtk.NewLabel("Searching for Rokus on your network...").Widget)
+	windowSize := 400
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 	window.SetDefaultSize(800, windowSize)
 	// Start searching for Rokus when the app is activated
 	rokuChan := searchForRokus()
@@ -401,6 +565,7 @@ func activate(app *gtk.Application) {
 	go func() {
 		discoveredRokus := <-rokuChan // Receive the result from the Roku discovery
 
+<<<<<<< HEAD
 		// Use glib.IdleAdd to ensure UI updates happen on the main thread
 		glib.IdleAdd(func() {
 			if discoveredRokus != nil {
@@ -410,12 +575,21 @@ func activate(app *gtk.Application) {
 				window.SetChild(&gtk.NewLabel("No Rokus discovered via SSDP!").Widget)
 			}
 		})
+=======
+		// Perform the request and unmarshal directly into the Root struct
+		var root Root
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 
 		// Once Roku discovery completes, run Resty logic
 		if discoveredRokus != nil {
 			client := resty.New()
 			resp, err := client.R().
+<<<<<<< HEAD
 				EnableTrace().
+=======
+			SetResult(&root). // Set the result to automatically unmarshal the response
+			EnableTrace().
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 				Get(discoveredRokus[0].Location + "/")
 
 			if err != nil {
@@ -429,6 +603,7 @@ func activate(app *gtk.Application) {
 				fmt.Println("Time:", resp.Time())
 				fmt.Println("Received At:", resp.ReceivedAt())
 				fmt.Println("Body:", resp)
+<<<<<<< HEAD
 			}
 			notification := gio.NewNotification("Roku discovered")
 			// Convert the list of Rokus into a single string
@@ -439,6 +614,44 @@ func activate(app *gtk.Application) {
 			}
 
 			// Join the list into a single string, each on a new line
+=======
+						// Use glib.IdleAdd to ensure UI updates happen on the main thread
+		glib.IdleAdd(func() {
+			if discoveredRokus != nil {
+				log.Println("Discovered Rokus:", discoveredRokus)
+				// window.SetChild(&gtk.NewLabel("Discovered Rokus:").Widget)
+					// Create a vertical box to hold the widgets
+				vbox := gtk.NewBox(gtk.OrientationVertical, 5)
+				window.SetChild(vbox)
+							// Create a label with the friendly name and IP address
+			labelText := fmt.Sprintf("Friendly Name: %s\nIP Address: %s",
+				root.Device.FriendlyName, discoveredRokus[0].Location)
+				label := gtk.NewLabel(labelText)
+				vbox.Append(label) // Add label to the vertical box
+
+			} else {
+				window.SetChild(&gtk.NewLabel("No Rokus discovered via SSDP!").Widget)
+			}
+		})
+			}
+			notification := gio.NewNotification("Roku Discovered")
+
+			// Limit verbose details like USN and Location, just list friendly names (e.g., device names or IPs).
+			var rokuList []string
+			for i, roku := range discoveredRokus {
+				if i < 3 {
+					// Include a simple label or name for each Roku. Replace `roku.USN` with a more user-friendly field if available.
+					rokuList = append(rokuList, fmt.Sprintf("Roku Device %d: %v", i+1, roku.Location))
+				}
+			}
+
+			// If more than 3 Rokus are discovered, add a note.
+			if len(discoveredRokus) > 3 {
+				rokuList = append(rokuList, fmt.Sprintf("...and %d more devices", len(discoveredRokus)-3))
+			}
+
+			// Join the list into a single string
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 			rokuListString := strings.Join(rokuList, "\n")
 			notification.SetBody(rokuListString)
 
@@ -446,6 +659,10 @@ func activate(app *gtk.Application) {
 			// Create a new GIcon from the file
 			imagePath, err := fetchImageAsPaintable(url)
 			if err != nil {
+<<<<<<< HEAD
+=======
+				sentry.CaptureException(err)
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 				log.Println("Error getting image from URL:", err)
 				return
 			}
@@ -453,6 +670,10 @@ func activate(app *gtk.Application) {
 			// 	log.Fatalln("bytesIcon is nil!")
 			// }
 			notification.SetIcon(gio.NewFileIcon(gio.NewFileForPath(imagePath)))
+<<<<<<< HEAD
+=======
+			notification.SetDefaultAction("app.connect-roku")
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 			// Set the icon for the notification
 			notification.SetCategory("device")
 			app.SendNotification("roku-discovered", notification)
@@ -460,6 +681,7 @@ func activate(app *gtk.Application) {
 	}()
 
 	window.SetVisible(true)
+<<<<<<< HEAD
 	// Create the main menu
 	menu := createMenu(window, app)
 	app.SetMenubar(menu)
@@ -489,15 +711,30 @@ func activate(app *gtk.Application) {
 	window.SetVisible(true)
 >>>>>>> e2d14b4 (refactor: use window set visible instead of deprecated method)
 }
+=======
+	glib.IdleAdd(func() {
+		log.Println("idleadd")
+	})
+>>>>>>> cee6275 (feat: implemented roku discover and sync with master)
 
-func isRunningWithFirejail() bool {
-	appImage := os.Getenv("APPIMAGE")
-	appDir := os.Getenv("APPDIR")
-	return (appImage != "" && contains(appImage, "/run/firejail")) ||
-		(appDir != "" && contains(appDir, "/run/firejail"))
-}
+	keyController := gtk.NewEventControllerKey()
+	keyController.SetName("keyController")
+	window.AddController(keyController)
 
-// Helper function to check if a string contains a substring.
-func contains(s, substr string) bool {
-	return strings.Contains(s, substr)
+	keyController.Connect("key-pressed", func(controller *gtk.EventControllerKey, code uint) {
+		println(code)
+		if code == 93 { // Right-click
+			println("right clicked")
+		}
+	})
+	focusController := gtk.NewEventControllerFocus()
+	focusController.SetName("focusController")
+	window.AddController(focusController)
+	gestureClick := gtk.NewGestureClick()
+	gestureClick.SetName("gestureClick")
+	gestureClick.Connect("pressed", func(_, numberOfPresses uint) {
+		fmt.Println("Number of presses %s", numberOfPresses)
+	})
+	window.AddController(gestureClick)
+	// window.Maximize()
 }
