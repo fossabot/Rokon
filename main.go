@@ -143,17 +143,15 @@ func main() {
 	if err != nil {
 		log.Fatalf("sentry.Init: %s", err)
 	}
-
-	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationDefaultFlags)
-	aptabaseClient = aptabase.NewClient("A-US-0332858461", version, uint64(133), true, "")
 	switch runtime.GOOS {
 	case "windows", "darwin":
 		fmt.Println("Running on Windows or macOS.")
 		// Use GLib to set the GTK_CSD environment variable for Client-Side Decorations
 		glib.Setenv("GTK_CSD", "1", true)
 	default:
-		fmt.Println("Running on Linux or other OS.")
 	}
+	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationDefaultFlags)
+	aptabaseClient = aptabase.NewClient("A-US-0332858461", version, uint64(133), true, "")
 	if version != "" {
 		app.SetVersion(version)
 	}
