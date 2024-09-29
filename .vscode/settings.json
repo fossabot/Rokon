@@ -83,6 +83,7 @@
                 "-no-start",
                 "-here"
             ],
+            "go.gopath": "C:\\msys64\\clang64\\lib\\go",
             "overrideName": true,
             "env": {
                 "CHERE_INVOKING": "1",
