@@ -155,6 +155,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("sentry.Init: %s", err)
 	}
+
+	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationDefaultFlags)
 	switch runtime.GOOS {
 	case "windows", "darwin":
 		fmt.Println("Running on Windows or macOS.")
@@ -165,6 +167,7 @@ func main() {
 
 	default:
 	}
+<<<<<<< HEAD
 	aptabaseClient = aptabase.NewClient("A-US-0332858461", version, uint64(133), true, "")
 	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationDefaultFlags)
 <<<<<<< HEAD
@@ -187,6 +190,9 @@ func main() {
 =======
 	if version != "" {
 >>>>>>> 1a31384 (fix(telemetry): remove possible points of PII)
+=======
+	aptabaseClient = aptabase.NewClient("A-US-0332858461", version, uint64(133), true, "")	if version != "" {
+>>>>>>> a2009e2 (chore: move client side decorations environment variable to after gtk has initialized)
 		app.SetVersion(version)
 	}
 	switch runtime.GOOS {
