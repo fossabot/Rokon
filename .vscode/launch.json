@@ -9,9 +9,10 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
+            "windows": {
+            },
             "program": "${fileDirname}",
             "env": {},
-            "args": []
         }
     ]
 }

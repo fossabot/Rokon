@@ -73,6 +73,26 @@
         "Slowroll",
         "SSDP",
         "winget"
-    ]
-
+    ],
+    "terminal.integrated.profiles.windows": {
+        "CLANG64": {
+            "path": "C:\\msys64\\msys2_shell.cmd",
+            "args": [
+                "-defterm",
+                "-clang64",
+                "-no-start",
+                "-here"
+            ],
+            "overrideName": true,
+            "env": {
+                "CHERE_INVOKING": "1",
+                "MSYSTEM": "CLANG64",
+                // THE FOLLOWING IS A HACK TO PLACE THE MSYS PATHS BEFORE THE WINDOWS ONES
+                "PATH": "/usr/bin;/clang64/bin;${env:PATH}"
+            },
+            "color": "terminal.ansiMagenta",
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "CLANG64",
+    "makefile.configureOnOpen": false,
 }

@@ -7,13 +7,37 @@
             "label": "make",
             "type": "shell",
             "command": "make",
+            "windows": {
+                "args": [],
+                "command": "C:\\msys64\\usr\\bin\\make.exe",
+                "options": {
+                    "shell": {
+                        "executable": "C:\\msys64\\usr\\bin\\make.exe",
+                        // "args": [
+                        //     "-defterm",
+                        //     "-clang64",
+                        //     "-no-start",
+                        //     "-here"
+                        // ],
+                    }
+                },
+                "env": {
+                    "CHERE_INVOKING": "1",
+                    "MSYSTEM": "CLANG64",
+                    // THE FOLLOWING IS A HACK TO PLACE THE MSYS PATHS BEFORE THE WINDOWS ONES
+                    "PATH": "/usr/bin;/clang64/bin;${env:PATH}"
+                },
+            },
             "problemMatcher": [
                 "$go"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
         }
     ]
 }

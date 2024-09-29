@@ -34,7 +34,7 @@ Then, open the MSYS2 CLANG64 terminal and run the following commands:
 
 ```bash
 pacman -Syu
-pacman -S --noconfirm git mingw-w64-clang-x86_64-go mingw-w64-clang-x86_64-gtk4 mingw-w64-clang-x86_64-gobject-introspection make
+pacman -S --noconfirm git mingw-w64-clang-x86_64-go mingw-w64-clang-x86_64-gtk4 mingw-w64-clang-x86_64-gobject-introspection mingw-w64-clang-x86_64-gdb mingw-w64-clang-x86_64-toolchain make
 ```
 
 #### Windows on ARM (like Snapdragon X Elite) (aarch64 or ARM64)
@@ -49,7 +49,7 @@ Then, open the MSYS2 CLANGARM64 terminal and run the following commands:
 
 ```bash
 pacman -Syu
-pacman -S --noconfirm git mingw-w64-clang-aarch64-go mingw-w64-clang-aarch64-gtk4 mingw-w64-clang-aarch64-gobject-introspection make
+pacman -S --noconfirm git mingw-w64-clang-aarch64-go mingw-w64-clang-aarch64-gtk4 mingw-w64-clang-aarch64-gobject-introspection mingw-w64-clang-aarch64-toolchain make
 ```
 
 ### 🍎 macOS

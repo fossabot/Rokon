@@ -94,7 +94,11 @@ fatimage: ## build self contained AppImage that can run on older Linux systems w
 	cp ./AppDir/usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png ./AppDir
 	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 mkappimage -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-*x86_64.AppImage.zsync" ./AppDir
 
-
+.PHONY: dev
+dev: ## go run -v .
+	$(call print-target)
+	@echo "Starting development server for Rokon: $(VERSION)"
+	go run -v .
 
 
 .PHONY: mod
@@ -108,9 +112,8 @@ inst: ## go install tools
 	$(call print-target)
 	cd tools && go install $(shell cd tools && go list -e -f '{{ join .Imports " " }}' -tags=tools)
 
-## Linux only, I have no idea how to do this on Windows
 .PHONY: install
-install:
+install: ## installs Rokon into $PATH and places desktop files
 	$(call print-target)
 	@echo "Installing $(TARGET) to $(BINDIR)"
 	@echo "version $(VERSION)"
