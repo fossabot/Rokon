@@ -308,7 +308,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - macos-latest
+          - macos-15
           - macos-13 # macOS 13 is Monterey and it runs on amd64
     runs-on: ${{ matrix.os }}
     steps:
@@ -324,7 +324,7 @@ jobs:
           go mod download all
       - name: 🤖 Build Project
         run: |
-          make PACKAGED=true PACKAGEFORMAT=dmg EXTRALDFLAGS="-s -w" EXTRAGOFLAGS="-trimpath" build
+          make PACKAGED=true PACKAGEFORMAT=dmg EXTRAGOFLAGS="-trimpath" build
       # Attribution: https://github.com/getseabird/seabird/blob/main/.github/workflows/release.yaml#L194
       # Word for Word, bar for bar.
       - name: 🗿 Produce DMG
