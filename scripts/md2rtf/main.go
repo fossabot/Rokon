@@ -281,6 +281,7 @@ func getText(n *gohtml.Node) string {
 func main() {
 	if os.Args[1] == "md2pdf" {
 		md2pdf()
+		return
 	}
 	files, err := ioutil.ReadDir(rootDir)
 	if err != nil {
