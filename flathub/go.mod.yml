@@ -8,10 +8,10 @@
   type: archive
   url: https://proxy.golang.org/github.com/adrg/xdg/@v/v0.5.0.zip
 - dest: vendor/github.com/brycensranch/go-aptabase/pkg
-  sha256: 5de8faf36413c2cf6092b94d18abf3575bac528afcc3eeca2047fe3392e267f8
+  sha256: c50f40a88dd91b63c6d109593499867a3ad50c30f78aed8cb11df249926402ac
   strip-components: 4
   type: archive
-  url: https://proxy.golang.org/github.com/brycensranch/go-aptabase/pkg/@v/v0.0.0-20240929200046-44ea14d71144.zip
+  url: https://proxy.golang.org/github.com/brycensranch/go-aptabase/pkg/@v/v0.0.0-20240930002106-6ef13ab5bf3f.zip
 - dest: vendor/github.com/diamondburned/gotk4/pkg
   sha256: c9723192c5123d33d85cfbc39631f8246a76f767b44b36fb27f4366e7d8acdcd
   strip-components: 4
