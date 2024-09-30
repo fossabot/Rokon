@@ -12,6 +12,7 @@ require (
 
 require (
 	github.com/alecthomas/chroma/v2 v2.10.0 // indirect
+	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/dlclark/regexp2 v1.10.0 // indirect
 	github.com/go-swiss/fonts v0.0.0-20221219152310-0b267088f53d // indirect
 	github.com/jellydator/ttlcache/v3 v3.1.0 // indirect

@@ -8,6 +8,7 @@ import (
 	"image"
 	"image/jpeg"
 	"image/png"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -16,6 +17,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/andybalholm/brotli"
 	pdf "github.com/stephenafamo/goldmark-pdf"
 	rtfdoc "github.com/therox/rtf-doc"
 	"github.com/yuin/goldmark"
@@ -40,12 +42,27 @@ const baseURL = "https://raw.githubusercontent.com/BrycensRanch/Rokon/refs/heads
 // Fetch image bytes from a URL or local path
 func fetchImage(src string, rootDir string) ([]byte, error) {
 	if strings.HasPrefix(src, "http://") || strings.HasPrefix(src, "https://") {
-		resp, err := http.Get(src)
+		req, err := http.NewRequest("GET", src, nil)
+		if err != nil {
+			return nil, err
+		}
+
+		// Set the Accept-Encoding header to 'identity'
+		req.Header.Set("Accept-Encoding", "identity;q=0")
+		resp, err := http.DefaultClient.Do(req)
+		var body io.Reader = resp.Body
+		if resp.Header.Get("Content-Encoding") == "br" {
+			// Decode the Brotli response
+			body = brotli.NewReader(resp.Body)
+		} else {
+			body = resp.Body
+		}
+
 		if err != nil {
 			return nil, err
 		}
 		defer resp.Body.Close()
-		return ioutil.ReadAll(resp.Body)
+		return ioutil.ReadAll(body)
 	} else {
 		// Handle local image paths
 		localImagePath := filepath.Join(rootDir, src)
