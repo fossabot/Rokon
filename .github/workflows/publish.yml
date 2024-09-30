@@ -270,8 +270,8 @@ jobs:
           go run -v . md2rtf
           go run -v . md2pdf
           # TODO: Have MSI installer actually install the pdf files
-          mv *.pdf $RESULTSDIR
-          mv *.rtf ../../windows
+          mv ../../*.pdf $RESULTSDIR
+          mv ../../*.rtf ../../windows
 
       - name: Make MSI installer
         uses: ./.github/actions/make-advinst-app
