@@ -5,7 +5,7 @@
 By default, Rokon collects telemetry data about how my application is performing in two ways:
 
 - Application usage data (Tells us how many people are using my application on what systems)
-- Error reporting and performance data. (Automatically raises a internal issue when you experience a crash with telemetry on)
+- Error reporting and performance data. (Automatically raises an internal issue when you experience a crash with telemetry on)
 - Your Roku's local IP ie `10.0.0.32` will be collected to better understand what local IP addresses Rokon should be looking out for.
 - What Operating System you're running and which version you're using. ie `Windows 10 Home` or `macOS Sonana` or `Fedora Linux 42 (KDE Plasma) x86_64 Linux 6.10.9`
 - Application version ie `rokon_1.0.0+44e1612`

@@ -10,6 +10,7 @@
 *.h
 *.d
 *.o
+*.pdf
 *.dylib
 rokon
 Rokon

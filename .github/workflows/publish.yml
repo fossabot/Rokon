@@ -262,10 +262,15 @@ jobs:
           export RESULTSDIR=$(realpath "${{ runner.temp }}\\exe")
           make TARGET="$RESULTSDIR/Rokon.exe" PREFIX="$RESULTSDIR" BINDIR="$RESULTSDIR" install || true
 
-      - name: Produce plain text files from README AND LICENSE
-        working-directory: scripts/rtf2plaintext
+      - name: Produce rtf files for installer and PDF files for end user
+        working-directory: scripts/md2rtf
         run: |
+          export RESULTSDIR=$(realpath "${{ runner.temp }}\\exe")
           go run -v .
+          go run -v md2pdf.go
+          # TODO: Have MSI installer actually install the pdf files
+          mv *.pdf $RESULTSDIR
+          mv *.rtf ../../windows
 
       - name: Make MSI installer
         uses: ./.github/actions/make-advinst-app
