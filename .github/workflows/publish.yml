@@ -270,6 +270,12 @@ jobs:
           go run -v . md2rtf
           go run -v . md2pdf
           # TODO: Have MSI installer actually install the pdf files
+
+          # The conversion to rtf with colors and what not seems legally questionable so...
+          rm ../../LICENSE.rtf
+          wget https://www.gnu.org/licenses/agpl-3.0.rtf
+          mv agpl-3.0.rtf LICENSE.rtf
+          mv LICENSE.rtf ../../
           mv ../../*.pdf $RESULTSDIR
           mv ../../*.rtf ../../windows
 
