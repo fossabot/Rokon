@@ -6,7 +6,7 @@ github.com/KarpelesLab/weak
 github.com/adrg/xdg
 github.com/adrg/xdg/internal/pathutil
 github.com/adrg/xdg/internal/userdirs
-# github.com/brycensranch/go-aptabase/pkg v0.0.0-20240930002106-6ef13ab5bf3f
+# github.com/brycensranch/go-aptabase/pkg v0.0.0-20240930134225-2e7708b1072e
 ## explicit; go 1.22.0
 github.com/brycensranch/go-aptabase/pkg/aptabase/v1
 github.com/brycensranch/go-aptabase/pkg/device/v1
