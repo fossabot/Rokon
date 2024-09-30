@@ -2,14 +2,17 @@
 package main
 
 import (
+	"encoding/xml"
 	"fmt"
 	"log"
+	"net"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strconv"
 	"strings"
 	"time"
+
 	"github.com/adrg/xdg"
 
 	"github.com/brycensranch/go-aptabase/pkg/aptabase/v1"
@@ -20,14 +23,13 @@ import (
 	"github.com/getsentry/sentry-go"
 	"github.com/go-resty/resty/v2"
 	"github.com/koron/go-ssdp"
-	"encoding/xml"
 )
 
 var aptabaseClient *aptabase.Client // Package-level variable
 
 // Root represents the root element of the XML.
 type Root struct {
-	XMLName    xml.Name  `xml:"root"`
+	XMLName     xml.Name    `xml:"root"`
 	SpecVersion SpecVersion `xml:"specVersion"`
 	Device      Device      `xml:"device"`
 }
@@ -40,18 +42,18 @@ type SpecVersion struct {
 
 // Device represents the device details.
 type Device struct {
-	DeviceType        string      `xml:"deviceType"`
-	FriendlyName      string      `xml:"friendlyName"`
-	Manufacturer      string      `xml:"manufacturer"`
-	ManufacturerURL   string      `xml:"manufacturerURL"`
-	ModelDescription  string      `xml:"modelDescription"`
-	ModelName         string      `xml:"modelName"`
-	ModelNumber       string      `xml:"modelNumber"`
-	ModelURL          string      `xml:"modelURL"`
-	SerialNumber      string      `xml:"serialNumber"`
-	UDN               string      `xml:"UDN"`
-	IconList          IconList    `xml:"iconList"`
-	ServiceList       ServiceList  `xml:"serviceList"`
+	DeviceType       string      `xml:"deviceType"`
+	FriendlyName     string      `xml:"friendlyName"`
+	Manufacturer     string      `xml:"manufacturer"`
+	ManufacturerURL  string      `xml:"manufacturerURL"`
+	ModelDescription string      `xml:"modelDescription"`
+	ModelName        string      `xml:"modelName"`
+	ModelNumber      string      `xml:"modelNumber"`
+	ModelURL         string      `xml:"modelURL"`
+	SerialNumber     string      `xml:"serialNumber"`
+	UDN              string      `xml:"UDN"`
+	IconList         IconList    `xml:"iconList"`
+	ServiceList      ServiceList `xml:"serviceList"`
 }
 
 // IconList holds a list of icons.
@@ -75,19 +77,18 @@ type ServiceList struct {
 
 // Service represents an individual service.
 type Service struct {
-	ServiceType  string `xml:"serviceType"`
-	ServiceID    string `xml:"serviceId"`
-	ControlURL   string `xml:"controlURL"`
-	EventSubURL  string `xml:"eventSubURL"`
-	SCPDURL      string `xml:"SCPDURL"`
+	ServiceType string `xml:"serviceType"`
+	ServiceID   string `xml:"serviceId"`
+	ControlURL  string `xml:"controlURL"`
+	EventSubURL string `xml:"eventSubURL"`
+	SCPDURL     string `xml:"SCPDURL"`
 }
 
 // Structure to hold GitHub release information
 type GitHubRelease struct {
-    TagName string `json:"tag_name"`
-    HtmlURL string `json:"html_url"`
+	TagName string `json:"tag_name"`
+	HtmlURL string `json:"html_url"`
 }
-
 
 func chooseNonEmpty(first, second string) string {
 	if first != "" {
@@ -279,7 +280,7 @@ func activateCommandLine(app *gtk.Application, commandLine *gio.ApplicationComma
 		}
 	}
 	commandLine.PrintLiteral("HI FROM COMMAND LINE RAHH")
-	return 0 
+	return 0
 }
 
 func applicationInfo(app *gtk.Application) string {
@@ -431,38 +432,37 @@ func createMenu(window *gtk.ApplicationWindow, app *gtk.Application) *gio.Menu {
 	app.AddAction(aboutAction)
 	exampleSubMenu.AppendItem(aboutMenuItem)
 
-		// Add "Check For Updates" action
-		checkForUpdatesAction := gio.NewSimpleAction("check-for-updates", nil)
-		checkForUpdatesAction.Connect("activate", func() {
-				const url = "https://api.github.com/repos/BrycensRanch/Rokon/releases/latest"
-		
-			// Create a Resty client
-			client := resty.New()
-		
-			// Make the request
-			resp, err := client.R().SetResult(&GitHubRelease{}).Get(url)
-			if err != nil {
-				sentry.CaptureException(err)
-				showDialog("Update Check Failed", fmt.Sprintf("Error fetching release information: %v", err), app)
-				return
-			}
-			
-			if resp.StatusCode() != 200 {
-				showDialog("Update Check Failed", fmt.Sprintf("Unable to fetch release info: %s", resp.Status()), app)
-				return
-			}
-			
-		
-			// Decode the response into the GitHubRelease struct
-			release := resp.Result().(*GitHubRelease)
-		
-			// Compare versions
-			if release.TagName != app.Version() {
-				showDialog("Update Available", "A new version is available: "+release.TagName, app)
-			} else {
-				showDialog("Up to Date", "Your application is up to date.", app)
-			}
-		})
+	// Add "Check For Updates" action
+	checkForUpdatesAction := gio.NewSimpleAction("check-for-updates", nil)
+	checkForUpdatesAction.Connect("activate", func() {
+		const url = "https://api.github.com/repos/BrycensRanch/Rokon/releases/latest"
+
+		// Create a Resty client
+		client := resty.New()
+
+		// Make the request
+		resp, err := client.R().SetResult(&GitHubRelease{}).Get(url)
+		if err != nil {
+			sentry.CaptureException(err)
+			showDialog("Update Check Failed", fmt.Sprintf("Error fetching release information: %v", err), app)
+			return
+		}
+
+		if resp.StatusCode() != 200 {
+			showDialog("Update Check Failed", fmt.Sprintf("Unable to fetch release info: %s", resp.Status()), app)
+			return
+		}
+
+		// Decode the response into the GitHubRelease struct
+		release := resp.Result().(*GitHubRelease)
+
+		// Compare versions
+		if release.TagName != app.Version() {
+			showDialog("Update Available", "A new version is available: "+release.TagName, app)
+		} else {
+			showDialog("Up to Date", "Your application is up to date.", app)
+		}
+	})
 
 	app.AddAction(checkForUpdatesAction)
 	exampleSubMenu.AppendItem(updateMenuItem)
@@ -482,18 +482,18 @@ func createMenu(window *gtk.ApplicationWindow, app *gtk.Application) *gio.Menu {
 }
 
 // Function to show a dialog with the specified title and message
-func showDialog(title, message string, app *gtk.Application ) {
+func showDialog(title, message string, app *gtk.Application) {
 	theWindow := gtk.NewWindow()
-    dialog := gtk.NewMessageDialog(
-        theWindow,
-        gtk.DialogDestroyWithParent,
-        gtk.MessageInfo,
-        gtk.ButtonsNone,
-    )
+	dialog := gtk.NewMessageDialog(
+		theWindow,
+		gtk.DialogDestroyWithParent,
+		gtk.MessageInfo,
+		gtk.ButtonsNone,
+	)
 
-    dialog.SetTitle(title)
+	dialog.SetTitle(title)
 	theWindow.Show()
-    dialog.Show()
+	dialog.Show()
 }
 
 func fetchImageAsPaintable(url string) (string, error) {
@@ -519,6 +519,33 @@ func fetchImageAsPaintable(url string) (string, error) {
 }
 
 func activate(app *gtk.Application) {
+	interfaces, err := net.Interfaces()
+	if err != nil {
+		fmt.Println("Error fetching network interfaces:", err)
+		return
+	}
+
+	for _, iface := range interfaces {
+		// Get the interface status
+		status := "down"
+		if iface.Flags&net.FlagUp != 0 {
+			status = "up"
+		}
+		// Determine the type of the interface
+		var ifaceType string
+		if iface.Flags&net.FlagLoopback != 0 {
+			ifaceType = "loopback"
+		} else if strings.Contains(iface.Name, "en") || strings.Contains(iface.Name, "eth") {
+			ifaceType = "Ethernet"
+		} else if strings.Contains(iface.Name, "wl") {
+			ifaceType = "Wi-Fi"
+		} else {
+			ifaceType = "Unknown"
+		}
+
+		// Print interface details
+		fmt.Printf("Interface: %s, Status: %s, Type: %s\n", iface.Name, status, ifaceType)
+	}
 	window := gtk.NewApplicationWindow(app)
 	window.SetTitle("Rokon: Control your Roku from your desktop")
 	window.SetChild(&gtk.NewLabel("Searching for Rokus on your network...").Widget)
@@ -555,86 +582,86 @@ func activate(app *gtk.Application) {
 	})
 	window.AddController(gestureClick)
 
-// window.Maximize()
+	// window.Maximize()
 	// Start searching for Rokus when the app is activated
 	rokuChan := searchForRokus()
 
-// Goroutine that waits for Roku discovery to finish
-go func() {
-    discoveredRokus := <-rokuChan // Receive the result from the Roku discovery
+	// Goroutine that waits for Roku discovery to finish
+	go func() {
+		discoveredRokus := <-rokuChan // Receive the result from the Roku discovery
 
-    // Use glib.IdleAdd to ensure UI updates happen on the main thread
-    glib.IdleAdd(func() {
-        if discoveredRokus != nil {
-            fmt.Println("Discovered Rokus:", discoveredRokus)
-            window.SetChild(&gtk.NewLabel("Discovered Rokus:").Widget)
-        } else {
-            window.SetChild(&gtk.NewLabel("No Rokus discovered via SSDP!").Widget)
-        }
-    })
+		// Use glib.IdleAdd to ensure UI updates happen on the main thread
+		glib.IdleAdd(func() {
+			if discoveredRokus != nil {
+				fmt.Println("Discovered Rokus:", discoveredRokus)
+				window.SetChild(&gtk.NewLabel("Discovered Rokus:").Widget)
+			} else {
+				window.SetChild(&gtk.NewLabel("No Rokus discovered via SSDP!").Widget)
+			}
+		})
 
-    // Perform the request and unmarshal directly into the Root struct
-    var root Root
+		// Perform the request and unmarshal directly into the Root struct
+		var root Root
 
-    // Once Roku discovery completes, run Resty logic
-    if discoveredRokus != nil {
-        client := resty.New()
-        resp, err := client.R().
-            SetResult(&root). // Set the result to automatically unmarshal the response
-            Get(discoveredRokus[0].Location + "/")
+		// Once Roku discovery completes, run Resty logic
+		if discoveredRokus != nil {
+			client := resty.New()
+			resp, err := client.R().
+				SetResult(&root). // Set the result to automatically unmarshal the response
+				Get(discoveredRokus[0].Location + "/")
 
-        if err != nil {
-            fmt.Println("Error:", err)
-            sentry.CaptureException(err)
-        } else {
-            fmt.Println("Trace Info:", resp.Request.TraceInfo())
-            fmt.Println("Status Code:", resp.StatusCode())
-            fmt.Println("Status:", resp.Status())
-            fmt.Println("Proto:", resp.Proto())
-            fmt.Println("Time:", resp.Time())
-            fmt.Println("Received At:", resp.ReceivedAt())
-            fmt.Println("Body:", resp)
-        }
+			if err != nil {
+				fmt.Println("Error:", err)
+				sentry.CaptureException(err)
+			} else {
+				fmt.Println("Trace Info:", resp.Request.TraceInfo())
+				fmt.Println("Status Code:", resp.StatusCode())
+				fmt.Println("Status:", resp.Status())
+				fmt.Println("Proto:", resp.Proto())
+				fmt.Println("Time:", resp.Time())
+				fmt.Println("Received At:", resp.ReceivedAt())
+				fmt.Println("Body:", resp)
+			}
 
-        notification := gio.NewNotification("Roku discovered")
-        var rokuList []string
-        for i, roku := range discoveredRokus {
-            if i < 3 {
-                rokuList = append(rokuList, fmt.Sprintf("Roku Device %d: %v", i+1, roku.Location))
-            }
-        }
-        if len(discoveredRokus) > 3 {
-            rokuList = append(rokuList, fmt.Sprintf("...and %d more devices", len(discoveredRokus)-3))
-        }
-        rokuListString := strings.Join(rokuList, "\n")
-        notification.SetBody(rokuListString)
+			notification := gio.NewNotification("Roku discovered")
+			var rokuList []string
+			for i, roku := range discoveredRokus {
+				if i < 3 {
+					rokuList = append(rokuList, fmt.Sprintf("Roku Device %d: %v", i+1, roku.Location))
+				}
+			}
+			if len(discoveredRokus) > 3 {
+				rokuList = append(rokuList, fmt.Sprintf("...and %d more devices", len(discoveredRokus)-3))
+			}
+			rokuListString := strings.Join(rokuList, "\n")
+			notification.SetBody(rokuListString)
 
-        url := discoveredRokus[0].Location + "/device-image.png"
-        imagePath, err := fetchImageAsPaintable(url)
-        if err != nil {
-            sentry.CaptureException(err)
-            log.Println("Error getting image from URL:", err)
-            return
-        }
-        notification.SetIcon(gio.NewFileIcon(gio.NewFileForPath(imagePath)))
-        notification.SetDefaultAction("app.connect-roku")
-        notification.SetCategory("device")
-        app.SendNotification("roku-discovered", notification)
+			url := discoveredRokus[0].Location + "/device-image.png"
+			imagePath, err := fetchImageAsPaintable(url)
+			if err != nil {
+				sentry.CaptureException(err)
+				log.Println("Error getting image from URL:", err)
+				return
+			}
+			notification.SetIcon(gio.NewFileIcon(gio.NewFileForPath(imagePath)))
+			notification.SetDefaultAction("app.connect-roku")
+			notification.SetCategory("device")
+			app.SendNotification("roku-discovered", notification)
 
-        // UI update for discovered Rokus
-        glib.IdleAdd(func() {
-            if discoveredRokus != nil {
-                log.Println("Discovered Rokus:", discoveredRokus)
-                vbox := gtk.NewBox(gtk.OrientationVertical, 5)
-                window.SetChild(vbox)
-                labelText := fmt.Sprintf("Friendly Name: %s\nIP Address: %s",
-                    root.Device.FriendlyName, discoveredRokus[0].Location)
-                label := gtk.NewLabel(labelText)
-                vbox.Append(label) // Add label to the vertical box
-            } else {
-                window.SetChild(&gtk.NewLabel("No Rokus discovered via SSDP!").Widget)
-            }
-        })
-    }
-}()
+			// UI update for discovered Rokus
+			glib.IdleAdd(func() {
+				if discoveredRokus != nil {
+					log.Println("Discovered Rokus:", discoveredRokus)
+					vbox := gtk.NewBox(gtk.OrientationVertical, 5)
+					window.SetChild(vbox)
+					labelText := fmt.Sprintf("Friendly Name: %s\nIP Address: %s",
+						root.Device.FriendlyName, discoveredRokus[0].Location)
+					label := gtk.NewLabel(labelText)
+					vbox.Append(label) // Add label to the vertical box
+				} else {
+					window.SetChild(&gtk.NewLabel("No Rokus discovered via SSDP!").Widget)
+				}
+			})
+		}
+	}()
 }
