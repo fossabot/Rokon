@@ -267,7 +267,7 @@ jobs:
         run: |
           export RESULTSDIR=$(realpath "${{ runner.temp }}\\exe")
           go run -v .
-          go run -v md2pdf.go
+          go run -v . md2pdf
           # TODO: Have MSI installer actually install the pdf files
           mv *.pdf $RESULTSDIR
           mv *.rtf ../../windows
