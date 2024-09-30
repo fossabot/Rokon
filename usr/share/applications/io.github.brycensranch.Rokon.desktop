@@ -1,9 +1,17 @@
+# Copyright 2024 BrycensRanch <brycengranville@outlook.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
 [Desktop Entry]
 Type=Application
 NoDisplay=false
 Terminal=false
-Exec=/usr/bin/rokon
-Icon=rokon
+Exec=rokon
+TryExec=rokon
+Icon=io.github.brycensranch.Rokon
 Name=Rokon
-Comment=Roku Remote
-Categories=Utility
+GenericName=Roku Remote
+Comment=Control your Roku TV
+Categories=GNOME;GTK;Utility
+Keywords=remote;roku;rremote;remote control
+StartupNotify=true
+DBusActivatable=true
+X-GNOME-UsesNotifications=true

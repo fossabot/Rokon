@@ -10,6 +10,7 @@
 *.h
 *.d
 *.o
+*.pdf
 *.dylib
 rokon
 Rokon
@@ -19,7 +20,9 @@ rokon_puregotk4
 *.deb
 *.rpm
 *.AppImage
+*.flatpak
 *.dmg
+dmg/
 *.pkg
 *.nupkg
 *.tar.gz
@@ -28,10 +31,31 @@ rokon_puregotk4
 *.tar.lz
 *.tar**
 *.tgz
+*.7z
+*.log
 *.zip
+*.msi
 *.apk
 *.pacman
+AppDir
+flathub/.flatpak-builder
+flathub/repo
+**/node_modules/**
+.github/node_modules
+appimage-build
+*.zsync
+appimagetool
+*.upx
+*.000
+.flatpak-builder
+flathub/build
+flathub/export
+flathub/builddir
+rpm
+debian/.debhelper
 
+*.rtf
+*.txt
 
 # Arch Linux MAKEPKG
 pkg/
@@ -64,3 +88,4 @@ dist/
 # env files that usually contain secrets or local config
 .env
 .envrc
+.vscode/c_cpp_properties.json

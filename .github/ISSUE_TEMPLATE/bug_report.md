@@ -1,8 +1,8 @@
 ---
 name: Bug report about: Create a report to help us improve 
-title: "[BUG]"
+title: "bug:"
 labels: 'bug'
-assignees: ''
+assignees: 'BrycensRanch'
 
 ---
 
@@ -23,6 +23,6 @@ assignees: ''
 
 **Server Information (please complete the following information):**
 
-- TownyPlus Dump Link (`/townyplus dump`):
+- Rokon Dump Link (`rokon dump`):
 
 **Additional context** Add any other context about the problem here.

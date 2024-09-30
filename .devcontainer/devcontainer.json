@@ -1,11 +1,10 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/typescript-node
 {
 	"name": "Rokon Development",
-	"image": "./Dockerfile",
+  "build": { "dockerfile": "Dockerfile" },
 	"customizations": {
 		"vscode": {
-			"extensions": ["golang.Go"]
+			"extensions": ["golang.Go", "davidanson.vscode-markdownlint", "ms-azuretools.vscode-docker", "vivaxy.vscode-conventional-commits", "rangav.vscode-thunder-client", "rangav.code-thunder-client", "ms-vscode.makefile-tools"]
 		}
 	}
 }

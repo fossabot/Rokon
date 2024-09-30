@@ -16,8 +16,49 @@ on:
       - reopened
 
 jobs:
+  docker:
+    timeout-minutes: 125
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out current repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            ghcr.io/${{ github.repository_owner }}/Rokon
+          # generate Docker tags based on the following events/attribute
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Docker Container and push
+        uses: docker/build-push-action@v6
+        with:
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
   build:
-    timeout-minutes: 30
+    timeout-minutes: 125
     strategy:
       fail-fast: false
       matrix:
@@ -26,81 +67,121 @@ jobs:
           - ubuntu-24.04
         arch:
           - amd64
+          # - arm64
 
     runs-on: self-hosted
-    # Service containers to run with `container-job`
-    # services:
-    #   # Label used to access the service container
-    #   postgres:
-    #     # Docker Hub image
-    #     image: 'postgres:alpine'
-    #     # Provide the password for postgres
-    #     env:
-    #       POSTGRES_USER: prisma_user
-    #       POSTGRES_PASSWORD: CHANGE_ME_PLEASE_OR_I_WILL_CRY
-    #       POSTGRES_DB: prisma
-    #     # Set health checks to wait until postgres has started
-    #     options: >-
-    #       --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
-    #   redis:
-    #     # Docker Hub image
-    #     image: redis:alpine
-    #     # Set health checks to wait until redis has started
-    #     options: >-
-    #       --health-cmd "redis-cli ping" --health-interval 10s --health-timeout 5s --health-retries 5
-
-    #     ports:
-    #       # Maps port 6379 on service container to the host
-    #       - 6379:6379
 
     steps:
       - name: Check out current repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Install GTK4
+      - name: Install Required System Packages
         run: |
           sudo apt update
-          sudo apt install -y libgtk-4-dev libgirepository1.0-dev
-
-      - name: ❤️‍🔥 Setup Golang
-        uses: magnetikonline/action-golang-cache@v5
-        with:
-          go-version: "stable"
-      # - name: 👁️ Ensure Code is Linted
-      #   run: |
-      #     pnpm lint:check
+          sudo add-apt-repository -y ppa:flatpak/stable
+          sudo add-apt-repository ppa:longsleep/golang-backports -y
+          sudo apt install -y libgtk-4-dev libgirepository1.0-dev upx flatpak flatpak-builder rpm build-essential devscripts debhelper dh-make golang
+          flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          flatpak remote-add --if-not-exists flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
+          flatpak install -y flathub org.flatpak.Builder
+      - name: 👁️ Ensure Code is Linted
+        continue-on-error: true
+        run: |
+          make inst
+          make lint
+          make spell
+      - name: Lint AppStream Metadata
+        run: |
+          flatpak run --command=flatpak-builder-lint org.flatpak.Builder appstream usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
       # - name: 🚧 Ensure Code is Formatted
       #   run: |
       #     pnpm format:check
       - name: 📦 Install Dependencies
         run: |
           go mod download all
-      - name: 🤖 Build Project
+      - name: 🔷 Update Flatpak Data
         run: |
-          CGO_ENABLED=1 go build -v -o rokon main.go
+          rm flathub/go.mod.yml flathub/modules.txt
+          go mod tidy -go=1.22.0
+          go mod vendor
+          go run github.com/dennwc/flatpak-go-mod@latest .
+          mv modules.txt go.mod.yml flathub/
+          rm -rf vendor/
+      - name: COMMIT!
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          # Optional. Commit message for the created commit.
+          # Defaults to "Apply automatic changes"
+          commit_options: "--no-verify --no-gpg-sign"
+          push_options: "--no-verify --no-signed"
+          commit_message: "build(flathub): update go vendor modules [skip ci]"
+          commit_author: "github-actions <41898282+github-actions[bot]@users.noreply.github.com>"
+      - name: Import GPG key
+        id: import_gpg
+        if: github.event_name != 'pull_request'
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_tag_gpgsign: true
+          git_push_gpgsign: false
+      - name: 🖼️ Assemble the AppImage
+        run: |
+          wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+          chmod +x appimagetool-*.AppImage
+          mv appimagetool-* appimagetool
+          sudo mv appimagetool /usr/bin
+          wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+          chmod +x mkappimage-*.AppImage
+          mv mkappimage-* mkappimage
+          sudo mv mkappimage /usr/bin
+          sudo apt install -y binutils coreutils desktop-file-utils fakeroot libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
+          make fatimage
+          mv *.AppImage ../artifacts
+      - name: 🤠 Assemble the DEB
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          debuild -i -I -d
+          # Clean up any previous builds
+          rm -rf build debian/build
+          # Move the DEB files to the root of the repository
+          mv ../*.deb ../artifacts
+      - name: Install Snapcraft
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: samuelmeuli/action-snapcraft@v2
+      - name: 🫰 Assemble the Snap
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: snapcore/action-build@v1
+      - name: ⚙️ Assemble the Flatpaks!
+        if: ${{ github.event_name == 'pull_request' }}
+        working-directory: flathub
+        run: |
+          flatpak-builder --install --user --install-deps-from=flathub --force-clean repo/ io.github.brycensranch.Rokon-beta.yml
+          # Create a Flatpak bundle for the beta version
+          flatpak build-bundle export io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon beta --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
       # - name: 📤 Upload Code coverage to Codecov
       #   if: ${{ !github.event.act }}
       #   uses: codecov/codecov-action@v4
+      - name: Restore Build Artifacts
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          mv ../*.AppImage . || true
       - name: 🗃️ Upload Built Binaries
         uses: actions/upload-artifact@v4
-        if: ${{ !github.event.act }}
+        if: always()
         with:
           name: rokon-${{ runner.os }}-${{ matrix.arch }}
-          path: ./rokon
-      # - name: Import GPG key
-      #   id: import_gpg
-      #   if: ${{ !github.event.act }} && github.event_name != 'pull_request'
-      #   uses: crazy-max/ghaction-import-gpg@v6
-      #   with:
-      #     gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-      #     passphrase: ${{ secrets.PASSPHRASE }}
-      #     git_user_signingkey: true
-      #     git_commit_gpgsign: true
-      #     git_tag_gpgsign: false
-      #     git_push_gpgsign: false
+          path: |
+            rokon
+            *.AppImage
+            *.zsync
+            *.rpm
+            *.deb
+            *.snap
+            flathub/*.flatpak
       # - name: Login to GitHub Container Registry
       #   uses: docker/login-action@v3
       #   with:
@@ -141,20 +222,24 @@ jobs:
         uses: ./.github/actions/build-msys2-app
         with:
           msys-dependencies: |
-            mingw-w64-x86_64-gcc
-            mingw-w64-x86_64-pkg-config
-            mingw-w64-x86_64-gtk4
-            mingw-w64-x86_64-gobject-introspection
-            mingw-w64-x86_64-glib2
-            mingw-w64-x86_64-go
+            mingw-w64-clang-x86_64-gcc
+            mingw-w64-clang-x86_64-pkg-config
+            mingw-w64-clang-x86_64-gtk4
+            mingw-w64-clang-x86_64-gobject-introspection
+            mingw-w64-clang-x86_64-go
+            mingw-w64-clang-x86_64-upx
+            mingw-w64-clang-x86_64-imagemagick
+            make
           out-path: ${{ runner.temp }}/exe
           exe-name: Rokon.exe
-          build-tags: nogtksource
-
+      - name: Minimize executable size using upx
+        working-directory: ${{ runner.temp }}/exe
+        run: |
+          upx -f --best --force-overwrite ./*.exe
       - name: Prepare
         id: prepare
         run: |
-          version="v1.0.0"
+          version="v$(cat VERSION)"
 
           # version is usually in the format vMAJOR.MINOR.PATCH-N-HASH, while
           # Advanced Installer only allows format MAJOR.MINOR.PATCH.REVISION.
@@ -171,8 +256,28 @@ jobs:
 
           cat<<EOF >> "$GITHUB_OUTPUT"
           version=$version
-          name=rokon-${{ runner.os }}-${{ runner.arch }}
+          name=Rokon-Setup-${{ runner.arch }}
           EOF
+      - name: Install
+        run: |
+          export RESULTSDIR=$(realpath "${{ runner.temp }}\\exe")
+          make TARGET="$RESULTSDIR/Rokon.exe" PREFIX="$RESULTSDIR" BINDIR="$RESULTSDIR" install || true
+
+      - name: Produce rtf files for installer and PDF files for end user
+        working-directory: scripts/md2rtf
+        run: |
+          export RESULTSDIR=$(realpath "${{ runner.temp }}\\exe")
+          go run -v . md2rtf
+          go run -v . md2pdf
+          # TODO: Have MSI installer actually install the pdf files
+
+          # The conversion to rtf with colors and what not seems legally questionable so...
+          rm ../../LICENSE.rtf
+          wget https://www.gnu.org/licenses/agpl-3.0.rtf
+          mv agpl-3.0.rtf LICENSE.rtf
+          mv LICENSE.rtf ../../
+          mv ../../*.pdf $RESULTSDIR
+          mv ../../*.rtf ../../windows
 
       - name: Make MSI installer
         uses: ./.github/actions/make-advinst-app
@@ -183,22 +288,39 @@ jobs:
           app-name: Rokon
           app-version: ${{ steps.prepare.outputs.version }}
           icon-file: windows/assets/rokon.ico
-          out-path: result
-          out-name: ${{ steps.prepare.outputs.name }}.msi
-
-      - name: 🗃️ Upload Built Binaries
+          out-path: $result
+          out-name: ${{ steps.prepare.outputs.name }}
+      - name: Remove msi executable
+        run: rm "${{ runner.temp }}\\exe\\Rokon.exe"
+      - name: Make Portable
+        run: |
+          export RESULTSDIR=$(realpath "${{ runner.temp }}\\exe")
+          make TARGET="$RESULTSDIR/Rokon.exe" EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=portable PACKAGED=true build
+          cp windows/*.txt "$RESULTSDIR"
+      - name: Minimize portable executable size using upx
+        working-directory: ${{ runner.temp }}\exe
+        continue-on-error: true
+        run: |
+          upx --best -f --force-overwrite ./*.exe
+      - name: 🗃️ Upload Built Result
         uses: actions/upload-artifact@v4
-        if: ${{ !github.event.act }}
+        if: always()
         with:
           name: rokon-${{ runner.os }}-${{ matrix.arch }}
-          path: result
+          path: $result
+      - name: 🗃️ Upload Portable
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rokon-${{ runner.os }}-Portable-${{ matrix.arch }}
+          path: ${{ runner.temp }}/exe
   macos:
     timeout-minutes: 45
     strategy:
       fail-fast: false
       matrix:
         os:
-          - macos-latest
+          - macos-15
           - macos-13 # macOS 13 is Monterey and it runs on amd64
     runs-on: ${{ matrix.os }}
     steps:
@@ -208,16 +330,47 @@ jobs:
           fetch-depth: 0
       - name: Install GTK4 Golang
         run: |
-          brew install gtk4 gobject-introspection pkg-config go gtkmm4 cairomm
+          brew install gtk4 gobject-introspection go create-dmg dylibbundler rsync
       - name: 📦 Install Dependencies
         run: |
           go mod download all
       - name: 🤖 Build Project
         run: |
-          CGO_ENABLED=1 go build -v -o rokon main.go
+          make PACKAGED=true PACKAGEFORMAT=dmg EXTRAGOFLAGS="-trimpath" build
+      # Attribution: https://github.com/getseabird/seabird/blob/main/.github/workflows/release.yaml#L194
+      # Word for Word, bar for bar.
+      - name: 🗿 Produce DMG
+        run: |
+          result=./macos
+          brew_prefix=$(brew --prefix)
+          mv ./rokon $result
+          mkdir -p $result/lib/gdk-pixbuf-2.0 $result/share/glib-2.0/schemas $result/share/icons
+          cp README.md PRIVACY.md LICENSE.md $result
+          dylibbundler -b -d $result/lib -x $result/rokon
+          cp -f $brew_prefix/lib/*.dylib $result/lib
+          cp -r $brew_prefix/lib/gdk-pixbuf-2.0 $result/lib
+          sed -i '' "s|$brew_prefix/||" $result/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
+          cp -r $brew_prefix/share/glib-2.0/schemas $result/share/glib-2.0
+          cp -r $brew_prefix/opt/gtk4/share/gtk-4.0 $result/share
+          cp -r $brew_prefix/share/icons/hicolor $result/share/icons
+          mkdir -p $result/dmg/Rokon.app/Contents/MacOS $result/dmg/Rokon.app/Contents/Resources
+          cp macos/icon.icns $result/dmg/Rokon.app/Contents/Resources
+          cp macos/io.github.BrycensRanch.Rokon.plist $result/dmg/Rokon.app/Contents
+          rsync -a --exclude "$result/dmg/" "$result/" "$result/dmg/Rokon.app/Contents/MacOS"
+
+          set +e
+          false
+          while [ $? -ne 0 ]; do
+            create-dmg --volname Rokon --volicon macos/icon.icns --window-size 600 400 --icon-size 100 --icon "Rokon.app" 200 150 --hide-extension "Rokon.app" --app-drop-link 400 150 Rokon_macOS_${{ runner.arch }}.dmg $result/dmg
+          done
+
       - name: 🗃️ Upload Built Binaries
         uses: actions/upload-artifact@v4
-        if: ${{ !github.event.act }}
+        if: always()
         with:
           name: rokon-${{ runner.os }}-${{ runner.arch }}
-          path: ./rokon
+          path: |
+            ./rokon
+            *.dmg
+            *.app
+            *.pkg

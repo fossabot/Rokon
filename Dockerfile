@@ -1,27 +1,18 @@
 FROM alpine:edge AS builder
 
-
-
-# Install the necessary packages
-
-RUN apk add --no-cache alpine-sdk go gtk4.0-dev gobject-introspection-dev
-# Set the working directory
+RUN apk add --no-cache alpine-sdk go gtk4.0-dev gobject-introspection-dev bash
 
 WORKDIR /app
-
-# Copy the source code
 
 COPY . .
 
-# Build the application
-
-RUN go build -v -o rokon .
+RUN make PACKAGED=true PACKAGEFORMAT=docker build
 
 FROM alpine:edge AS runner
 
-# Copy the binary from the builder image
-
 WORKDIR /app
+
+# Nvidia GPUs are NOT supported with this container!
 
 RUN apk add --no-cache gtk4.0 gobject-introspection mesa-gles
 

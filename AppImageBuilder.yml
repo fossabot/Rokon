@@ -1,0 +1,35 @@
+version: 1
+
+AppDir:
+  path: ./AppDir
+
+  app_info:
+    id: io.github.brycensranch.Rokon
+    name: Rokon
+    icon: io.github.brycensranch.Rokon
+    version: 1.0.0
+    exec: rokon
+    # exec_args: $@
+
+  apt:
+    arch: amd64
+    sources:
+    - sourceline: deb http://mx.archive.ubuntu.com/ubuntu/ devel main restricted universe multiverse
+    - sourceline: deb http://ppa.launchpad.net/longsleep/golang-backports/ubuntu/ devel main
+    allow_unauthenticated: true
+
+    include:
+      - libgtk-4-1
+      - librsvg2-common
+
+  files:
+    exclude:
+    - usr/share/man
+    - usr/share/doc/*/README.*
+    - usr/share/doc/*/CHANGELOG.*
+    - usr/share/doc/*/NEWS.*
+    - usr/share/doc/*/TODO.*
+
+AppImage:
+  arch: x86_64
+  update-information: gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-*x86_64.AppImage.zsync

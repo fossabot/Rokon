@@ -4,6 +4,10 @@ Please include a summary of the change and which issue is fixed. Please also inc
 
 Fixes # (issue)
 
+## Followed Semantic Conventions
+
+- [ ] I have indeed. I've even named my branch to `feat/discord-rpc` or `fix/ssdp` and my title follows Semantic Commits and is in accordance with the [Contributing Guide](https://github.com/BrycensRanch/Rokon/blob/master/.github/CONTRIBUTING.md) .
+
 ## Type of change
 
 Please delete options that are not relevant.

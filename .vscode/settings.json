@@ -29,10 +29,71 @@
             "source.organizeImports": "explicit"
         }
     },
-    "files.associations": {
-      "*.ejs": "html",
-      ".env*": "dotenv",
-      "cstdarg": "cpp"
-    }
-
+    "files.watcherExclude": {
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/node_modules/*/**": true,
+        "**/.hg/store/**": true,
+        ".flatpak/**": true,
+        "_build/**": true,
+        "pkg": true,
+        "**/.flatpak-builder/**": true,
+        "**/repo/**": true,
+        "debian/.debhelper/**": true
+    },
+    "cSpell.words": [
+        "aarch",
+        "apkrepos",
+        "appimage",
+        "appimagecraft",
+        "backports",
+        "blazingly",
+        "brycensranch",
+        "checkrt",
+        "Chocolately",
+        "CLANGARM",
+        "Codespaces",
+        "COPR",
+        "devel",
+        "Distrobox",
+        "Flathub",
+        "Flatpak",
+        "gobject",
+        "libgirepository",
+        "libgtk",
+        "linuxdeploy",
+        "longsleep",
+        "Mageia",
+        "MSYS",
+        "Neovim",
+        "noconfirm",
+        "pacman",
+        "pacstall",
+        "Rokon",
+        "Slowroll",
+        "SSDP",
+        "winget"
+    ],
+    "terminal.integrated.profiles.windows": {
+        "CLANG64": {
+            "path": "C:\\msys64\\msys2_shell.cmd",
+            "args": [
+                "-defterm",
+                "-clang64",
+                "-no-start",
+                "-here"
+            ],
+            "go.gopath": "C:\\msys64\\clang64\\lib\\go",
+            "overrideName": true,
+            "env": {
+                "CHERE_INVOKING": "1",
+                "MSYSTEM": "CLANG64",
+                // THE FOLLOWING IS A HACK TO PLACE THE MSYS PATHS BEFORE THE WINDOWS ONES
+                "PATH": "/usr/bin;/clang64/bin;${env:PATH}"
+            },
+            "color": "terminal.ansiMagenta",
+        }
+    },
+    "terminal.integrated.defaultProfile.windows": "CLANG64",
+    "makefile.configureOnOpen": false,
 }

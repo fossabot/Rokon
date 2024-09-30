@@ -1,0 +1,40 @@
+id: io.github.brycensranch.Rokon
+runtime: org.gnome.Platform
+runtime-version: "47"
+sdk: org.gnome.Sdk
+command: rokon
+
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.golang
+
+finish-args:
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --socket=pulseaudio
+  - --share=ipc
+  - --share=network
+  - --talk-name=org.freedesktop.Notifications
+  - --talk-name=org.freedesktop.secrets
+  - --talk-name=org.kde.kwalletd5
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --filesystem=xdg-run/keyring
+  - --device=dri
+
+modules:
+  - name: rokon
+    buildsystem: simple
+    build-options:
+      append-path: /usr/lib/sdk/golang/bin
+      env:
+        GOBIN: /app/bin
+        GOROOT: /usr/lib/sdk/golang
+    build-commands:
+      - make PACKAGED=true PACKAGEFORMAT=flatpak EXTRAGOFLAGS="-mod=vendor -trimpath" build
+      - desktop-file-edit --set-icon=$FLATPAK_ID --set-key=Exec --set-value=$GOBIN/rokon --remove-key=DBusActivatable usr/share/applications/$FLATPAK_ID.desktop
+      - make PREFIX=/app BINDIR=$GOBIN install
+    sources:
+      - type: archive
+        url: https://github.com/BrycensRanch/Rokon/archive/8c1f9d3.tar.gz
+        sha256: a3773dc0434681b858b92015a37968db52ead1a0f6b73e811896e3f77946ddcb
+
+      - go.mod.yml
