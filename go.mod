@@ -4,7 +4,7 @@ go 1.22.0
 
 require (
 	github.com/adrg/xdg v0.5.0
-	github.com/brycensranch/go-aptabase/pkg v0.0.0-20240929200046-44ea14d71144
+	github.com/brycensranch/go-aptabase/pkg v0.0.0-20240930002106-6ef13ab5bf3f
 	github.com/diamondburned/gotk4/pkg v0.3.1
 	github.com/getsentry/sentry-go v0.29.0
 	github.com/go-resty/resty/v2 v2.15.3
