@@ -16,6 +16,53 @@ on:
       - reopened
 
 jobs:
+  snap:
+    timeout-minutes: 125
+    if: ${{ github.event_name == 'pull_request' }}
+    # force to run on github infra
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check out current repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Snapcraft
+        uses: samuelmeuli/action-snapcraft@v2
+      - uses: chrisdickinson/setup-yq@latest
+      - name: Set snapcraft version
+        id: set_version
+        run: |
+          SANITIZED_BRANCH=$(echo "${{ steps.extract_branch.outputs.branch }}" | tr '/' '-' | tr -d '[:space:]')
+          VERSION="${{ steps.extract_version.outputs.version }}-${SANITIZED_BRANCH}-gha${{ github.run_id }}"
+          yq e ".version = \"$VERSION\"" -i snapcraft.yaml
+          echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPU
+      - name: Extract version
+        id: extract_version
+        run: |
+          VERSION=$(cat VERSION)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Switch branch
+        run: yq '.parts.rokon.source-branch = ${{ steps.extract_branch.outputs.branch }}' -i snapcraft.yaml
+      - name: Switch snapcraft repository
+        run: yq '.parts.rokon.source = ${{ github.server_url }}/${{ github.repository }}' -i snapcraft.yaml
+
+      - name: 🫰 Assemble the Snap
+        uses: snapcore/action-build@v1
+        id: snapcraft_build
+      - uses: snapcore/action-publish@v1
+        continue-on-error: true
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
+        with:
+          snap: ${{ steps.snapcraft_build.outputs.snap }}
+          release: edge/${{ steps.sanitized_branch.sanitized_branch }}
+      - name: 🗃️ Upload Built Binaries
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rokon-snap-${{ matrix.arch }}
+          path: ${{ steps.snapcraft_build.outputs.snap }}
   docker:
     timeout-minutes: 125
     runs-on: ubuntu-24.04
@@ -81,8 +128,7 @@ jobs:
           sudo apt update
           sudo add-apt-repository -y ppa:flatpak/stable
           sudo add-apt-repository ppa:longsleep/golang-backports -y
-          sudo apt install -y libgtk-4-dev libgirepository1.0-dev upx flatpak flatpak-builder rpm build-essential devscripts debhelper dh-make golang snapd
-          sudo systemctl start snapd.service
+          sudo apt install -y libgtk-4-dev libgirepository1.0-dev upx flatpak flatpak-builder rpm build-essential devscripts debhelper dh-make golang
           flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
           flatpak remote-add --if-not-exists flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
           flatpak install -y flathub org.flatpak.Builder
@@ -141,49 +187,11 @@ jobs:
           sudo mv mkappimage /usr/bin
           sudo apt install -y binutils coreutils desktop-file-utils fakeroot libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           make fatimage
-
-      - name: Install Snapcraft
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: samuelmeuli/action-snapcraft@v2
-      - uses: chrisdickinson/setup-yq@latest
-        if: ${{ github.event_name == 'pull_request' }}
-      - name: Extract snapcraft branch name
+      - name: Extract branch name
         if: ${{ github.event_name == 'pull_request' }}
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
-      - name: Extract version
-        id: extract_version
-        run: |
-          VERSION=$(cat VERSION)
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-      - name: Switch branch
-        if: ${{ github.event_name == 'pull_request' }}
-        run: yq '.parts.rokon.source-branch = ${{ steps.extract_branch.outputs.branch }}' -i snapcraft.yaml
-      - name: Set snapcraft version
-        if: ${{ github.event_name == 'pull_request' }}
-        id: set_version
-        run: |
-          SANITIZED_BRANCH=$(echo "${{ steps.extract_branch.outputs.branch }}" | tr '/' '-' | tr -d '[:space:]')
-          VERSION="${{ steps.extract_version.outputs.version }}-${SANITIZED_BRANCH}-gha${{ github.run_id }}"
-          yq e ".version = \"$VERSION\"" -i snapcraft.yaml
-          echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-      - name: Switch snapcraft repository
-        if: ${{ github.event_name == 'pull_request' }}
-        run: yq '.parts.rokon.source = ${{ github.server_url }}/${{ github.repository }}' -i snapcraft.yaml
-
-      - name: 🫰 Assemble the Snap
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: snapcore/action-build@v1
-        id: snapcraft_build
-      - uses: snapcore/action-publish@v1
-        if: ${{ github.event_name == 'pull_request' }}
-        env:
-          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
-        with:
-          snap: ${{ steps.snapcraft_build.outputs.snap }}
-          release: edge/${{ steps.sanitized_branch.sanitized_branch }}
       - name: Set source branch for Flatpak
         if: ${{ github.event_name == 'pull_request' }}
         run: 'yq e ".modules[0].sources[0].branch = env.BRANCH_NAME" -i flathub/io.github.brycensranch.Rokon-beta.yml'
