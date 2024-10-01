@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 125
     if: ${{ github.event_name == 'pull_request' }}
     # force to run on github infra
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out current repository
         uses: actions/checkout@v4
@@ -116,7 +116,7 @@ jobs:
           - amd64
           # - arm64
 
-    runs-on: ubuntu-24.04
+    runs-on: self-hosted
 
     steps:
       - name: Check out current repository
