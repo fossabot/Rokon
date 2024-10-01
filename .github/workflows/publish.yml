@@ -111,8 +111,8 @@ jobs:
       - name: COMMIT!
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          # Optional. Commit message for the created commit.
-          # Defaults to "Apply automatic changes"
+          # Only golang stuff! Prevents snapcraft.yaml from being updated on a PR branch! 
+          file_pattern: '*.mod *.sum'
           commit_options: "--no-verify --no-gpg-sign"
           push_options: "--no-verify --no-signed"
           commit_message: "build(flathub): update go vendor modules [skip ci]"
@@ -140,7 +140,67 @@ jobs:
           sudo mv mkappimage /usr/bin
           sudo apt install -y binutils coreutils desktop-file-utils fakeroot libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           make fatimage
-          mv *.AppImage ../artifacts
+
+      - name: Install Snapcraft
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: samuelmeuli/action-snapcraft@v2
+      - uses: chrisdickinson/setup-yq@latest
+        if: ${{ github.event_name == 'pull_request' }}
+      - name: Extract snapcraft branch name
+        if: ${{ github.event_name == 'pull_request' }}
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+      - name: Extract version
+        id: extract_version
+        run: |
+          VERSION=$(cat VERSION)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Switch branch
+        if: ${{ github.event_name == 'pull_request' }}
+        run: yq '.parts.rokon.source-branch = ${{ steps.extract_branch.outputs.branch }}' -i snapcraft.yaml
+      - name: Set snapcraft version
+        if: ${{ github.event_name == 'pull_request' }}
+        id: set_version
+        run: |
+          SANITIZED_BRANCH=$(echo "${{ steps.extract_branch.outputs.branch }}" | tr '/' '-' | tr -d '[:space:]')
+          VERSION="${{ steps.extract_version.outputs.version }}-${SANITIZED_BRANCH}-gha${{ github.run_id }}"
+          yq e ".version = \"$VERSION\"" -i snapcraft.yaml
+          echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Switch snapcraft repository
+        if: ${{ github.event_name == 'pull_request' }}
+        run: yq '.parts.rokon.source = ${{ github.server_url }}/${{ github.repository }}' -i snapcraft.yaml
+
+      - name: 🫰 Assemble the Snap
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: snapcore/action-build@v1
+        id: snapcraft_build
+      - uses: snapcore/action-publish@v1
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
+        with:
+          snap: ${{ steps.snapcraft_build.outputs.snap }}
+          release: edge/${{ steps.sanitized_branch.sanitized_branch }}
+      - name: Set source branch for Flatpak
+        if: ${{ github.event_name == 'pull_request' }}
+        run: 'yq e ".modules[0].sources[0].branch = env.BRANCH_NAME" -i flathub/io.github.brycensranch.Rokon-beta.yml'
+        env:
+          BRANCH_NAME: ${{ steps.extract_branch.outputs.branch }}
+
+      - name: Set source URL for Flatpak
+        run: 'yq e ".modules[0].sources[0].url = env.GITHUB_REPOSITORY_URL" -i flathub/io.github.brycensranch.Rokon-beta.yml'
+        env:
+          GITHUB_REPOSITORY_URL: "${{ github.server_url }}/${{ github.repository }}.git"
+
+      - name: ⚙️ Assemble the Flatpaks!
+        if: ${{ github.event_name == 'pull_request' }}
+        working-directory: flathub
+        run: |
+          flatpak-builder --install --user --install-deps-from=flathub --force-clean repo/ io.github.brycensranch.Rokon-beta.yml
+          # Create a Flatpak bundle for the beta version
+          flatpak build-bundle export io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon beta --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
       - name: 🤠 Assemble the DEB
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -149,19 +209,6 @@ jobs:
           rm -rf build debian/build
           # Move the DEB files to the root of the repository
           mv ../*.deb ../artifacts
-      - name: Install Snapcraft
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: samuelmeuli/action-snapcraft@v2
-      - name: 🫰 Assemble the Snap
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: snapcore/action-build@v1
-      - name: ⚙️ Assemble the Flatpaks!
-        if: ${{ github.event_name == 'pull_request' }}
-        working-directory: flathub
-        run: |
-          flatpak-builder --install --user --install-deps-from=flathub --force-clean repo/ io.github.brycensranch.Rokon-beta.yml
-          # Create a Flatpak bundle for the beta version
-          flatpak build-bundle export io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon beta --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
       # - name: 📤 Upload Code coverage to Codecov
       #   if: ${{ !github.event.act }}
       #   uses: codecov/codecov-action@v4
@@ -169,6 +216,91 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         run: |
           mv ../*.AppImage . || true
+      - name: Find Comment
+        if: always() && ${{ github.event_name == 'pull_request' }}
+        uses: peter-evans/find-comment@v2
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+      - name: Get Artifact URL & PR Info
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+          WORKFLOW_RUN_EVENT_OBJ: ${{ toJSON(github.event.workflow_run) }}
+        run: |
+
+          PREVIOUS_JOB_ID=$(jq -r '.id' <<< "$WORKFLOW_RUN_EVENT_OBJ")
+          echo "Previous Job ID: $PREVIOUS_JOB_ID"
+          echo "PREVIOUS_JOB_ID=$PREVIOUS_JOB_ID" >> "$GITHUB_ENV"
+
+          ARTIFACT_URL=$(gh api "/repos/$OWNER/$REPO/actions/artifacts" \
+            --jq ".artifacts.[] |
+            select(.workflow_run.id==${PREVIOUS_JOB_ID}) |
+            select(.expired==false) |
+            .archive_download_url")
+
+          echo "ARTIFACT URL: $ARTIFACT_URL"
+          echo "ARTIFACT_URL=$ARTIFACT_URL" >> "$GITHUB_ENV"
+
+          PR_NUMBER=$(jq -r '.pull_requests[0].number' \
+            <<< "$WORKFLOW_RUN_EVENT_OBJ")
+
+          echo "PR Number: $PR_NUMBER"
+          echo "PR_NUMBER=$PR_NUMBER" >> "$GITHUB_ENV"
+
+          HEAD_SHA=$(jq -r '.pull_requests[0].head.sha' \
+            <<< "$WORKFLOW_RUN_EVENT_OBJ")
+
+          echo "Head sha: $HEAD_SHA"
+          echo "HEAD_SHA=$HEAD_SHA" >> "$GITHUB_ENV"
+
+      - name: Update Comment
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+          ARTIFACT_URL: "${{ github.server_url }}/${{ github.repository }}/actions/\
+            runs/${{ env.PREVIOUS_JOB_ID }}"
+          HEAD_SHA: ${{ env.HEAD_SHA }}
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          issue-number: ${{ needs.find-comment.outputs.comment_id }}
+          body: |-
+            ## Build Preview
+            
+            [![badge]](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            
+            You can find files attached to the below linked Workflow Run URL (Logs).
+            
+            Please note that files only stay for around 90 days!
+  
+            | Name      | Link                                                                                |
+            |-----------|-------------------------------------------------------------------------------------|
+            | Commit    | ${{ github.event.pull_request.head.sha }}                                           |
+            | Logs      | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
+            | Artifacts | ${{ env.ARTIFACT_URL }}                                                             |
+            
+            [badge]: https://img.shields.io/badge/Build-Success!-3fb950?logo=github&style=for-the-badge
+      - name: Update Comment
+        if: ${{ failure() }}
+        uses: peter-evans/create-or-update-comment@v2
+        with:
+          issue-number: ${{ needs.find-comment.outputs.comment_id }}
+          body: |-
+            ## Build Preview
+            
+            [![badge]](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            
+            There was an issue generating the Jar files from your Pull request.
+            Please review the logs linked below for further information.
+            
+            | Name   | Link                                                                                |
+            |--------|-------------------------------------------------------------------------------------|
+            | Commit | ${{ github.event.pull_request.head.sha }}                                           |
+            | Logs   | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
+            
+            [badge]: https://img.shields.io/badge/Build-Failure!-f85149?logo=github&style=for-the-badge
       - name: 🗃️ Upload Built Binaries
         uses: actions/upload-artifact@v4
         if: always()
