@@ -140,38 +140,35 @@ jobs:
           sudo mv mkappimage /usr/bin
           sudo apt install -y binutils coreutils desktop-file-utils fakeroot libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           make fatimage
+
       - name: Install Snapcraft
         if: ${{ github.event_name == 'pull_request' }}
         uses: samuelmeuli/action-snapcraft@v2
-
-      - name: Extract branch name
+      - uses: chrisdickinson/setup-yq@latest
+        if: ${{ github.event_name == 'pull_request' }}
+      - name: Extract snapcraft branch name
+        if: ${{ github.event_name == 'pull_request' }}
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
       - name: Switch branch
-        uses: mikefarah/yq@master
-        with:
-          cmd: yq '.parts.rokon.source-branch = ${{ steps.extract_branch.outputs.branch }}' -i snapcraft.yaml
-      - name: Switch repository
-        uses: mikefarah/yq@master
-        with:
-          cmd: yq '.parts.rokon.source = ${{ github.server_url }}/${{ github.repository }}' -i snapcraft.yaml
+        run: yq '.parts.rokon.source-branch = ${{ steps.extract_branch.outputs.branch }}' -i snapcraft.yaml
+      - name: Switch snapcraft repository
+        if: ${{ github.event_name == 'pull_request' }}
+        run: yq '.parts.rokon.source = ${{ github.server_url }}/${{ github.repository }}' -i snapcraft.yaml
 
       - name: 🫰 Assemble the Snap
         if: ${{ github.event_name == 'pull_request' }}
         uses: snapcore/action-build@v1
 
       - name: Set source branch for Flatpak
-        uses: mikefarah/yq@master
-        with:
-          cmd: 'yq e ".modules[0].sources[0].branch = env.BRANCH_NAME" -i flathub/io.github.brycensranch.Rokon-beta.yml'
+        if: ${{ github.event_name == 'pull_request' }}
+        run: 'yq e ".modules[0].sources[0].branch = env.BRANCH_NAME" -i flathub/io.github.brycensranch.Rokon-beta.yml'
         env:
           BRANCH_NAME: ${{ steps.extract_branch.outputs.branch }}
 
       - name: Set source URL for Flatpak
-        uses: mikefarah/yq@master
-        with:
-          cmd: 'yq e ".modules[0].sources[0].url = env.GITHUB_REPOSITORY_URL" -i flathub/io.github.brycensranch.Rokon-beta.yml'
+        run: 'yq e ".modules[0].sources[0].url = env.GITHUB_REPOSITORY_URL" -i flathub/io.github.brycensranch.Rokon-beta.yml'
         env:
           GITHUB_REPOSITORY_URL: "${{ github.server_url }}/${{ github.repository }}.git"
 
