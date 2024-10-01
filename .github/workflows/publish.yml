@@ -190,6 +190,7 @@ jobs:
           BRANCH_NAME: ${{ steps.extract_branch.outputs.branch }}
 
       - name: Set source URL for Flatpak
+        if: ${{ github.event_name == 'pull_request' }}
         run: 'yq e ".modules[0].sources[0].url = env.GITHUB_REPOSITORY_URL" -i flathub/io.github.brycensranch.Rokon-beta.yml'
         env:
           GITHUB_REPOSITORY_URL: "${{ github.server_url }}/${{ github.repository }}.git"
@@ -283,7 +284,7 @@ jobs:
             
             [badge]: https://img.shields.io/badge/Build-Success!-3fb950?logo=github&style=for-the-badge
       - name: Update Comment
-        if: ${{ failure() }}
+        if: ${{ failure() }} && ${{ github.event_name == 'pull_request' }}
         uses: peter-evans/create-or-update-comment@v2
         with:
           issue-number: ${{ needs.find-comment.outputs.comment_id }}
