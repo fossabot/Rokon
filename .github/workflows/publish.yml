@@ -151,8 +151,20 @@ jobs:
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
+      - name: Extract version
+        id: extract_version
+        run: |
+          VERSION=$(cat VERSION)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: Switch branch
+        if: ${{ github.event_name == 'pull_request' }}
         run: yq '.parts.rokon.source-branch = ${{ steps.extract_branch.outputs.branch }}' -i snapcraft.yaml
+      - name: Set snapcraft version
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          SANITIZED_BRANCH=$(echo "${{ steps.extract_branch.outputs.branch }}" | tr '/' '-' | tr -d '[:space:]')
+          VERSION="${{ steps.extract_version.outputs.version }}-${SANITIZED_BRANCH}-gha${{ github.run_id }}"
+          yq e ".version = \"$VERSION\"" -i snapcraft.yaml
       - name: Switch snapcraft repository
         if: ${{ github.event_name == 'pull_request' }}
         run: yq '.parts.rokon.source = ${{ github.server_url }}/${{ github.repository }}' -i snapcraft.yaml
