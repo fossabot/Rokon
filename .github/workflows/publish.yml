@@ -40,13 +40,17 @@ jobs:
         run: |
           VERSION=$(cat VERSION)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+      - name: Sanitize branch
+        id: sanitize_branch
+        run: |
+          SANITIZED_BRANCH=$(echo "${{ steps.extract_branch.outputs.branch }}" | tr '/' '-' | tr -d '[:space:]')
+          echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
+
       - name: Set snapcraft version
         id: set_version
         run: |
-          SANITIZED_BRANCH=$(echo "${{ steps.extract_branch.outputs.branch }}" | tr '/' '-' | tr -d '[:space:]')
-          VERSION="${{ steps.extract_version.outputs.version }}-${SANITIZED_BRANCH}.gha${{ github.run_id }}"
+          VERSION="${{ steps.extract_version.outputs.version }}-${{ steps.sanitize_branch.outputs.sanitized_branch }}.gha${{ github.run_id }}"
           yq '.version = "$VERSION"' -i snapcraft.yaml
-          echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: Switch snap branch
         run: yq '.parts.rokon.source-branch = "${{ steps.extract_branch.outputs.branch }}"' -i snapcraft.yaml
@@ -170,7 +174,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           # Only golang stuff! Prevents snapcraft.yaml from being updated on a PR branch! 
-          file_pattern: '*.mod *.sum flathub/*.yml'
+          file_pattern: '*.mod *.sum flathub/*.yml flathub/modules.txt'
           commit_options: "--no-verify --no-gpg-sign"
           push_options: "--no-verify --no-signed"
           commit_message: "build(flathub): update go vendor modules [skip ci]"
