@@ -149,7 +149,7 @@ jobs:
           make spell
       - name: Lint AppStream Metadata
         run: |
-          flatpak run --command=flatpak-builder-lint org.flatpak.Builder appstream usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+          flatpak run --command=flatpak-builder-lint --user org.flatpak.Builder appstream usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
       # - name: 🚧 Ensure Code is Formatted
       #   run: |
       #     pnpm format:check
@@ -222,8 +222,10 @@ jobs:
         working-directory: flathub
         run: |
           flatpak-builder --install --user --install-deps-from=flathub --force-clean repo/ io.github.brycensranch.Rokon-beta.yml
+          # I honestly have no idea what this does.
+          flatpak build-export export repo
           # Create a Flatpak bundle for the beta version
-          flatpak build-bundle repo io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon beta --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
+          flatpak build-bundle export io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon master --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
       - name: 🤠 Assemble the DEB
         if: ${{ github.event_name == 'pull_request' }}
         run: |
