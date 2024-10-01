@@ -141,6 +141,46 @@ jobs:
           sudo apt install -y binutils coreutils desktop-file-utils fakeroot libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           make fatimage
           mv *.AppImage ../artifacts
+      - name: Install Snapcraft
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: samuelmeuli/action-snapcraft@v2
+
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+      - name: Switch branch
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq '.parts.rokon.source-branch = ${{ steps.extract_branch.outputs.branch }}' -i snapcraft.yaml
+      - name: Switch repository
+        uses: mikefarah/yq@master
+        with:
+          cmd: yq '.parts.rokon.source = ${{ github.server_url }}/${{ github.repository }}' -i snapcraft.yaml
+
+      - name: 🫰 Assemble the Snap
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: snapcore/action-build@v1
+      - name: Set source branch for Flatpak
+        uses: mikefarah/yq@master
+        with:
+          cmd: 'yq e ".modules[0].sources[0].branch = env.BRANCH_NAME" -i flathub/io.github.brycensranch.Rokon-beta.yml'
+        env:
+          BRANCH_NAME: ${{ steps.extract_branch.outputs.branch }}
+
+      - name: Set source URL for Flatpak
+        uses: mikefarah/yq@master
+        with:
+          cmd: 'yq e ".modules[0].sources[0].url = env.GITHUB_REPOSITORY_URL" -i flathub/io.github.brycensranch.Rokon-beta.yml'
+        env:
+          GITHUB_REPOSITORY_URL: "${{ github.server_url }}/${{ github.repository }}.git"
+      - name: ⚙️ Assemble the Flatpaks!
+        if: ${{ github.event_name == 'pull_request' }}
+        working-directory: flathub
+        run: |
+          flatpak-builder --install --user --install-deps-from=flathub --force-clean repo/ io.github.brycensranch.Rokon-beta.yml
+          # Create a Flatpak bundle for the beta version
+          flatpak build-bundle export io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon beta --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
       - name: 🤠 Assemble the DEB
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -149,19 +189,6 @@ jobs:
           rm -rf build debian/build
           # Move the DEB files to the root of the repository
           mv ../*.deb ../artifacts
-      - name: Install Snapcraft
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: samuelmeuli/action-snapcraft@v2
-      - name: 🫰 Assemble the Snap
-        if: ${{ github.event_name == 'pull_request' }}
-        uses: snapcore/action-build@v1
-      - name: ⚙️ Assemble the Flatpaks!
-        if: ${{ github.event_name == 'pull_request' }}
-        working-directory: flathub
-        run: |
-          flatpak-builder --install --user --install-deps-from=flathub --force-clean repo/ io.github.brycensranch.Rokon-beta.yml
-          # Create a Flatpak bundle for the beta version
-          flatpak build-bundle export io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon beta --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
       # - name: 📤 Upload Code coverage to Codecov
       #   if: ${{ !github.event.act }}
       #   uses: codecov/codecov-action@v4
