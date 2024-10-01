@@ -49,9 +49,7 @@ jobs:
       - name: Set snapcraft version
         id: set_version
         run: |
-          VERSION="${{ steps.extract_version.outputs.version }}-${{ steps.sanitize_branch.outputs.sanitized_branch }}.gha${{ github.run_id }}"
-          yq '.version = "$VERSION"' -i snapcraft.yaml
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          yq '.version = "${{ steps.extract_version.outputs.version }}-${{ steps.sanitize_branch.outputs.sanitized_branch }}.gha${{ github.run_id }}"' -i snapcraft.yaml
       - name: Switch snap branch
         run: yq '.parts.rokon.source-branch = "${{ steps.extract_branch.outputs.branch }}"' -i snapcraft.yaml
       - name: Switch snap git repository
@@ -225,7 +223,7 @@ jobs:
         run: |
           flatpak-builder --install --user --install-deps-from=flathub --force-clean repo/ io.github.brycensranch.Rokon-beta.yml
           # Create a Flatpak bundle for the beta version
-          flatpak build-bundle export io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon beta --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
+          flatpak build-bundle repo io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon beta --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
       - name: 🤠 Assemble the DEB
         if: ${{ github.event_name == 'pull_request' }}
         run: |
@@ -434,9 +432,9 @@ jobs:
 
           # The conversion to rtf with colors and what not seems legally questionable so...
           rm ../../LICENSE.rtf
-          wget https://www.gnu.org/licenses/agpl-3.0.rtf
-          mv agpl-3.0.rtf LICENSE.rtf
-          mv LICENSE.rtf ../../
+          wget https://www.gnu.org/licenses/agpl-3.0.rtf || true
+          mv agpl-3.0.rtf LICENSE.rtf || true
+          mv LICENSE.rtf ../../ || true
           mv ../../*.pdf $RESULTSDIR
           mv ../../*.rtf ../../windows
 
