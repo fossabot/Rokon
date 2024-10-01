@@ -140,7 +140,6 @@ jobs:
           sudo mv mkappimage /usr/bin
           sudo apt install -y binutils coreutils desktop-file-utils fakeroot libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           make fatimage
-          mv *.AppImage ../artifacts
       - name: Install Snapcraft
         if: ${{ github.event_name == 'pull_request' }}
         uses: samuelmeuli/action-snapcraft@v2
@@ -161,6 +160,7 @@ jobs:
       - name: 🫰 Assemble the Snap
         if: ${{ github.event_name == 'pull_request' }}
         uses: snapcore/action-build@v1
+
       - name: Set source branch for Flatpak
         uses: mikefarah/yq@master
         with:
@@ -174,6 +174,7 @@ jobs:
           cmd: 'yq e ".modules[0].sources[0].url = env.GITHUB_REPOSITORY_URL" -i flathub/io.github.brycensranch.Rokon-beta.yml'
         env:
           GITHUB_REPOSITORY_URL: "${{ github.server_url }}/${{ github.repository }}.git"
+
       - name: ⚙️ Assemble the Flatpaks!
         if: ${{ github.event_name == 'pull_request' }}
         working-directory: flathub
