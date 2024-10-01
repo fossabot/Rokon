@@ -218,13 +218,15 @@ jobs:
         run: |
           mv ../*.AppImage . || true
       - name: Find Comment
-        if: always() && ${{ github.event_name == 'pull_request' }}
+        if: always()
         uses: peter-evans/find-comment@v2
+        continue-on-error: true
         id: find-comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: 'github-actions[bot]'
       - name: Get Artifact URL & PR Info
+        continue-on-error: true
         if: ${{ github.event_name == 'pull_request' }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
@@ -259,6 +261,7 @@ jobs:
           echo "HEAD_SHA=$HEAD_SHA" >> "$GITHUB_ENV"
 
       - name: Update Comment
+        continue-on-error: true
         if: ${{ github.event_name == 'pull_request' }}
         env:
           ARTIFACT_URL: "${{ github.server_url }}/${{ github.repository }}/actions/\
@@ -284,6 +287,7 @@ jobs:
             
             [badge]: https://img.shields.io/badge/Build-Success!-3fb950?logo=github&style=for-the-badge
       - name: Update Comment
+        continue-on-error: true
         if: ${{ failure() }} && ${{ github.event_name == 'pull_request' }}
         uses: peter-evans/create-or-update-comment@v2
         with:
