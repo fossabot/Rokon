@@ -29,6 +29,15 @@ jobs:
       - name: Install Snapcraft
         uses: samuelmeuli/action-snapcraft@v2
       - uses: chrisdickinson/setup-yq@latest
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+      - name: Extract version
+        id: extract_version
+        run: |
+          VERSION=$(cat VERSION)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: Set snapcraft version
         id: set_version
         run: |
@@ -36,11 +45,6 @@ jobs:
           VERSION="${{ steps.extract_version.outputs.version }}-${SANITIZED_BRANCH}-gha${{ github.run_id }}"
           yq e ".version = \"$VERSION\"" -i snapcraft.yaml
           echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
-          echo "version=$VERSION" >> $GITHUB_OUTPU
-      - name: Extract version
-        id: extract_version
-        run: |
-          VERSION=$(cat VERSION)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: Switch branch
         run: yq '.parts.rokon.source-branch = ${{ steps.extract_branch.outputs.branch }}' -i snapcraft.yaml
