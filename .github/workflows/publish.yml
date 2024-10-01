@@ -43,7 +43,7 @@ jobs:
         run: |
           SANITIZED_BRANCH=$(echo "${{ steps.extract_branch.outputs.branch }}" | tr '/' '-' | tr -d '[:space:]')
           VERSION="${{ steps.extract_version.outputs.version }}-${SANITIZED_BRANCH}-gha${{ github.run_id }}"
-          yq e ".version = \"$VERSION\"" -i snapcraft.yaml
+          yq ".version = \"$VERSION\"" -i snapcraft.yaml
           echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: Switch branch
@@ -198,13 +198,13 @@ jobs:
         id: extract_branch
       - name: Set source branch for Flatpak
         if: ${{ github.event_name == 'pull_request' }}
-        run: 'yq e ".modules[0].sources[0].branch = env.BRANCH_NAME" -i flathub/io.github.brycensranch.Rokon-beta.yml'
+        run: yq ".modules[0].sources[0].branch = ${{env.BRANCH_NAME}}" -i flathub/io.github.brycensranch.Rokon-beta.yml
         env:
           BRANCH_NAME: ${{ steps.extract_branch.outputs.branch }}
 
       - name: Set source URL for Flatpak
         if: ${{ github.event_name == 'pull_request' }}
-        run: 'yq e ".modules[0].sources[0].url = env.GITHUB_REPOSITORY_URL" -i flathub/io.github.brycensranch.Rokon-beta.yml'
+        run: yq ".modules[0].sources[0].url = ${{env.GITHUB_REPOSITORY_URL}}" -i flathub/io.github.brycensranch.Rokon-beta.yml
         env:
           GITHUB_REPOSITORY_URL: "${{ github.server_url }}/${{ github.repository }}.git"
 
