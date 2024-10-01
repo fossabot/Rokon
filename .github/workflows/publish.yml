@@ -223,7 +223,7 @@ jobs:
         run: |
           flatpak-builder --install --user --install-deps-from=flathub --force-clean repo/ io.github.brycensranch.Rokon-beta.yml
           # Create a Flatpak bundle for the beta version
-          flatpak build-bundle export io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon beta --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
+          flatpak build-bundle repo io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon beta --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
       - name: 🤠 Assemble the DEB
         if: ${{ github.event_name == 'pull_request' }}
         run: |
