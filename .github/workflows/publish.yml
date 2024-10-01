@@ -29,6 +29,8 @@ jobs:
       - name: Install Snapcraft
         uses: samuelmeuli/action-snapcraft@v2
       - uses: chrisdickinson/setup-yq@latest
+        with:
+          yq-version: v4.44.3
       - name: Extract branch name
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
@@ -151,6 +153,10 @@ jobs:
       - name: 📦 Install Dependencies
         run: |
           go mod download all
+      - uses: chrisdickinson/setup-yq@latest
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          yq-version: v4.44.3
       - name: 🔷 Update Flatpak Data
         run: |
           rm flathub/go.mod.yml flathub/modules.txt
