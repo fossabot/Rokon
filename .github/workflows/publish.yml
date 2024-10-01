@@ -44,15 +44,16 @@ jobs:
         id: set_version
         run: |
           SANITIZED_BRANCH=$(echo "${{ steps.extract_branch.outputs.branch }}" | tr '/' '-' | tr -d '[:space:]')
-          VERSION="${{ steps.extract_version.outputs.version }}-${SANITIZED_BRANCH}-gha${{ github.run_id }}"
+          VERSION="${{ steps.extract_version.outputs.version }}-${SANITIZED_BRANCH}.gha${{ github.run_id }}"
           yq '.version = "$VERSION"' -i snapcraft.yaml
           echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
           echo "version=$VERSION" >> $GITHUB_OUTPUT
-      - name: Switch branch
+      - name: Switch snap branch
         run: yq '.parts.rokon.source-branch = "${{ steps.extract_branch.outputs.branch }}"' -i snapcraft.yaml
-      - name: Switch snapcraft repository
+      - name: Switch snap git repository
         run: yq '.parts.rokon.source = "${{ github.server_url }}/${{ github.repository }}"' -i snapcraft.yaml
-
+      - name: Force snap to be grade devel
+        run: yq '.grade = "devel"' -i snapcraft.yaml
       - name: 🫰 Assemble the Snap
         uses: snapcore/action-build@v1
         id: snapcraft_build
@@ -135,8 +136,8 @@ jobs:
           sudo add-apt-repository -y ppa:flatpak/stable
           sudo add-apt-repository ppa:longsleep/golang-backports -y
           sudo apt install -y libgtk-4-dev libgirepository1.0-dev upx flatpak flatpak-builder rpm build-essential devscripts debhelper dh-make golang
-          flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          flatpak remote-add --if-not-exists flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
+          flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+          flatpak remote-add --user --if-not-exists flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
           flatpak install -y flathub org.flatpak.Builder
       - name: 👁️ Ensure Code is Linted
         continue-on-error: true
