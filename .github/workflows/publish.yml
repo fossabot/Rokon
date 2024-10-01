@@ -174,7 +174,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           # Only golang stuff! Prevents snapcraft.yaml from being updated on a PR branch! 
-          file_pattern: '*.mod *.sum flathub/*.yml modules.txt'
+          file_pattern: '*.mod *.sum flathub/*.yml flathub/modules.txt'
           commit_options: "--no-verify --no-gpg-sign"
           push_options: "--no-verify --no-signed"
           commit_message: "build(flathub): update go vendor modules [skip ci]"
