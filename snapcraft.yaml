@@ -87,5 +87,12 @@ parts:
       # Extract the base version before the '+' and handle cases with or without '+'
       base_version=$(echo "$current_version" | sed -E 's/\+.*//')
 
-      # Set the new version with the updated commit SHA
-      snapcraftctl set-version "${base_version}+${git_commit_sha}"
+      # Check if "gha" exists in current_version
+      if [[ "$current_version" != *"gha"* ]]; then
+          # Set the new version with the updated commit SHA
+          snapcraftctl set-version "${base_version}+${git_commit_sha}"
+      else
+          # Set the new version without the commit SHA
+          snapcraftctl set-version "$base_version"
+      fi
+
