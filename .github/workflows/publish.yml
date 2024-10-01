@@ -81,7 +81,7 @@ jobs:
           sudo apt update
           sudo add-apt-repository -y ppa:flatpak/stable
           sudo add-apt-repository ppa:longsleep/golang-backports -y
-          sudo apt install -y libgtk-4-dev libgirepository1.0-dev upx flatpak flatpak-builder rpm build-essential devscripts debhelper dh-make golang snap
+          sudo apt install -y libgtk-4-dev libgirepository1.0-dev upx flatpak flatpak-builder rpm build-essential devscripts debhelper dh-make golang snapd
           flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
           flatpak remote-add --if-not-exists flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
           flatpak install -y flathub org.flatpak.Builder
@@ -190,6 +190,7 @@ jobs:
           BRANCH_NAME: ${{ steps.extract_branch.outputs.branch }}
 
       - name: Set source URL for Flatpak
+        if: ${{ github.event_name == 'pull_request' }}
         run: 'yq e ".modules[0].sources[0].url = env.GITHUB_REPOSITORY_URL" -i flathub/io.github.brycensranch.Rokon-beta.yml'
         env:
           GITHUB_REPOSITORY_URL: "${{ github.server_url }}/${{ github.repository }}.git"
@@ -283,7 +284,7 @@ jobs:
             
             [badge]: https://img.shields.io/badge/Build-Success!-3fb950?logo=github&style=for-the-badge
       - name: Update Comment
-        if: ${{ failure() }}
+        if: ${{ failure() }} && ${{ github.event_name == 'pull_request' }}
         uses: peter-evans/create-or-update-comment@v2
         with:
           issue-number: ${{ needs.find-comment.outputs.comment_id }}
