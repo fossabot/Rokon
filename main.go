@@ -396,7 +396,6 @@ func showAboutWindow(parent *gtk.ApplicationWindow, app *gtk.Application) {
 	}
 	// aboutWindow.SetAuthors([]string{"Brycen G. (BrycensRanch)"})
 	aboutWindow.SetLicenseType(gtk.LicenseAGPL30)
-	parent.SetChild(&aboutWindow.Window)
 
 	aboutWindow.Present()
 	aboutWindow.Focus()
