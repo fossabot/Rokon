@@ -1,15 +1,14 @@
 # Rokon's Privacy Policy
 
 > Created on 9/11/2024
+> Last updated on 10/1/2024 11:51 PM EST
 
 By default, Rokon collects telemetry data about how my application is performing in two ways:
 
 - Application usage data (Tells us how many people are using my application on what systems)
-- Error reporting and performance data. (Automatically raises an internal issue when you experience a crash with telemetry on)
 - Your Roku's local IP ie `10.0.0.32` will be collected to better understand what local IP addresses Rokon should be looking out for.
 - What Operating System you're running and which version you're using. ie `Windows 10 Home` or `macOS Sonana` or `Fedora Linux 42 (KDE Plasma) x86_64 Linux 6.10.9`
 - Application version ie `rokon_1.0.0+44e1612`
-- Whether or not the application is being ran through a translation layer like [WINE](https://winehq.org) or [Rosetta](https://en.wikipedia.org/wiki/Rosetta_(software)).
 - What CPU your computer has ie `i7-11800H`
 - What GPU your computer has ie `RTX 3060 Laptop GPU`
 - How much memory the application is using (Helps to identify memory leaks)
@@ -19,7 +18,6 @@ By default, Rokon collects telemetry data about how my application is performing
 - Your Roku's operating system ie `Roku/13.1.4 UPnP/1.0 Roku/13.1.4`
 - General Region ie `United States`
 - How many times you've ran the application ie `19`, minutesActive ie `320`
-- [SSDP](https://en.wikipedia.org/wiki/Simple_Service_Discovery_Protocol) broadcast address.
 
 All this data helps to improve Rokon as it is [Free software](https://www.gnu.org/licenses/agpl-3.0.en.html).
 
@@ -38,19 +36,15 @@ anonymous - not identified by name; of unknown name.
 - Collect non-anonymous data such as your name, your TV's friendly name (Brycen's Living Room Roku), etc.
 - Be evil
 
-For error tracking and performance data, we use Sentry.io and their privacy policy can be found [here](https://sentry.io/privacy).
-
-For application analytics, we use Aptabase.com and their privacy policy can be found [here](https://aptabase.com/legal/privacy).
+For application analytics, we use Aptabase.com and their privacy policy can be found [here](https://aptabase.io/legal/privacy).
 
 ## In terms of fingerprinting
 
-- My application turns your machineid into a sha256 value that isn't traceable to you yet essentially unique to your operating system's installation.
-- This sha'd machineid helps me to understand user flow and how they could've ran into issues and helps to discern one device from another.
 - Although your *public* IP address is naturally processed by these network services. It is not saved and thus discarded.
 
 ## How do I disable telemetry?
 
-Go into the application's settings menu or config file (~/.config/rokon on Linux)
+Go into the application's settings menu or config file (~/.config/rokon/config.toml on Linux)
 
 Set `telemetry` to `false` and then no data should be sent for telemetry or application analytics.
 

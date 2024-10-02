@@ -11,7 +11,6 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/adrg/xdg"
 
@@ -20,7 +19,6 @@ import (
 	"github.com/diamondburned/gotk4/pkg/gio/v2"
 	"github.com/diamondburned/gotk4/pkg/glib/v2"
 	"github.com/diamondburned/gotk4/pkg/gtk/v4"
-	"github.com/getsentry/sentry-go"
 	"github.com/go-resty/resty/v2"
 	"github.com/koron/go-ssdp"
 )
@@ -84,17 +82,10 @@ type Service struct {
 	SCPDURL     string `xml:"SCPDURL"`
 }
 
-// Structure to hold GitHub release information
+// Structure to hold GitHub release information.
 type GitHubRelease struct {
 	TagName string `json:"tag_name"`
-	HtmlURL string `json:"html_url"`
-}
-
-func chooseNonEmpty(first, second string) string {
-	if first != "" {
-		return first
-	}
-	return second
+	HTMLURL string `json:"html_url"`
 }
 
 func getOSRelease() string {
@@ -102,13 +93,12 @@ func getOSRelease() string {
 	return fmt.Sprintf("%s %s", osName, osVersion)
 }
 
-func createEvent(eventName string, eventData map[string]interface{}) aptabase.EventData {
+func createEvent(eventName string, eventData map[string]interface{}) {
 	event := aptabase.EventData{
 		EventName: eventName,
 		Props:     eventData,
 	}
 	aptabaseClient.TrackEvent(event)
-	return event
 }
 
 var (
@@ -120,30 +110,6 @@ var (
 
 func main() {
 	fmt.Println("Starting Rokon. Now with more telemetry!")
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn:     "https://04484623ba4aa6cbb830e852178e9358@o4504136997928960.ingest.us.sentry.io/4507991443439616",
-		Release: version,
-		// Prevents HOSTNAME from being sent to Sentry.io (Is this PII? Anyway, don't need it)
-		ServerName:         "",
-		EnableTracing:      true,
-		AttachStacktrace:   true,
-		TracesSampleRate:   1.0,
-		ProfilesSampleRate: 1.0,
-		// Only enable Debug if the environment variable TRANSPARENT_TELEMETRY is set
-		Debug: os.Getenv("TRANSPARENT_TELEMETRY") != "",
-		BeforeSend: func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
-			// TRANSPARENT_TELEMETRY is set, so we can log the event and what data it's sending
-			if os.Getenv("TRANSPARENT_TELEMETRY") != "" {
-				log.Printf("Sending event: %s\n", chooseNonEmpty(event.Type, event.Message))
-				log.Printf("Event ID: %v\n", chooseNonEmpty(hint.EventID, string(event.EventID)))
-				log.Printf("Event data: %v\n", event)
-			}
-			return event
-		},
-	})
-	if err != nil {
-		log.Fatalf("sentry.Init: %s", err)
-	}
 	switch runtime.GOOS {
 	case "windows", "darwin":
 		fmt.Println("Running on Windows or macOS.")
@@ -260,22 +226,20 @@ func main() {
 	})
 	// Flush buffered events before the program terminates.
 	// Set the timeout to the maximum duration the program can afford to wait.
-	defer sentry.Flush(2 * time.Second)
 	aptabaseClient.Quit = true
 	aptabaseClient.Stop()
 	if code := app.Run(os.Args); code > 0 {
-		sentry.Flush(2 * time.Second)
 		os.Exit(code)
 	}
 }
 
-func activateCommandLine(app *gtk.Application, commandLine *gio.ApplicationCommandLine) int {
+func activateCommandLine(_ *gtk.Application, commandLine *gio.ApplicationCommandLine) int {
 	args := commandLine.Arguments() // Get the command-line arguments
 	// Check if --version flag is present
 	for _, arg := range args {
 		if arg == "version" || arg == "--version" {
 			// Print version info
-			fmt.Println(applicationInfo(app))
+			fmt.Println(applicationInfo())
 			return 0 // Return 0 to indicate success
 		}
 	}
@@ -283,7 +247,7 @@ func activateCommandLine(app *gtk.Application, commandLine *gio.ApplicationComma
 	return 0
 }
 
-func applicationInfo(app *gtk.Application) string {
+func applicationInfo() string {
 	qualifier := func() string {
 		switch {
 		case os.Getenv("SNAP") != "":
@@ -300,7 +264,7 @@ func applicationInfo(app *gtk.Application) string {
 			return ""
 		}
 	}()
-	return fmt.Sprintf("Rokon%s", qualifier)
+	return "Rokon" + qualifier
 }
 
 func isRunningWithFirejail() bool {
@@ -315,7 +279,7 @@ func contains(s, substr string) bool {
 	return strings.Contains(s, substr)
 }
 
-// Search for Rokus asynchronously and return via channel
+// Search for Rokus asynchronously and return via channel.
 func searchForRokus() chan []ssdp.Service {
 	resultChan := make(chan []ssdp.Service)
 
@@ -324,7 +288,6 @@ func searchForRokus() chan []ssdp.Service {
 
 		discoveredRokus, err := ssdp.Search("roku:ecp", 1, "")
 		if err != nil {
-			sentry.CaptureException(err)
 			log.Println("Error discovering Rokus:", err)
 			return
 		}
@@ -354,16 +317,18 @@ func searchForRokus() chan []ssdp.Service {
 	return resultChan
 }
 
-// Show the "About" window
-func showAboutWindow(parent *gtk.ApplicationWindow, app *gtk.Application) {
+// Show the "About" window.
+func showAboutWindow(_ *gtk.ApplicationWindow, app *gtk.Application) {
 	aboutWindow := gtk.NewAboutDialog()
-	aboutWindow.SetProgramName(applicationInfo(app))
+	aboutWindow.SetProgramName(applicationInfo())
 	aboutWindow.SetVersion(app.Version())
 	aboutWindow.SetComments("Control your Roku TV from your desktop")
 	aboutWindow.SetWebsite("https://github.com/BrycensRanch/Rokon")
 	aboutWindow.SetWebsiteLabel("GitHub")
+	//nolint:gosec // In GTK We trust.
 	aboutWindow.SetSystemInformation(
-		("GTK: " + strconv.Itoa(int(gtk.GetMajorVersion())) + "." + strconv.Itoa(int(gtk.GetMinorVersion())) + "." + strconv.Itoa(int(gtk.GetMicroVersion()))))
+		fmt.Sprintf("GTK: %d.%d.%d", int(gtk.GetMajorVersion()), int(gtk.GetMinorVersion()), int(gtk.GetMicroVersion())),
+	)
 	aboutWindow.SetCopyright("2024 Brycen G and contributors, but mostly Brycen")
 	aboutWindow.SetWrapLicense(true)
 	aboutWindow.SetModal(false)
@@ -396,13 +361,12 @@ func showAboutWindow(parent *gtk.ApplicationWindow, app *gtk.Application) {
 	}
 	// aboutWindow.SetAuthors([]string{"Brycen G. (BrycensRanch)"})
 	aboutWindow.SetLicenseType(gtk.LicenseAGPL30)
-	parent.SetChild(&aboutWindow.Window)
 
 	aboutWindow.Present()
 	aboutWindow.Focus()
 }
 
-// Create the main menu
+// Create the main menu.
 func createMenu(window *gtk.ApplicationWindow, app *gtk.Application) *gio.Menu {
 	menu := gio.NewMenu()
 
@@ -443,13 +407,12 @@ func createMenu(window *gtk.ApplicationWindow, app *gtk.Application) *gio.Menu {
 		// Make the request
 		resp, err := client.R().SetResult(&GitHubRelease{}).Get(url)
 		if err != nil {
-			sentry.CaptureException(err)
 			showDialog("Update Check Failed", fmt.Sprintf("Error fetching release information: %v", err), app)
 			return
 		}
 
 		if resp.StatusCode() != 200 {
-			showDialog("Update Check Failed", fmt.Sprintf("Unable to fetch release info: %s", resp.Status()), app)
+			showDialog("Update Check Failed", "Unable to fetch release info: "+resp.Status(), app)
 			return
 		}
 
@@ -481,7 +444,7 @@ func createMenu(window *gtk.ApplicationWindow, app *gtk.Application) *gio.Menu {
 	return menu
 }
 
-// Function to show a dialog with the specified title and message
+// Function to show a dialog with the specified title and message.
 func showDialog(title, message string, app *gtk.Application) {
 	theWindow := gtk.NewWindow()
 	dialog := gtk.NewMessageDialog(
@@ -492,6 +455,9 @@ func showDialog(title, message string, app *gtk.Application) {
 	)
 
 	dialog.SetTitle(title)
+	dialog.SetApplication(app)
+	dialog.SetModal(true)
+	dialog.SetChild(gtk.NewLabel(message))
 	theWindow.Show()
 	dialog.Show()
 }
@@ -507,8 +473,8 @@ func fetchImageAsPaintable(url string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	// Check if the request was successful
-	if resp.StatusCode() != 200 {
+	successfulHTTPCode := 200
+	if resp.StatusCode() != successfulHTTPCode {
 		return "", fmt.Errorf("failed to get image: status code %d", resp.StatusCode())
 	}
 	imagePath := filepath.Join(tempDir, "device-image.png")
@@ -531,21 +497,24 @@ func activate(app *gtk.Application) {
 		if iface.Flags&net.FlagUp != 0 {
 			status = "up"
 		}
+
 		// Determine the type of the interface
 		var ifaceType string
-		if iface.Flags&net.FlagLoopback != 0 {
+		switch {
+		case iface.Flags&net.FlagLoopback != 0:
 			ifaceType = "loopback"
-		} else if strings.Contains(iface.Name, "en") || strings.Contains(iface.Name, "eth") {
+		case strings.Contains(iface.Name, "en") || strings.Contains(iface.Name, "eth"):
 			ifaceType = "Ethernet"
-		} else if strings.Contains(iface.Name, "wl") {
+		case strings.Contains(iface.Name, "wl"):
 			ifaceType = "Wi-Fi"
-		} else {
+		default:
 			ifaceType = "Unknown"
 		}
 
 		// Print interface details
 		fmt.Printf("Interface: %s, Status: %s, Type: %s\n", iface.Name, status, ifaceType)
 	}
+
 	window := gtk.NewApplicationWindow(app)
 	window.SetTitle("Rokon: Control your Roku from your desktop")
 	window.SetChild(&gtk.NewLabel("Searching for Rokus on your network...").Widget)
@@ -555,8 +524,9 @@ func activate(app *gtk.Application) {
 	window.SetShowMenubar(true)
 	window.SetTitle("Rokon: Control your Roku from your desktop")
 	window.SetChild(&gtk.NewLabel("Searching for Rokus on your network...").Widget)
-	windowSize := 400
-	window.SetDefaultSize(800, windowSize)
+	windowWidth := 800
+	windowHeight := 400
+	window.SetDefaultSize(windowWidth, windowHeight)
 	window.SetVisible(true)
 
 	// Event controller setup
@@ -565,20 +535,27 @@ func activate(app *gtk.Application) {
 	window.AddController(keyController)
 
 	keyController.Connect("key-pressed", func(controller *gtk.EventControllerKey, code uint) {
-		println(code)
-		if code == 93 { // Right-click
+		println(controller.Name() + " " + strconv.FormatUint(uint64(code), 10))
+		const (
+			RightClickCode = uint(93) // Code representing a right-click
+		)
+		if code == RightClickCode {
 			println("right clicked")
 		}
 	})
 
 	focusController := gtk.NewEventControllerFocus()
 	focusController.SetName("focusController")
+
+	focusController.Connect("enter", func() {
+		println("Keyboard focus entered!")
+	})
 	window.AddController(focusController)
 
 	gestureClick := gtk.NewGestureClick()
 	gestureClick.SetName("gestureClick")
 	gestureClick.Connect("pressed", func(_, numberOfPresses uint) {
-		fmt.Println("Number of presses %s", numberOfPresses)
+		log.Printf("Number of presses %v", numberOfPresses)
 	})
 	window.AddController(gestureClick)
 
@@ -612,7 +589,6 @@ func activate(app *gtk.Application) {
 
 			if err != nil {
 				fmt.Println("Error:", err)
-				sentry.CaptureException(err)
 			} else {
 				fmt.Println("Trace Info:", resp.Request.TraceInfo())
 				fmt.Println("Status Code:", resp.StatusCode())
@@ -625,13 +601,16 @@ func activate(app *gtk.Application) {
 
 			notification := gio.NewNotification("Roku discovered")
 			var rokuList []string
+			const (
+				MaxValue = int(3) // Maximum allowed Rokus to display in notification
+			)
 			for i, roku := range discoveredRokus {
-				if i < 3 {
+				if i < MaxValue {
 					rokuList = append(rokuList, fmt.Sprintf("Roku Device %d: %v", i+1, roku.Location))
 				}
 			}
-			if len(discoveredRokus) > 3 {
-				rokuList = append(rokuList, fmt.Sprintf("...and %d more devices", len(discoveredRokus)-3))
+			if len(discoveredRokus) > MaxValue {
+				rokuList = append(rokuList, fmt.Sprintf("...and %d more devices", len(discoveredRokus)-MaxValue))
 			}
 			rokuListString := strings.Join(rokuList, "\n")
 			notification.SetBody(rokuListString)
@@ -639,7 +618,6 @@ func activate(app *gtk.Application) {
 			url := discoveredRokus[0].Location + "/device-image.png"
 			imagePath, err := fetchImageAsPaintable(url)
 			if err != nil {
-				sentry.CaptureException(err)
 				log.Println("Error getting image from URL:", err)
 				return
 			}
@@ -652,7 +630,8 @@ func activate(app *gtk.Application) {
 			glib.IdleAdd(func() {
 				if discoveredRokus != nil {
 					log.Println("Discovered Rokus:", discoveredRokus)
-					vbox := gtk.NewBox(gtk.OrientationVertical, 5)
+					const spacing = int(5)
+					vbox := gtk.NewBox(gtk.OrientationVertical, spacing)
 					window.SetChild(vbox)
 					labelText := fmt.Sprintf("Friendly Name: %s\nIP Address: %s",
 						root.Device.FriendlyName, discoveredRokus[0].Location)

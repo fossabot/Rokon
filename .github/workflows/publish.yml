@@ -169,6 +169,7 @@ jobs:
           mv modules.txt go.mod.yml flathub/
           rm -rf vendor/
       - name: COMMIT!
+        if: ${{ !startsWith(github.ref, 'refs/heads/dep/') }}
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           # Only golang stuff! Prevents snapcraft.yaml from being updated on a PR branch! 
@@ -293,7 +294,7 @@ jobs:
           HEAD_SHA: ${{ env.HEAD_SHA }}
         uses: peter-evans/create-or-update-comment@v2
         with:
-          issue-number: ${{ needs.find-comment.outputs.comment_id }}
+          issue-number: ${{ steps.find-comment.outputs.comment-id }}
           body: |-
             ## Build Preview
             
@@ -321,7 +322,7 @@ jobs:
             
             [![badge]](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
             
-            There was an issue generating the Jar files from your Pull request.
+            There was an issue generating the build artifacts from your Pull request.
             Please review the logs linked below for further information.
             
             | Name   | Link                                                                                |
