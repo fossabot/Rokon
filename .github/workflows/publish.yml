@@ -293,7 +293,7 @@ jobs:
           HEAD_SHA: ${{ env.HEAD_SHA }}
         uses: peter-evans/create-or-update-comment@v2
         with:
-          issue-number: ${{ needs.find-comment.outputs.comment_id }}
+          issue-number: ${{ steps.find-comment.outputs.comment-id }}
           body: |-
             ## Build Preview
             
