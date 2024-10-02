@@ -88,11 +88,17 @@ parts:
       base_version=$(echo "$current_version" | sed -E 's/\+.*//')
 
       # Check if "gha" exists in current_version
+      # Prepare the new version
       if [[ "$current_version" != *"gha"* ]]; then
           # Set the new version with the updated commit SHA
-          snapcraftctl set-version "${base_version}+${git_commit_sha}"
+          new_version="${base_version}+${git_commit_sha}"
       else
           # Set the new version without the commit SHA
-          snapcraftctl set-version "$base_version"
+          new_version="$base_version"
       fi
+      # Truncate the version to a maximum of 32 characters
+      truncated_version=$(echo "$new_version" | cut -c1-32)
+
+      # Set the version with truncation. Good luck everyone else! :)
+      snapcraftctl set-version "$truncated_version"
 
