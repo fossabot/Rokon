@@ -169,7 +169,7 @@ jobs:
           mv modules.txt go.mod.yml flathub/
           rm -rf vendor/
       - name: COMMIT!
-        if: ${{ !startsWith(github.ref, 'refs/heads/renovate/') }}
+        if: ${{ !startsWith(github.ref, 'refs/heads/dep/') }}
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           # Only golang stuff! Prevents snapcraft.yaml from being updated on a PR branch! 
