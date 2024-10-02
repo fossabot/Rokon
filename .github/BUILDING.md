@@ -9,7 +9,6 @@ Before you start contributing, please make sure you have the following:
 - [Go](https://golang.org) installed for building, not needed at runtime!
 - [GTK4](https://www.gtk.org) installed (don't forget gobject-introspection-1.0)
 - [Git](https://git-scm.com) installed and configured with your GitHub account and your commits signed
-- [Roku device](https://www.roku.com/products/roku-tv) (for local testing, not required for building)
 - Building the application for Windows requires [MSYS2](https://www.msys2.org/) with the dependencies for GTK4, Golang  installed.
 - Building the application for Windows from Linux/MacOS requires [cross-compiling](https://github.com/diamondburned/gotk4/issues/147) which is not supported by this project. There's libraries missing from Fedora's repositories that are required for cross-compiling GTK4 Golang applications. It's best to let the CI/CD pipeline handle the Windows builds. Commit and push your changes to the repository and let the CI/CD pipeline handle the rest.
 - Patience and a willingness to learn
@@ -68,11 +67,12 @@ After that, follow the Linux build instructions, as they are the same for macOS 
 
 > If you don't want to use Distrobox, you can always use our prebuilt AppImage which works on old and new distributions. Or our Snap package or Flatpak package.
 
-> Fedora Linux 40+: `sudo dnf in -y git golang gtk4-devel @development-tools`
+> Fedora Linux 40+: `sudo dnf in -y git golang gtk4-devel @development-tools @development-libs`
 
 > Ubuntu 24.04+:
 
  ```bash
+ sudo apt update
 sudo apt install -y build-essential git libgtk-4-dev libgirepository1.0-dev software-properties-common make
 # If using Rhino Linux, do not add the PPA. You already have a modern version of Golang 100% of the time.
 sudo add-apt-repository ppa:longsleep/golang-backports
@@ -83,6 +83,7 @@ sudo apt install -y golang-go
 > Rhino Linux:
 
 ```bash
+sudo nala update
 sudo nala install -y build-essential git libgtk-4-dev golang-go libgirepository1.0-dev make
 ```
 
@@ -103,9 +104,7 @@ sudo apk add --no-cache alpine-sdk gtk4.0-dev gobject-introspection-dev go make
 ```bash
 git clone https://github.com/BrycensRanch/Rokon
 cd Rokon
-# If your internet is slow, this WILL take awhile.
-go mod download all
-# This may take a while, CGO is slow.
+# This may take a while, grab a cup of coffee.
 make build
 # If on Windows, do not add "sudo"
 # On Windows & macOS make install does not natively integrate with your operating system. 
@@ -120,4 +119,4 @@ Run the app in development mode:
 wgo go run -v .
 ```
 
-Note: To truly test the development version of the app, you will need a Roku device.
+Happy coding!
