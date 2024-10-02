@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/adrg/xdg"
+	"github.com/dubonzi/otelresty"
 
 	"github.com/brycensranch/go-aptabase/pkg/aptabase/v1"
 	"github.com/brycensranch/go-aptabase/pkg/osinfo/v1"
@@ -438,6 +439,9 @@ func createMenu(window *gtk.ApplicationWindow, app *gtk.Application) *gio.Menu {
 
 		// Create a Resty client
 		client := resty.New()
+		opts := []otelresty.Option{otelresty.WithTracerName("update-checker")}
+
+		otelresty.TraceClient(client, opts...)
 
 		// Make the request
 		resp, err := client.R().SetResult(&GitHubRelease{}).Get(url)
@@ -498,6 +502,9 @@ func showDialog(title, message string, app *gtk.Application) {
 func fetchImageAsPaintable(url string) (string, error) {
 	tempDir := filepath.Join(xdg.CacheHome, "rokon")
 	client := resty.New()
+	opts := []otelresty.Option{otelresty.WithTracerName("image-fetcher")}
+
+	otelresty.TraceClient(client, opts...)
 	resp, err := client.SetOutputDirectory(tempDir).EnableTrace().R().
 		// SetDebug(true).
 		EnableTrace().
@@ -572,6 +579,10 @@ func activate(app *gtk.Application) {
 
 	focusController := gtk.NewEventControllerFocus()
 	focusController.SetName("focusController")
+
+	focusController.Connect("enter", func() {
+		println("Keyboard focus entered!")
+	})
 	window.AddController(focusController)
 
 	gestureClick := gtk.NewGestureClick()
@@ -605,6 +616,9 @@ func activate(app *gtk.Application) {
 		// Once Roku discovery completes, run Resty logic
 		if discoveredRokus != nil {
 			client := resty.New()
+			opts := []otelresty.Option{otelresty.WithTracerName("roku-data-fetcher")}
+
+			otelresty.TraceClient(client, opts...)
 			resp, err := client.R().
 				SetResult(&root). // Set the result to automatically unmarshal the response
 				Get(discoveredRokus[0].Location + "/")
