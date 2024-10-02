@@ -37,11 +37,91 @@
   strip-components: 3
   type: archive
   url: https://proxy.golang.org/github.com/koron/go-ssdp/@v/v0.0.4.zip
+- dest: vendor/github.com/davecgh/go-spew
+  sha256: b4d0923b169b194f0016ec46f3df1ab0c68e27999743e43fe2de59ecb2484128
+  strip-components: 3
+  type: archive
+  url: https://proxy.golang.org/github.com/davecgh/go-spew/@v/v1.1.2-0.20180830191138-d8f796af33cc.zip
+- dest: vendor/github.com/pmezard/go-difflib
+  sha256: 24ff45e356f638a53bd0c89fff961fbeaecfdb0dc5e482ceed0a2230e0e5f3b7
+  strip-components: 3
+  type: archive
+  url: https://proxy.golang.org/github.com/pmezard/go-difflib/@v/v1.0.1-0.20181226105442-5d4384ee4fb2.zip
 - dest: vendor/github.com/KarpelesLab/weak
   sha256: 95beab3258f52af7133a707f6e6dc53f52e84dc7d81857b9022267146e3fdc0e
   strip-components: 3
   type: archive
   url: https://proxy.golang.org/github.com/!karpeles!lab/weak/@v/v0.1.1.zip
+- dest: vendor/github.com/dubonzi/otelresty
+  sha256: edcadf54e9bd6000100752433ddef5ccca61e5eadc942f5b600a4681cbf921fa
+  strip-components: 3
+  type: archive
+  url: https://proxy.golang.org/github.com/dubonzi/otelresty/@v/v1.3.0.zip
+- dest: vendor/github.com/getsentry/sentry-go/otel
+  sha256: eeba995de4b1686ea268170adc115f99ecea217c8001892a05b39483a07820b1
+  strip-components: 4
+  type: archive
+  url: https://proxy.golang.org/github.com/getsentry/sentry-go/otel/@v/v0.29.0.zip
+- dest: vendor/github.com/go-logr/logr
+  sha256: 9f8926fda6dee61e68522421963d5804baeb10024aa02b318d9bd50fdcfdd7d1
+  strip-components: 3
+  type: archive
+  url: https://proxy.golang.org/github.com/go-logr/logr/@v/v1.4.2.zip
+- dest: vendor/github.com/go-logr/stdr
+  sha256: 9dd6893bf700198485ae699640b49bc1efbc6c73b37cb5792a0476e1fd8f7fef
+  strip-components: 3
+  type: archive
+  url: https://proxy.golang.org/github.com/go-logr/stdr/@v/v1.2.2.zip
+- dest: vendor/github.com/google/uuid
+  sha256: d0f02f377217f42702e259684e06441edbf5140dddcc34ba9bea56038b38a6ed
+  strip-components: 3
+  type: archive
+  url: https://proxy.golang.org/github.com/google/uuid/@v/v1.6.0.zip
+- dest: vendor/go.opentelemetry.io/otel
+  sha256: 89c498a007030b6c9bd107ed4ebc896d2d813b2eb80ecd31855b001f8b41647e
+  strip-components: 2
+  type: archive
+  url: https://proxy.golang.org/go.opentelemetry.io/otel/@v/v1.30.0.zip
+- dest: vendor/go.opentelemetry.io/otel/exporters/stdout/stdoutlog
+  sha256: 50286b3c519a90beb2b4db77e3911e366a0d6b1d0ace090a32d2cfefc853703e
+  strip-components: 5
+  type: archive
+  url: https://proxy.golang.org/go.opentelemetry.io/otel/exporters/stdout/stdoutlog/@v/v0.6.0.zip
+- dest: vendor/go.opentelemetry.io/otel/exporters/stdout/stdoutmetric
+  sha256: f0a8a1f79f8bc7057f7cd71632f7996a9618db7b1590fdb2359855712a9db558
+  strip-components: 5
+  type: archive
+  url: https://proxy.golang.org/go.opentelemetry.io/otel/exporters/stdout/stdoutmetric/@v/v1.30.0.zip
+- dest: vendor/go.opentelemetry.io/otel/log
+  sha256: 2ff24928675be3a72bf09410c7842cb04dbc855a67dff86c76e5b1c3a8f35f99
+  strip-components: 3
+  type: archive
+  url: https://proxy.golang.org/go.opentelemetry.io/otel/log/@v/v0.6.0.zip
+- dest: vendor/go.opentelemetry.io/otel/metric
+  sha256: 6a17d2896ba13b7362a6084d4d2140f8dfc4589c7e0fd87149996bd4ed660896
+  strip-components: 3
+  type: archive
+  url: https://proxy.golang.org/go.opentelemetry.io/otel/metric/@v/v1.30.0.zip
+- dest: vendor/go.opentelemetry.io/otel/sdk
+  sha256: 6c28e4b0ec595ec308efb9a4e36ecb15d1457f8a6e2793cd62b404d3f63057e7
+  strip-components: 3
+  type: archive
+  url: https://proxy.golang.org/go.opentelemetry.io/otel/sdk/@v/v1.30.0.zip
+- dest: vendor/go.opentelemetry.io/otel/sdk/log
+  sha256: 5e26470cbe50cdb72575778d8184d94717d7c83d13b4a5d0bad2d2d4de7889e0
+  strip-components: 4
+  type: archive
+  url: https://proxy.golang.org/go.opentelemetry.io/otel/sdk/log/@v/v0.6.0.zip
+- dest: vendor/go.opentelemetry.io/otel/sdk/metric
+  sha256: 97af1f481d52521e0188f654b351871e2bdf0765b938b42c2c0033a67f5094eb
+  strip-components: 4
+  type: archive
+  url: https://proxy.golang.org/go.opentelemetry.io/otel/sdk/metric/@v/v1.30.0.zip
+- dest: vendor/go.opentelemetry.io/otel/trace
+  sha256: 746d23f272cf1d9c6f2e33cbfce87db5bfdd0534155af180940d0b93e6725e36
+  strip-components: 3
+  type: archive
+  url: https://proxy.golang.org/go.opentelemetry.io/otel/trace/@v/v1.30.0.zip
 - dest: vendor/go4.org/unsafe/assume-no-moving-gc
   sha256: e9f5fa7ec7ae45153c6cb5b0c21e813860f9a4370b35ed1ab27398ba365dbb43
   strip-components: 3
