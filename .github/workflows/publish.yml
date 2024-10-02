@@ -321,7 +321,7 @@ jobs:
             
             [![badge]](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
             
-            There was an issue generating the Jar files from your Pull request.
+            There was an issue generating the build artifacts from your Pull request.
             Please review the logs linked below for further information.
             
             | Name   | Link                                                                                |
