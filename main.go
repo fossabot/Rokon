@@ -11,17 +11,14 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"time"
 
 	"github.com/adrg/xdg"
-	"github.com/dubonzi/otelresty"
 
 	"github.com/brycensranch/go-aptabase/pkg/aptabase/v1"
 	"github.com/brycensranch/go-aptabase/pkg/osinfo/v1"
 	"github.com/diamondburned/gotk4/pkg/gio/v2"
 	"github.com/diamondburned/gotk4/pkg/glib/v2"
 	"github.com/diamondburned/gotk4/pkg/gtk/v4"
-	"github.com/getsentry/sentry-go"
 	"github.com/go-resty/resty/v2"
 	"github.com/koron/go-ssdp"
 )
@@ -121,30 +118,6 @@ var (
 
 func main() {
 	fmt.Println("Starting Rokon. Now with more telemetry!")
-	err := sentry.Init(sentry.ClientOptions{
-		Dsn:     "https://04484623ba4aa6cbb830e852178e9358@o4504136997928960.ingest.us.sentry.io/4507991443439616",
-		Release: version,
-		// Prevents HOSTNAME from being sent to Sentry.io (Is this PII? Anyway, don't need it)
-		ServerName:         "",
-		EnableTracing:      true,
-		AttachStacktrace:   true,
-		TracesSampleRate:   1.0,
-		ProfilesSampleRate: 1.0,
-		// Only enable Debug if the environment variable TRANSPARENT_TELEMETRY is set
-		Debug: os.Getenv("TRANSPARENT_TELEMETRY") != "",
-		BeforeSend: func(event *sentry.Event, hint *sentry.EventHint) *sentry.Event {
-			// TRANSPARENT_TELEMETRY is set, so we can log the event and what data it's sending
-			if os.Getenv("TRANSPARENT_TELEMETRY") != "" {
-				log.Printf("Sending event: %s\n", chooseNonEmpty(event.Type, event.Message))
-				log.Printf("Event ID: %v\n", chooseNonEmpty(hint.EventID, string(event.EventID)))
-				log.Printf("Event data: %v\n", event)
-			}
-			return event
-		},
-	})
-	if err != nil {
-		log.Fatalf("sentry.Init: %s", err)
-	}
 	switch runtime.GOOS {
 	case "windows", "darwin":
 		fmt.Println("Running on Windows or macOS.")
@@ -261,11 +234,9 @@ func main() {
 	})
 	// Flush buffered events before the program terminates.
 	// Set the timeout to the maximum duration the program can afford to wait.
-	defer sentry.Flush(2 * time.Second)
 	aptabaseClient.Quit = true
 	aptabaseClient.Stop()
 	if code := app.Run(os.Args); code > 0 {
-		sentry.Flush(2 * time.Second)
 		os.Exit(code)
 	}
 }
@@ -325,7 +296,6 @@ func searchForRokus() chan []ssdp.Service {
 
 		discoveredRokus, err := ssdp.Search("roku:ecp", 1, "")
 		if err != nil {
-			sentry.CaptureException(err)
 			log.Println("Error discovering Rokus:", err)
 			return
 		}
@@ -439,14 +409,10 @@ func createMenu(window *gtk.ApplicationWindow, app *gtk.Application) *gio.Menu {
 
 		// Create a Resty client
 		client := resty.New()
-		opts := []otelresty.Option{otelresty.WithTracerName("update-checker")}
-
-		otelresty.TraceClient(client, opts...)
 
 		// Make the request
 		resp, err := client.R().SetResult(&GitHubRelease{}).Get(url)
 		if err != nil {
-			sentry.CaptureException(err)
 			showDialog("Update Check Failed", fmt.Sprintf("Error fetching release information: %v", err), app)
 			return
 		}
@@ -502,9 +468,6 @@ func showDialog(title, message string, app *gtk.Application) {
 func fetchImageAsPaintable(url string) (string, error) {
 	tempDir := filepath.Join(xdg.CacheHome, "rokon")
 	client := resty.New()
-	opts := []otelresty.Option{otelresty.WithTracerName("image-fetcher")}
-
-	otelresty.TraceClient(client, opts...)
 	resp, err := client.SetOutputDirectory(tempDir).EnableTrace().R().
 		// SetDebug(true).
 		EnableTrace().
@@ -616,16 +579,12 @@ func activate(app *gtk.Application) {
 		// Once Roku discovery completes, run Resty logic
 		if discoveredRokus != nil {
 			client := resty.New()
-			opts := []otelresty.Option{otelresty.WithTracerName("roku-data-fetcher")}
-
-			otelresty.TraceClient(client, opts...)
 			resp, err := client.R().
 				SetResult(&root). // Set the result to automatically unmarshal the response
 				Get(discoveredRokus[0].Location + "/")
 
 			if err != nil {
 				fmt.Println("Error:", err)
-				sentry.CaptureException(err)
 			} else {
 				fmt.Println("Trace Info:", resp.Request.TraceInfo())
 				fmt.Println("Status Code:", resp.StatusCode())
@@ -652,7 +611,6 @@ func activate(app *gtk.Application) {
 			url := discoveredRokus[0].Location + "/device-image.png"
 			imagePath, err := fetchImageAsPaintable(url)
 			if err != nil {
-				sentry.CaptureException(err)
 				log.Println("Error getting image from URL:", err)
 				return
 			}
