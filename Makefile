@@ -65,7 +65,7 @@ help:
 .PHONY: clean
 clean: ## remove files created during build pipeline
 	$(call print-target)
-	rm -rf dist .flatpak .flatpak-builder flathub/.flatpak-builder flathub/repo flathub/export flathub/*.flatpak AppDir *.AppImage *.rpm *.pdf *.rtf windows/*.rtf *.deb *.msi *.exe pkg/ *.pkg.tar.zst *.snap *.zsync coverage.* '"$(shell go env GOCACHE)/../golangci-lint"'
+	rm -rf dist .flatpak .flatpak-builder flathub/.flatpak-builder flathub/repo flathub/export flathub/*.flatpak AppDir *.AppImage *.rpm *.pdf *.rtf windows/*.rtf *.deb *.msi *.exe pkg/ *.pkg.tar.zst *.snap *.zsync rokon debian/tmp debian/rokon debian/rokon-dbg coverage.* '"$(shell go env GOCACHE)/../golangci-lint"'
 	# go clean -i -cache -testcache -modcache -fuzzcache -x
 
 .PHONY: version
