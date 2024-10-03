@@ -60,6 +60,7 @@ jobs:
         uses: snapcore/action-build@v1
         id: snapcraft_build
       - uses: snapcore/action-publish@v1
+        continue-on-error: true
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
         with:
