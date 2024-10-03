@@ -166,7 +166,9 @@ jobs:
           go mod tidy -go=1.22.0
           go mod vendor
           go run github.com/dennwc/flatpak-go-mod@latest .
-          cp modules.txt go.mod.yml flathub/
+          mv modules.txt go.mod.yml flathub/
+          # the vendor directory disappears after running flatpak go mod LOL
+          go mod vendor
       - name: COMMIT!
         if: ${{ !startsWith(github.ref, 'refs/heads/dep/') }}
         uses: stefanzweifel/git-auto-commit-action@v5
