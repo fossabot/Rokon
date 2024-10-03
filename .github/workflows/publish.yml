@@ -43,7 +43,7 @@ jobs:
       - name: Sanitize branch
         id: sanitize_branch
         run: |
-          SANITIZED_BRANCH=$(echo "${{ steps.extract_branch.outputs.branch }}" | tr '/' '-' | tr -d '[:space:]')
+          SANITIZED_BRANCH=$(echo "${{ steps.extract_branch.outputs.branch }}" | tr '/' '-' | tr -d '[:space:]' | cut -c 1-16)
           echo "sanitized_branch=$SANITIZED_BRANCH" >> $GITHUB_OUTPUT
 
       - name: Set snapcraft version
