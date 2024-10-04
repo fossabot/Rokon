@@ -184,7 +184,11 @@ install: ## installs Rokon into $PATH and places desktop files
 	# Check if NODOCUMENTATION is set to 1
 	@if [ "$(NODOCUMENTATION)" != "1" ]; then \
 		echo "Installing documentation..."; \
+		if [ "$(UNAME_S)" = "Darwin" ]; then \
+			install -m 0644 ./PRIVACY.md ./README.md $(DESTDIR)$(PREFIX)/share/doc/rokon; \
+		else \
 		install -Dpm 0644 ./PRIVACY.md ./README.md $(DESTDIR)$(PREFIX)/share/doc/rokon; \
+		fi
 	else \
 		echo "Skipping documentation installation. Please make sure you include PRIVACY notice."; \
 	fi
