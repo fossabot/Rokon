@@ -8,10 +8,10 @@
   type: archive
   url: https://proxy.golang.org/github.com/adrg/xdg/@v/v0.5.0.zip
 - dest: vendor/github.com/brycensranch/go-aptabase/pkg
-  sha256: eb6f1d71dcc52a042016b5d47ba1b43c769570578134a27c23155514f13eeb50
+  sha256: d30dd331b92fd16b89214b3988075f49f0e93becca5aa6f53609296b1960a4d8
   strip-components: 4
   type: archive
-  url: https://proxy.golang.org/github.com/brycensranch/go-aptabase/pkg/@v/v0.0.0-20240930134225-2e7708b1072e.zip
+  url: https://proxy.golang.org/github.com/brycensranch/go-aptabase/pkg/@v/v0.0.0-20241004152612-e20856549654.zip
 - dest: vendor/github.com/diamondburned/gotk4/pkg
   sha256: c9723192c5123d33d85cfbc39631f8246a76f767b44b36fb27f4366e7d8acdcd
   strip-components: 4
@@ -53,22 +53,22 @@
   type: archive
   url: https://proxy.golang.org/go4.org/unsafe/assume-no-moving-gc/@v/v0.0.0-20231121144256-b99613f794b6.zip
 - dest: vendor/golang.org/x/exp
-  sha256: 447a436882177a2a9fc281116f1858d6e0533c790a90f55cf3a64f1cafb752c6
+  sha256: 4803c1cef3bee3b4824a35f47ce1b74b7b18b67ef732c2e5268700e73117863e
   strip-components: 3
   type: archive
-  url: https://proxy.golang.org/golang.org/x/exp/@v/v0.0.0-20240909161429-701f63a606c0.zip
+  url: https://proxy.golang.org/golang.org/x/exp/@v/v0.0.0-20241004190924-225e2abe05e6.zip
 - dest: vendor/golang.org/x/net
-  sha256: fec08ca53c4f3ddb0a81a0bfed2f7d36a6b2867d25380e4cc021c746fe4b722f
+  sha256: c357b779cdc08d0952f7bad4c45ce84223b7c6005d775822a17901ae8f65bbba
   strip-components: 3
   type: archive
-  url: https://proxy.golang.org/golang.org/x/net/@v/v0.29.0.zip
+  url: https://proxy.golang.org/golang.org/x/net/@v/v0.30.0.zip
 - dest: vendor/golang.org/x/sync
   sha256: c79473c265ca571d389bf64fa1e7b2d8999b4ab3eb7af5e3bc185644783a1087
   strip-components: 3
   type: archive
   url: https://proxy.golang.org/golang.org/x/sync/@v/v0.8.0.zip
 - dest: vendor/golang.org/x/sys
-  sha256: 95e485046cac79d164d4d35a13e93b2a866a1ac2148184c37ca71514ddd94a52
+  sha256: f44842acff792af010dcb5a24308b72272ebd57c74e00d5f530c9e5d55b86979
   strip-components: 3
   type: archive
-  url: https://proxy.golang.org/golang.org/x/sys/@v/v0.25.0.zip
+  url: https://proxy.golang.org/golang.org/x/sys/@v/v0.26.0.zip

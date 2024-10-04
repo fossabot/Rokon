@@ -6,7 +6,7 @@ github.com/KarpelesLab/weak
 github.com/adrg/xdg
 github.com/adrg/xdg/internal/pathutil
 github.com/adrg/xdg/internal/userdirs
-# github.com/brycensranch/go-aptabase/pkg v0.0.0-20240930134225-2e7708b1072e
+# github.com/brycensranch/go-aptabase/pkg v0.0.0-20241004152612-e20856549654
 ## explicit; go 1.22.0
 github.com/brycensranch/go-aptabase/pkg/aptabase/v1
 github.com/brycensranch/go-aptabase/pkg/device/v1
@@ -52,10 +52,10 @@ github.com/koron/go-ssdp/internal/ssdplog
 # go4.org/unsafe/assume-no-moving-gc v0.0.0-20231121144256-b99613f794b6
 ## explicit; go 1.11
 go4.org/unsafe/assume-no-moving-gc
-# golang.org/x/exp v0.0.0-20240909161429-701f63a606c0
+# golang.org/x/exp v0.0.0-20241004190924-225e2abe05e6
 ## explicit; go 1.22.0
 golang.org/x/exp/rand
-# golang.org/x/net v0.29.0
+# golang.org/x/net v0.30.0
 ## explicit; go 1.18
 golang.org/x/net/bpf
 golang.org/x/net/internal/iana
@@ -65,7 +65,8 @@ golang.org/x/net/publicsuffix
 # golang.org/x/sync v0.8.0
 ## explicit; go 1.18
 golang.org/x/sync/singleflight
-# golang.org/x/sys v0.25.0
+# golang.org/x/sys v0.26.0
 ## explicit; go 1.18
 golang.org/x/sys/unix
 golang.org/x/sys/windows
+golang.org/x/sys/windows/registry
