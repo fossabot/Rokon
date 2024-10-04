@@ -98,7 +98,6 @@ This application provides a remote control interface for Roku devices, utilizing
 - DiscordRPC integration, display what you're doing on your Roku on Discord!
 - [ActivityWatch](https://activitywatch.net/) integration (Roadmap)
 - Option to run on startup and optionally turn on your Roku
-- Use open source LLM to convert speech to text for voice control (Roadmap)
 - Use your Xbox or PlayStation controller to control your Roku (Roadmap)
 - Scripting functionality (Roadmap)
 - CLI (Roadmap)
