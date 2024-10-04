@@ -53,6 +53,8 @@ flathub/export
 flathub/builddir
 rpm
 debian/.debhelper
+io.github.brycensranch.Rokon.desktop
+io.github.brycensranch.Rokon.metainfo.xml
 
 *.rtf
 *.txt
