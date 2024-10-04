@@ -21,22 +21,23 @@
 Name:           rokon
 Version:        1.0.0
 %if 0%{?fedora}
-	Release:        %autorelease -p
+Release:        %autorelease -p
 %else
-	Release:        13%{?dist}
+Release:        13%{?dist}
 %endif
 Summary:        Control your Roku device with your desktop!
 License:        AGPL-3.0-or-later
 URL:            https://github.com/BrycensRanch/Rokon
 %if 0%{?opensuse_bs}
-	Source:         Rokon.tar.xz
+Source:         Rokon.tar.xz
 %else
-	Source:         %{url}/archive/master.tar.gz
+Source:         https://nightly.link/BrycensRanch/Rokon/workflows/publish/master/rokon-source.zip
 %endif
 
 %if 0%{?fedora}
-    %gometa -f
-    Source: %{gosource}
+%gometa -f
+Source1:        %{archivename}-vendor.tar.bz2
+Source2:        go-vendor-tools.toml
 %endif
 
 BuildRequires:  git
@@ -47,18 +48,19 @@ BuildRequires:  gtk4-devel
 BuildRequires:  gobject-introspection-devel
 Requires:       gtk4
 %if 0%{?opensuse_bs}
-	# Logic specific to openSUSE Build Service. I imagine this will make it extremely difficult to build the spec locally on OBS.
-	Source1:        vendor.tar.zst
-	BuildRequires:  golang-packaging
-	BuildRequires:  zstd
+# Logic specific to openSUSE Build Service. I imagine this will make it extremely difficult to build the spec locally on OBS.
+Source1:        vendor.tar.zst
+BuildRequires:  golang-packaging
+BuildRequires:  zstd
 %endif
 
-%gopkg
+# %gopkg
 
 
 %generate_buildrequires
 %if 0%{?fedora}
-#	%go_generate_buildrequires
+#%go_generate_buildrequires
+%go_vendor_license_buildrequires -c %{S:2}
 %endif
 
 %description
@@ -66,14 +68,16 @@ Rokon is a GTK4 application that control your Roku.
 Whether that be with your keyboard, mouse, or controller.
 
 %if 0%{?fedora}
-	%goprep -A
+%goprep -A
+%setup -q -T -D -a1 %{forgesetupargs}
+%autopatch -p1
 %else
-    %prep
+%prep
 %endif
 %if 0%{?opensuse_bs}
-	%autosetup -n Rokon
+%autosetup -n Rokon
 %else
-	%autosetup -n Rokon-master
+%autosetup -n Rokon-master
 %endif
 
 %build
