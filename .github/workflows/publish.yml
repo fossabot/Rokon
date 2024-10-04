@@ -514,10 +514,6 @@ jobs:
       - name: 🤖 Build Project
         run: |
           make PACKAGED=true PACKAGEFORMAT=dmg EXTRAGOFLAGS="-trimpath" build
-      - name: Minimize binary size using upx
-        continue-on-error: true
-        run: |
-          upx --best -f --force-overwrite ./rokon
       - name: 🐕 Install
         run: |
           make PREFIX=./macos BINDIR=./macos install
