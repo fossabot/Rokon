@@ -507,7 +507,7 @@ jobs:
           fetch-depth: 0
       - name: Install GTK4 Golang
         run: |
-          brew install gtk4 gobject-introspection go create-dmg dylibbundler rsync upx
+          brew install gtk4 gobject-introspection go create-dmg dylibbundler rsync
       - name: 📦 Install Dependencies
         run: |
           go mod download all
