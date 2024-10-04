@@ -73,11 +73,6 @@ Windows on ARM binaries will be investigated later as cross compiling this appli
 macOS Monterey+ is supported. Old versions of macOS are not.
 
 Packages for macOS are a WIP. I plan to target:
-
-All the packages on macOS should be fat, meaning they contain support for Apple's M series (aarch64) processors and Apple devices that contain Intel processors (x86_64)
-
-Unless it violates a packaging policy.
-
 - Homebrew
 - MacPorts
 - .dmg, .app package formats
