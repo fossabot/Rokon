@@ -43,6 +43,7 @@ TARGET = rokon
 BINDIR = $(DESTDIR)$(PREFIX)/bin
 DATADIR = $(DESTDIR)$(PREFIX)/share/rokon
 DOCDIR = $(DESTDIR)$(PREFIX)/share/doc/rokon
+LICENSEDIR = $(DESTDIR)$(PREFIX)/share/licenses/rokon
 APPLICATIONSDIR = $(DESTDIR)$(PREFIX)/share/applications
 ICONDIR = $(DESTDIR)$(PREFIX)/share/icons/hicolor
 METAINFODIR = $(DESTDIR)$(PREFIX)/share/metainfo
@@ -123,6 +124,7 @@ install: ## installs Rokon into $PATH and places desktop files
 	mkdir -p $(BINDIR)
 	mkdir -p $(DESTDIR)$(PREFIX)/share/doc/rokon
 	mkdir -p $(APPLICATIONSDIR)
+	mkdir -p $(LICENSEDIR)
 	mkdir -p $(ICONDIR)/48x48/apps
 	mkdir -p $(ICONDIR)/256x256/apps
 	mkdir -p $(ICONDIR)/scalable/apps
@@ -154,8 +156,8 @@ install: ## installs Rokon into $PATH and places desktop files
 		install -m 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg; \
 		echo "Installing metainfo file to $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml"; \
 		install -m 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml; \
-		echo "Installing license to $(DESTDIR)$(PREFIX)/share/licenses/rokon/LICENSE.md"; \
-		install -m 0644 ./LICENSE.md $(DESTDIR)$(PREFIX)/share/licenses/rokon/LICENSE.md; \
+		echo "Installing license to $(LICENSEDIR)LICENSE.md"; \
+		install -m 0644 ./LICENSE.md $(LICENSEDIR)LICENSE.md; \
 	else \
 		echo "Installing desktop file to $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop"; \
 		install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop; \
@@ -169,8 +171,8 @@ install: ## installs Rokon into $PATH and places desktop files
 		install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg; \
 		echo "Installing metainfo file to $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml"; \
 		install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml; \
-		echo "Installing license to $(DESTDIR)$(PREFIX)/share/licenses/rokon/LICENSE.md"; \
-		install -Dpm 0644 ./LICENSE.md $(DESTDIR)$(PREFIX)/share/licenses/rokon/LICENSE.md; \
+		echo "Installing license to $(LICENSEDIR)LICENSE.md"; \
+		install -Dpm 0644 ./LICENSE.md $(LICENSEDIR)LICENSE.md; \
 	fi
 
 	# Check if NODOCUMENTATION is set to 1
