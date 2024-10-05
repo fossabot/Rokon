@@ -583,18 +583,28 @@ jobs:
       - name: Install DMG
         run: |
           mount_point="/Volumes/${{ steps.mount-dmg.outputs.mount_point }}"
-          tree $mount_point
-          app_name="$mount_point/Rokon.app"
-          tree $app_name
-          tree /Applications
           
-          if [ -d "$app_name" ]; then
-            sudo cp -R "$app_name" /Applications/
-            echo "Application installed."
+          # Check if the mount point exists
+          if [ -d "$mount_point" ]; then
+            tree "$mount_point"
+            
+            app_name="$mount_point/Rokon.app"
+            tree "$app_name"
+            tree /Applications
+            
+            if [ -d "$app_name" ]; then
+              sudo cp -R "$app_name" /Applications/
+              echo "Application installed."
+            else
+              echo "Application not found in DMG."
+              exit 1
+            fi
           else
-            echo "Application not found in DMG."
+            echo "Mount point does not exist."
             exit 1
           fi
+        shell: /bin/bash -e {0}
+
 
       - name: Unmount DMG
         run: |
