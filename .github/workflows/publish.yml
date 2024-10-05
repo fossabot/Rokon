@@ -59,6 +59,10 @@ jobs:
       - name: 🫰 Assemble the Snap
         uses: snapcore/action-build@v1
         id: snapcraft_build
+      - name: Test Installing Snap
+        run: sudo snap install ${{ steps.snapcraft_build.outputs.snap }} --dangerous
+      - name: Test Installed Snap
+        run: rokon --version
       - uses: snapcore/action-publish@v1
         continue-on-error: true
         env:
@@ -113,6 +117,10 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+      - name: Test Docker Container
+        run: |
+          # Run the container in detached mode and check the version
+          docker run --rm ${{ steps.meta.outputs.tags }} --version
   build:
     timeout-minutes: 125
     strategy:
@@ -202,6 +210,8 @@ jobs:
           sudo mv mkappimage /usr/bin
           sudo apt install -y binutils coreutils desktop-file-utils fakeroot libgdk-pixbuf2.0-dev patchelf python3-pip python3-setuptools squashfs-tools strace util-linux zsync
           make fatimage
+          ./*.AppImage --version
+          mv *.AppImage ../artifacts
       - name: Extract branch name
         if: ${{ github.event_name == 'pull_request' }}
         shell: bash
@@ -228,6 +238,9 @@ jobs:
           flatpak build-export export repo
           # Create a Flatpak bundle for the beta version
           flatpak build-bundle export io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon master --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
+      - name: Test Flatpak
+        run: |
+          flatpak --branch=beta --user run io.github.brycensranch.Rokon --version
       - name: 🤠 Assemble the DEB
         if: ${{ github.event_name == 'pull_request' }}
         continue-on-error: true
