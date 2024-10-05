@@ -483,7 +483,7 @@ jobs:
       - name: Test MSI Install
         shell: pwsh
         run: |
-          Start-Process msiexec.exe -ArgumentList '/i $result /quiet /norestart' -NoNewWindow -Wait
+          Start-Process msiexec.exe -ArgumentList '/i ${{ steps.prepare.outputs.name }} /quiet /norestart' -NoNewWindow -Wait
       - name: Check --version command
         run: |
           "C:\Program Files\BrycensRanch\Rokon\Rokon.exe" --version
