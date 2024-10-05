@@ -240,6 +240,8 @@ jobs:
           pkill ostree || true
           pkill flatpak || true
           pkill builder || true
+          sudo make clean
+          make clean
       - name: Test Flatpak
         if: ${{ github.event_name == 'pull_request' }}
         run: |
