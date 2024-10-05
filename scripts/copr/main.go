@@ -159,7 +159,7 @@ func cancelBuild(coprUsername string, coprToken string, coprLogin string, buildI
 	}
 
 	if resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusConflict {
-		fmt.Printf("Build %d cancelled successfully.\n", buildID)
+		fmt.Printf("Build %d canceled successfully.\n", buildID)
 	} else {
 		fmt.Printf("Failed to cancel build %d (%s). Status: %s\n", buildID, cancelURL, resp.Status)
 		fmt.Printf("Headers: %v\n", req.Header)
