@@ -237,6 +237,7 @@ jobs:
           # Create a Flatpak bundle for the beta version
           flatpak build-bundle export io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon master --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
       - name: Test Flatpak
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           flatpak --branch=beta --user run io.github.brycensranch.Rokon --version
       - name: 🤠 Assemble the DEB
