@@ -606,7 +606,7 @@ jobs:
 
       - name: Unmount DMG
         run: |
-          mount_point="/Volumes/Rokon/Rokon.app"
+          mount_point="/Volumes/Rokon"
           hdiutil detach "$mount_point" || echo "Failed to unmount DMG."
 
       - name: Confirm installation
