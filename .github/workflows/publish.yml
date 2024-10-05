@@ -398,6 +398,8 @@ jobs:
       matrix:
         arch:
           - amd64
+    env:
+      result: msi
     defaults:
       run:
         shell: msys2 {0}
