@@ -480,7 +480,7 @@ jobs:
           app-name: Rokon
           app-version: ${{ steps.prepare.outputs.version }}
           icon-file: windows/assets/rokon.ico
-          out-path: $result
+          out-path: .
           out-name: ${{ steps.prepare.outputs.name }}
       - name: Test MSI Install
         shell: pwsh
@@ -488,7 +488,7 @@ jobs:
           $logFile = "install.log"
           $msiName = "${{ steps.prepare.outputs.name }}.msi"
 
-          Start-Process msiexec.exe -ArgumentList "/i $result\$msiName /quiet /norestart /l*v $logFile" -NoNewWindow -Wait
+          Start-Process msiexec.exe -ArgumentList "/i $msiName /quiet /norestart /l*v $logFile" -NoNewWindow -Wait
 
           # Output the log to stdout
           if (Test-Path $logFile) {
