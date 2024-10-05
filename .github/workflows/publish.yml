@@ -583,7 +583,10 @@ jobs:
       - name: Install DMG
         run: |
           mount_point="/Volumes/${{ steps.mount-dmg.outputs.mount_point }}"
+          tree $mount_point
           app_name="$mount_point/Rokon.app"
+          tree $app_name
+          tree /Applications
           
           if [ -d "$app_name" ]; then
             sudo cp -R "$app_name" /Applications/
