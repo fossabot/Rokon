@@ -158,7 +158,7 @@ func cancelBuild(coprUsername string, coprToken string, coprLogin string, buildI
 		log.Fatalf("Error parsing JSON: %v", err)
 	}
 
-	if resp.StatusCode == http.StatusOK {
+	if resp.StatusCode == http.StatusOK || resp.StatusCode == http.StatusConflict {
 		fmt.Printf("Build %d cancelled successfully.\n", buildID)
 	} else {
 		fmt.Printf("Failed to cancel build %d (%s). Status: %s\n", buildID, cancelURL, resp.Status)
