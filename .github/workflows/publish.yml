@@ -398,6 +398,8 @@ jobs:
       matrix:
         arch:
           - amd64
+    env:
+      result: msi
     defaults:
       run:
         shell: msys2 {0}
@@ -478,12 +480,22 @@ jobs:
           app-name: Rokon
           app-version: ${{ steps.prepare.outputs.version }}
           icon-file: windows/assets/rokon.ico
-          out-path: $result
+          out-path: .
           out-name: ${{ steps.prepare.outputs.name }}
       - name: Test MSI Install
         shell: pwsh
         run: |
-          Start-Process msiexec.exe -ArgumentList '/i $result /quiet /norestart' -NoNewWindow -Wait
+          $logFile = "install.log"
+          $msiName = "${{ steps.prepare.outputs.name }}.msi"
+
+          Start-Process msiexec.exe -ArgumentList "/i $msiName /quiet /norestart /l*v $logFile" -NoNewWindow -Wait
+
+          # Output the log to stdout
+          if (Test-Path $logFile) {
+            Get-Content $logFile
+          } else {
+            Write-Host "Log file not found."
+          }
       - name: Check --version command
         run: |
           "C:\Program Files\BrycensRanch\Rokon\Rokon.exe" --version
@@ -527,7 +539,7 @@ jobs:
           fetch-depth: 0
       - name: Install GTK4 Golang
         run: |
-          brew install gtk4 gobject-introspection go create-dmg dylibbundler rsync
+          brew install gtk4 gobject-introspection go create-dmg dylibbundler rsync tree
       - name: 📦 Install Dependencies
         run: |
           go mod download all
@@ -582,20 +594,31 @@ jobs:
 
       - name: Install DMG
         run: |
-          mount_point=${{ steps.mount-dmg.outputs.mount_point }}
-          app_name="/Volumes/$mount_point/Rokon.app"
+          mount_point="/Volumes/Rokon"
           
-          if [ -d "$app_name" ]; then
-            sudo cp -R "$app_name" /Applications/
-            echo "Application installed."
+          # Check if the mount point exists
+          if [ -d "$mount_point" ]; then
+            
+            app_name="$mount_point/Rokon.app"
+            sudo tree "$app_name"
+            
+            if [ -d "$app_name" ]; then
+              sudo cp -R "$app_name" /Applications/
+              echo "Application installed."
+            else
+              echo "Application not found in DMG."
+              exit 1
+            fi
           else
-            echo "Application not found in DMG."
+            echo "Mount point does not exist."
             exit 1
           fi
+        shell: /bin/bash -e {0}
+
 
       - name: Unmount DMG
         run: |
-          mount_point=${{ steps.mount-dmg.outputs.mount_point }}
+          mount_point="/Volumes/Rokon"
           hdiutil detach "$mount_point" || echo "Failed to unmount DMG."
 
       - name: Confirm installation
@@ -605,6 +628,7 @@ jobs:
             exit 1
           fi
           echo "Application confirmed in /Applications."
+          tree /Applications/Rokon.app
       - name: 🗃️ Upload Built Binaries
         uses: actions/upload-artifact@v4
         if: always()

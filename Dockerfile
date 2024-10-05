@@ -1,6 +1,6 @@
 FROM alpine:edge AS builder
 
-RUN apk add --no-cache alpine-sdk go gtk4.0-dev gobject-introspection-dev git bash
+RUN apk add --no-cache alpine-sdk go gtk4.0-dev gobject-introspection-dev bash
 
 WORKDIR /app
 

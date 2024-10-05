@@ -12,4 +12,4 @@ export XDG_DATA_DIRS="$LAUNCH_DIR/share"
 
 export PATH="$PATH:/opt/homebrew/bin:/opt/local/bin"
 
-"$LAUNCH_DIR/rokon"
+"$LAUNCH_DIR/rokon" "$@"
