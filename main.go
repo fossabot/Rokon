@@ -124,7 +124,7 @@ func main() {
 	if version != "" {
 		app.SetVersion(version)
 	}
-	fmt.Printf("Version %s commit %s", version, commit)
+	fmt.Printf("Version %s commit %s\n", version, commit)
 	switch runtime.GOOS {
 	case "linux":
 		release := getOSRelease()
