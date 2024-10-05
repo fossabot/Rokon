@@ -527,7 +527,7 @@ jobs:
           fetch-depth: 0
       - name: Install GTK4 Golang
         run: |
-          brew install gtk4 gobject-introspection go create-dmg dylibbundler rsync
+          brew install gtk4 gobject-introspection go create-dmg dylibbundler rsync tree
       - name: 📦 Install Dependencies
         run: |
           go mod download all
@@ -582,8 +582,8 @@ jobs:
 
       - name: Install DMG
         run: |
-          mount_point=${{ steps.mount-dmg.outputs.mount_point }}
-          app_name="/Volumes/$mount_point/Rokon.app"
+          mount_point="/Volumes/${{ steps.mount-dmg.outputs.mount_point }}"
+          app_name="$mount_point/Rokon.app"
           
           if [ -d "$app_name" ]; then
             sudo cp -R "$app_name" /Applications/
@@ -595,7 +595,7 @@ jobs:
 
       - name: Unmount DMG
         run: |
-          mount_point=${{ steps.mount-dmg.outputs.mount_point }}
+          mount_point="/Volumes/${{ steps.mount-dmg.outputs.mount_point }}/Rokon.app"
           hdiutil detach "$mount_point" || echo "Failed to unmount DMG."
 
       - name: Confirm installation
@@ -605,6 +605,7 @@ jobs:
             exit 1
           fi
           echo "Application confirmed in /Applications."
+          tree /Applications/Rokon.app
       - name: 🗃️ Upload Built Binaries
         uses: actions/upload-artifact@v4
         if: always()
