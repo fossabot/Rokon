@@ -481,6 +481,7 @@ jobs:
           out-path: $result
           out-name: ${{ steps.prepare.outputs.name }}
       - name: Test MSI Install
+        shell: pwsh
         run: |
           Start-Process msiexec.exe -ArgumentList '/i $result /quiet /norestart' -NoNewWindow -Wait
       - name: Check --version command
