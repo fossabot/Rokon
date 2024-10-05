@@ -582,7 +582,7 @@ jobs:
 
       - name: Install DMG
         run: |
-          mount_point="/Volumes"
+          mount_point="/Volumes/Rokon"
           
           # Check if the mount point exists
           if [ -d "$mount_point" ]; then
@@ -606,7 +606,7 @@ jobs:
 
       - name: Unmount DMG
         run: |
-          mount_point="/Volumes/${{ steps.mount-dmg.outputs.mount_point }}/Rokon.app"
+          mount_point="/Volumes/Rokon/Rokon.app"
           hdiutil detach "$mount_point" || echo "Failed to unmount DMG."
 
       - name: Confirm installation
