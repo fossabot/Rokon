@@ -480,6 +480,12 @@ jobs:
           icon-file: windows/assets/rokon.ico
           out-path: $result
           out-name: ${{ steps.prepare.outputs.name }}
+      - name: Test MSI Install
+        run: |
+          Start-Process msiexec.exe -ArgumentList '/i $result /quiet /norestart' -NoNewWindow -Wait
+      - name: Check --version command
+        run: |
+          "C:\Program Files\BrycensRanch\Rokon\Rokon.exe" --version
       - name: Remove msi executable
         run: rm "${{ runner.temp }}\\exe\\Rokon.exe"
       - name: Make Portable
