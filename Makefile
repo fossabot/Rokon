@@ -4,7 +4,18 @@ SHELL := $(shell which bash)
 PREFIX ?= /usr/local
 VERSION ?= $(shell cat VERSION)
 COMMIT := $(shell git rev-parse --short HEAD)
-BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
+BRANCH := $(shell \
+  if [ "$(git rev-parse --abbrev-ref HEAD 2>/dev/null)" != "HEAD" ]; then \
+    git rev-parse --abbrev-ref HEAD; \
+  else \
+    upstream=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null); \
+    if [ $$? -eq 0 ]; then \
+      echo "$${upstream#origin/}"; \
+    else \
+      echo "detached"; \
+    fi; \
+  fi \
+)
 DATE := $(shell date -u +%Y-%m-%d)
 PACKAGED ?= false
 PACKAGEFORMAT ?=
