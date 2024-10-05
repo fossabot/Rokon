@@ -106,6 +106,7 @@ var (
 	isPackaged           = "false"
 	packageFormat        = "native"
 	telemetryOnByDefault = "true"
+	commit               = "unknown"
 )
 
 func main() {
@@ -115,6 +116,7 @@ func main() {
 		fmt.Println("Running on Windows or macOS.")
 		// Use GLib to set the GTK_CSD environment variable for Client-Side Decorations
 		glib.Setenv("GTK_CSD", "1", true)
+		os.Setenv("GTK_CSD", "1")
 	default:
 	}
 	app := gtk.NewApplication("io.github.brycensranch.Rokon", gio.ApplicationDefaultFlags)
@@ -122,6 +124,7 @@ func main() {
 	if version != "" {
 		app.SetVersion(version)
 	}
+	fmt.Printf("Version %s commit %s\n", version, commit)
 	switch runtime.GOOS {
 	case "linux":
 		release := getOSRelease()
