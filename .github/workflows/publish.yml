@@ -581,11 +581,9 @@ jobs:
 
       - name: Install DMG
         run: |
-          # Use the previously mounted DMG's name
           mount_point=${{ steps.mount-dmg.outputs.mount_point }}
-          app_name="${mount_point}/Rokon.app"  # Adjust to your app name
+          app_name="/Volumes/$mount_point/Rokon.app"
           
-          # Install the application
           if [ -d "$app_name" ]; then
             sudo cp -R "$app_name" /Applications/
             echo "Application installed."
