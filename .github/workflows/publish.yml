@@ -120,7 +120,7 @@ jobs:
       - name: Test Docker Container
         run: |
           # Run the container in detached mode and check the version
-          docker run --rm ${{ steps.meta.outputs.tags }} --version
+          docker run --rm ${{ steps.meta.outputs.tags }} /bin/sh -c "/app/rokon --version"
   build:
     timeout-minutes: 125
     strategy:
