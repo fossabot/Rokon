@@ -564,6 +564,9 @@ jobs:
           cp -r $brew_prefix/share/glib-2.0/schemas $result/share/glib-2.0
           cp -r $brew_prefix/opt/gtk4/share/gtk-4.0 $result/share
           cp -r $brew_prefix/share/icons/hicolor $result/share/icons
+          mkdir -p $result/dmg/Rokon.app/Contents/MacOS $result/dmg/Rokon.app/Contents/Resources
+          cp macos/icon.icns $result/dmg/Rokon.app/Contents/Resources
+          cp macos/io.github.BrycensRanch.Rokon.plist $result/dmg/Rokon.app/Contents
           rsync -a --exclude "$result/dmg/" "$result/" "$result/dmg/Rokon.app/Contents/MacOS"
 
           set +e
