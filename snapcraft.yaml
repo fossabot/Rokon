@@ -6,6 +6,8 @@ summary: Roku Remote for your Linux Desktop
 description: |
       Super efficent and easy to use Roku Remote for your Linux Desktop.
       It uses the Roku External Control Protocol to control your Roku device.
+      It allows you to forget all about your physical Roku Remote.
+      Or better, use your Xbox One Controller!
       It also uses SSDP to discover Roku devices on your network.
       Finally, it is built on GTK4.
 version: '1.0.0'
@@ -43,11 +45,8 @@ apps:
   rokon:
     # This will make GTK4 and GNOME libraries available to the snap at runtime
     extensions: [gnome]
-    environment:
-      # Will NOT add the +git commit SHA to the version
-      SENTRY_RELEASE: $SNAPCRAFT_PROJECT_VERSION
-      SENTRY_ENVIRONMENT: production
     command: usr/bin/rokon
+    desktop: usr/share/applications/io.github.brycensranch.Rokon.desktop
     plugs:
       - network
       - network-status
@@ -67,7 +66,8 @@ parts:
     plugin: go
     override-build: |
       go mod download all
-      make VERSION=$SNAPCRAFT_PROJECT_VERSION PACKAGED=true PACKAGEFORMAT=snap TARGET=$SNAPCRAFT_PART_INSTALL/usr/bin/rokon build
+      make VERSION=$SNAPCRAFT_PROJECT_VERSION PACKAGED=true PACKAGEFORMAT=snap build
+      make PREFIX=$SNAPCRAFT_PART_INSTALL/usr install
     build-snaps: [go/latest/stable, gnome-46-2404-sdk/latest/edge]
     build-packages:
       # For goreleaser or git information in general.
@@ -88,11 +88,17 @@ parts:
       base_version=$(echo "$current_version" | sed -E 's/\+.*//')
 
       # Check if "gha" exists in current_version
+      # Prepare the new version
       if [[ "$current_version" != *"gha"* ]]; then
           # Set the new version with the updated commit SHA
-          snapcraftctl set-version "${base_version}+${git_commit_sha}"
+          new_version="${base_version}+${git_commit_sha}"
       else
           # Set the new version without the commit SHA
-          snapcraftctl set-version "$base_version"
+          new_version="$base_version"
       fi
+      # Truncate the version to a maximum of 32 characters
+      truncated_version=$(echo "$new_version" | cut -c1-32)
+
+      # Set the version with truncation. Good luck everyone else! :)
+      snapcraftctl set-version "$truncated_version"
 

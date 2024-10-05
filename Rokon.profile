@@ -32,9 +32,6 @@ noexec ${HOME}/Downloads
 # Read-only access to system config
 read-only /etc
 
-# Allow access to machine ID for telemetry
-whitelist /etc/machine-id
-
 # Allow D-Bus communication for GTK4
 # dbus-user
 # dbus-system

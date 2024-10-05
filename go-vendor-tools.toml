@@ -1,0 +1,8 @@
+[archive]
+
+[licensing]
+detector = "askalono"
+[[licensing.licenses]]
+path = "vendor/github.com/ianlancetaylor/cgosymbolizer/LICENSE"
+sha256sum = "cc5e6f594ab10420330a66d1ba6574ba0c8143375421d4eebcd8044e973ab011"
+expression = "BSD-3-Clause"

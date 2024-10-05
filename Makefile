@@ -12,6 +12,8 @@ NODOCUMENTATION ?= 0
 EXTRALDFLAGS :=
 EXTRAGOFLAGS :=
 BUILDTAGS :=
+UNAME_S := $(shell uname -s)
+
 
 
 ifneq ($(CFLAGS),)
@@ -41,6 +43,7 @@ TARGET = rokon
 BINDIR = $(DESTDIR)$(PREFIX)/bin
 DATADIR = $(DESTDIR)$(PREFIX)/share/rokon
 DOCDIR = $(DESTDIR)$(PREFIX)/share/doc/rokon
+LICENSEDIR = $(DESTDIR)$(PREFIX)/share/licenses/rokon
 APPLICATIONSDIR = $(DESTDIR)$(PREFIX)/share/applications
 ICONDIR = $(DESTDIR)$(PREFIX)/share/icons/hicolor
 METAINFODIR = $(DESTDIR)$(PREFIX)/share/metainfo
@@ -65,7 +68,13 @@ help:
 .PHONY: clean
 clean: ## remove files created during build pipeline
 	$(call print-target)
-	rm -rf dist .flatpak flathub/.flatpak-builder flathub/repo AppDir *.AppImage *.rpm *.deb *.msi *.exe pkg/ *.pkg.tar.zst *.snap coverage.* '"$(shell go env GOCACHE)/../golangci-lint"'
+	rm -rf dist .flatpak io.github.brycensranch.Rokon.desktop io.github.brycensranch.Rokon.metainfo.xml macos/rokon .flatpak-builder flathub/.flatpak-builder flathub/repo flathub/export macos/share flathub/*.flatpak AppDir *.AppImage *.rpm *.pdf *.rtf windows/*.rtf *.deb *.msi *.exe pkg/ *.pkg.tar.zst *.snap *.zsync rokon debian/tmp debian/rokon debian/rokon-dbg coverage.* '"$(shell go env GOCACHE)/../golangci-lint"'
+	# go clean -i -cache -testcache -modcache -fuzzcache -x
+
+.PHONY: nuke
+nuke: ## completely clean the repository of artifacts and clear cache
+	$(call print-target)
+	$(MAKE) clean
 	go clean -i -cache -testcache -modcache -fuzzcache -x
 
 .PHONY: version
@@ -116,20 +125,70 @@ inst: ## go install tools
 install: ## installs Rokon into $PATH and places desktop files
 	$(call print-target)
 	@echo "Installing $(TARGET) to $(BINDIR)"
-	@echo "version $(VERSION)"
+	@echo "Version: $(VERSION)"
+	@echo "Creating necessary directories..."
 	mkdir -p $(BINDIR)
 	mkdir -p $(DESTDIR)$(PREFIX)/share/doc/rokon
-	install -Dpm 0755 $(TARGET) $(BINDIR) || true
-	install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop
-	install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
-	install -Dpm 0644 ./usr/share/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
-	install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png
-	install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg
-	install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml
-	install -Dpm 0644 ./LICENSE.md $(DESTDIR)$(PREFIX)/share/licenses/rokon/LICENSE.md
+	mkdir -p $(APPLICATIONSDIR)
+	mkdir -p $(LICENSEDIR)
+	mkdir -p $(ICONDIR)/48x48/apps
+	mkdir -p $(ICONDIR)/256x256/apps
+	mkdir -p $(ICONDIR)/scalable/apps
+	mkdir -p $(METAINFODIR)
+	@echo "Detected OS: $(UNAME_S)"
+
+	# Install the target
+	@echo "Installing target..."
+	if [ "$(UNAME_S)" = "Darwin" ]; then \
+		echo "Installing $(TARGET) to $(BINDIR) as macOS binary..."; \
+		install -m 0755 $(TARGET) $(BINDIR) || true; \
+	else \
+		echo "Installing $(TARGET) to $(BINDIR) as Linux binary..."; \
+		install -Dpm 0755 $(TARGET) $(BINDIR) || true; \
+	fi
+
+	# Install desktop files and icons
+	@echo "Installing desktop files and icons..."
+	if [ "$(UNAME_S)" = "Darwin" ]; then \
+		echo "Installing desktop file to $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop"; \
+		install -m 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop; \
+		echo "Installing icon to $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png"; \
+		install -m 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png; \
+		echo "Installing icon to $(ICONDIR)/128x128/apps/io.github.brycensranch.Rokon.png"; \
+		install -m 0644 ./usr/share/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/128x128/apps/io.github.brycensranch.Rokon.png; \
+		echo "Installing icon to $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png"; \
+		install -m 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png; \
+		echo "Installing SVG icon to $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg"; \
+		install -m 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg; \
+		echo "Installing metainfo file to $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml"; \
+		install -m 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml; \
+		echo "Installing license to $(LICENSEDIR)LICENSE.md"; \
+		install -m 0644 ./LICENSE.md $(LICENSEDIR)LICENSE.md; \
+	else \
+		echo "Installing desktop file to $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop"; \
+		install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop; \
+		echo "Installing icon to $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png"; \
+		install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png; \
+		echo "Installing icon to $(ICONDIR)/128x128/apps/io.github.brycensranch.Rokon.png"; \
+		install -Dpm 0644 ./usr/share/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/128x128/apps/io.github.brycensranch.Rokon.png; \
+		echo "Installing icon to $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png"; \
+		install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png; \
+		echo "Installing SVG icon to $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg"; \
+		install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg; \
+		echo "Installing metainfo file to $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml"; \
+		install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml; \
+		echo "Installing license to $(LICENSEDIR)LICENSE.md"; \
+		install -Dpm 0644 ./LICENSE.md $(LICENSEDIR)LICENSE.md; \
+	fi
+
 	# Check if NODOCUMENTATION is set to 1
 	@if [ "$(NODOCUMENTATION)" != "1" ]; then \
-		install -Dpm 0644 ./PRIVACY.md ./README.md $(DESTDIR)$(PREFIX)/share/doc/rokon; \
+		echo "Installing documentation..."; \
+		if [ "$(UNAME_S)" = "Darwin" ]; then \
+			install -m 0644 ./PRIVACY.md ./README.md $(DESTDIR)$(PREFIX)/share/doc/rokon; \
+		else \
+			install -Dpm 0644 ./PRIVACY.md ./README.md $(DESTDIR)$(PREFIX)/share/doc/rokon; \
+		fi; \
 	else \
 		echo "Skipping documentation installation. Please make sure you include PRIVACY notice."; \
 	fi
