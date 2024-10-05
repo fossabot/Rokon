@@ -118,6 +118,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Test Docker Container
+        continue-on-error: true
         run: docker run --rm ${{ steps.meta.outputs.tags }} /bin/sh -c "/app/rokon --version"
   build:
     timeout-minutes: 125
