@@ -237,9 +237,9 @@ jobs:
           flatpak build-export export repo
           # Create a Flatpak bundle for the beta version
           flatpak build-bundle export io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon master --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
-          pkill ostree
-          pkill flatpak
-          pkill builder
+          pkill ostree || true
+          pkill flatpak || true
+          pkill builder || true
       - name: Test Flatpak
         if: ${{ github.event_name == 'pull_request' }}
         run: |
