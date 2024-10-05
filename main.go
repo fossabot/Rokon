@@ -107,6 +107,7 @@ var (
 	packageFormat        = "native"
 	telemetryOnByDefault = "true"
 	commit               = "unknown"
+	branch               = "unknown"
 )
 
 func main() {
@@ -124,7 +125,7 @@ func main() {
 	if version != "" {
 		app.SetVersion(version)
 	}
-	fmt.Printf("Version %s commit %s\n", version, commit)
+	fmt.Printf("Version %s commit %s branch %s\n", version, commit, branch)
 	switch runtime.GOOS {
 	case "linux":
 		release := getOSRelease()
