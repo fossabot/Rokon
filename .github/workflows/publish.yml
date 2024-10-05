@@ -586,11 +586,9 @@ jobs:
           
           # Check if the mount point exists
           if [ -d "$mount_point" ]; then
-            sudo tree "$mount_point"
             
             app_name="$mount_point/Rokon.app"
             sudo tree "$app_name"
-            sudo ree /Applications
             
             if [ -d "$app_name" ]; then
               sudo cp -R "$app_name" /Applications/
