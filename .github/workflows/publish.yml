@@ -486,7 +486,7 @@ jobs:
           $logFile = "install.log"
           $msiName = "${{ steps.prepare.outputs.name }}.msi"
 
-          Start-Process msiexec.exe -ArgumentList "/i $msiName /quiet /norestart /l*v $logFile" -NoNewWindow -Wait
+          Start-Process msiexec.exe -ArgumentList "/i $result\$msiName /quiet /norestart /l*v $logFile" -NoNewWindow -Wait
 
           # Output the log to stdout
           if (Test-Path $logFile) {
