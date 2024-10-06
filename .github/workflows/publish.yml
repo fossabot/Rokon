@@ -132,7 +132,7 @@ jobs:
           - amd64
           # - arm64
 
-    runs-on: self-hosted
+    runs-on: [self-hosted, ubuntu]
 
     steps:
       - name: Check out current repository
