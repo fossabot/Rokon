@@ -221,6 +221,8 @@ jobs:
         continue-on-error: true
         run: |
           for spec in ./*.spec; do
+              echo "Building $spec"
+              spectool -g "$spec"
               rpmbuild -ba "$spec" || echo "Failed to build $spec"
           done
 
