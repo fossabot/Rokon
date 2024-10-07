@@ -12,10 +12,3 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libgtk-4-1
 Description: GTK4 application that controls your Roku TV.
  Whether that be with your keyboard, mouse, or controller.
-
-Package: rokon-dbg
-Section: debug
-Architecture: any
-Depends: rokon (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
-Description: Debug symbols for rokon
- This package contains the debug symbols for rokon.

@@ -1,5 +1,8 @@
 #!/usr/bin/make -f
 
+
+export DH_VERBOSE=1
+
 # Use debhelper with compatibility level 13
 %:
 	dh $@
@@ -7,20 +10,16 @@
 # Override the build step to use your Makefile
 override_dh_auto_build:
 	# Call your Makefile's build target
-	dh_auto_build -- EXTRAGOFLAGS="-trimpath -buildmode=pie" PACKAGED=true PACKAGEFORMAT=deb
+	dh_auto_build -- EXTRAGOFLAGS="-trimpath -buildmode=pie" EXTRALDFLAGS="-compressdwarf=false -linkmode=external" PACKAGED=true PACKAGEFORMAT=deb
 
-# override_dh_auto_install:
-# 	# DH sets the DESTDIR to the rokon debian folder or something along those lines, yet, has the nerve to complain about the files not being installed. THE NERVE
-# 	dh_auto_install -- PREFIX=/usr
+override_dh_auto_install:
+	# DH sets the DESTDIR to the rokon debian folder or something along those lines, yet, has the nerve to complain about the files not being installed. THE NERVE
+	dh_auto_install -- PREFIX=/usr DESTDIR=$(CURDIR)/debian/rokon
 
 # Disable tests
 override_dh_auto_test:
 	# Do nothing to skip tests
 	true
 
-# Optional: Override the clean step if your Makefile has a custom clean rule
 override_dh_auto_clean:
 	$(MAKE) clean
-
-override_dh_strip:
-	dh_strip --dbg-package=rokon-dbg
