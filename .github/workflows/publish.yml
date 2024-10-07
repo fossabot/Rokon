@@ -155,7 +155,7 @@ jobs:
         run: |
           sudo dnf update
           sudo dnf copr enable @go-sig/golang-rawhide -y
-          sudo dnf install -y git golang gtk4-devel gobject-introspection-devel @development-tools @development-libs @c-development flatpak flatpak-builder fedora-packager fedora-review @rpm-development-tools go-rpm-macros
+          sudo dnf install -y git golang gtk4-devel gobject-introspection-devel go-vendor-tools @development-tools @development-libs @c-development flatpak flatpak-builder fedora-packager fedora-review @rpm-development-tools go-rpm-macros
           flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
           flatpak remote-add --user --if-not-exists flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
           flatpak install --user -y flathub org.flatpak.Builder
