@@ -87,8 +87,7 @@ jobs:
 
       - name: Get Package Name
         id: pkg_name
-        run: |
-          echo "pkg_name=$(basename \$(ls *.pkg.*))" >> $GITHUB_ENV
+        run: echo "pkg_name=$(basename $(ls *.pkg.* | head -n 1))" >> $GITHUB_ENV
 
       - name: Install the Package
         run: |
