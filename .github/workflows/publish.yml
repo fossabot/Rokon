@@ -222,7 +222,7 @@ jobs:
         continue-on-error: true
         run: |
           for spec in ./*.spec; do
-              rpmbuild -ba "$spec"
+              rpmbuild -ba "$spec" || echo "Failed to build $spec"
           done
 
       - name: Move RPMs to workspace
