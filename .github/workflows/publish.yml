@@ -206,7 +206,7 @@ jobs:
         # if: ${{ github.event_name == 'pull_request' }}
         working-directory: flathub
         run: |
-          flatpak-builder --install --user --install-deps-from=flathub --force-clean repo/ io.github.brycensranch.Rokon-beta.yml
+          flatpak-builder --disable-rofiles-fuse --install --user --install-deps-from=flathub --force-clean repo/ io.github.brycensranch.Rokon-beta.yml
           # I honestly have no idea what this does.
           flatpak build-export export repo
           # Create a Flatpak bundle for the beta version
