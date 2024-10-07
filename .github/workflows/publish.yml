@@ -431,7 +431,7 @@ jobs:
           path: ${{ steps.snapcraft_build.outputs.snap }}
       - name: 🗑️ Remove Artifacts
         run: |
-          make clean
+          sudo make clean
       - name: List files
         run: ls -R
       - name: 🗃️ Upload Vendored Source
