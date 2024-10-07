@@ -268,7 +268,7 @@ jobs:
         run: |
           sudo apt update
           sudo add-apt-repository ppa:longsleep/golang-backports -y
-          sudo apt install -y libgtk-4-dev libgirepository1.0-dev build-essential devscripts debhelper dh-make golang
+          sudo apt install -y libgtk-4-dev libgirepository1.0-dev build-essential devscripts debhelper dh-make golang dput
       - name: 👁️ Ensure Code is Linted
         continue-on-error: true
         run: |
@@ -278,11 +278,28 @@ jobs:
       # - name: 🚧 Ensure Code is Formatted
       #   run: |
       #     pnpm format:check
+      - name: Import GPG key
+        id: import_gpg
+        if: github.event_name != 'pull_request'
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_tag_gpgsign: true
+          git_push_gpgsign: false
       - name: 🤠 Assemble the DEB
-        # if: ${{ github.event_name == 'pull_request' }}
         continue-on-error: true
+        env:
+          DEBEMAIL: brycengranville@outlook.com
+          DEBFULLNAME: brycensranch
         run: |
-          DEB_BUILD_DIR=/tmp debuild -i -I -d
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            ./debian/publish.sh
+          else
+            debuild -us -uc -b
+          fi
       - name: Install Snapcraft
         uses: samuelmeuli/action-snapcraft@v2
       - uses: chrisdickinson/setup-yq@latest
@@ -432,8 +449,9 @@ jobs:
           name: rokon-snap-${{ matrix.arch }}
           path: ${{ steps.snapcraft_build.outputs.snap }}
       - name: 🗑️ Remove Artifacts
-        run: |
-          sudo make clean
+        # This is important, artifacts and build directories being left will cause the checkout of the runner when it runs the next job to fail
+        if: always()
+        run: sudo make clean
       - name: List files
         run: ls -R
       - name: 🗃️ Upload Vendored Source
