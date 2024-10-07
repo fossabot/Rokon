@@ -126,7 +126,7 @@ jobs:
           chmod +x mkappimage-*.AppImage
           mv mkappimage-* mkappimage
           sudo mv mkappimage /usr/bin
-          sudo pacman -S --needed --noconfirm binutils coreutils desktop-file-utils fakeroot gdk-pixbuf2 patchelf python python-pip python-setuptools squashfs-tools strace util-linux zsync
+          sudo pacman -S --needed --noconfirm binutils coreutils desktop-file-utils fakeroot gdk-pixbuf2 patchelf python python-pip python-setuptools squashfs-tools strace util-linux zsync appstream
           make fatimage
           ./*.AppImage --version
       - name: 🗃️ Upload Built AppImage 📦
