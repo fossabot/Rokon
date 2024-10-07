@@ -80,7 +80,7 @@ jobs:
               grep -qxF "[$repo]" /etc/pacman.conf || echo -e "[$repo]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
           done
           sudo pacman -Sy
-          sudo pacman -Sy git go gtk4 base-devel gnupg wget curl bash
+          sudo pacman -S --noconfirm git go gtk4 base-devel gnupg wget curl bash
       - name: Build Archlinux Package
         run: |
           makepkg -s --noconfirm
@@ -127,7 +127,7 @@ jobs:
           chmod +x mkappimage-*.AppImage
           mv mkappimage-* mkappimage
           sudo mv mkappimage /usr/bin
-          sudo pacman -S binutils coreutils desktop-file-utils fakeroot gdk-pixbuf2 patchelf python python-pip python-setuptools squashfs strace util-linux zsync
+          sudo pacman -S --noconfirm binutils coreutils desktop-file-utils fakeroot gdk-pixbuf2 patchelf python python-pip python-setuptools squashfs strace util-linux zsync
           make fatimage
           ./*.AppImage --version
       - name: 🗃️ Upload Built AppImage 📦
