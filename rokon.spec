@@ -37,7 +37,8 @@ Source:         https://nightly.link/BrycensRanch/Rokon/workflows/publish/master
 %if 0%{?fedora}
 %gometa -f
 Source1:        %{archivename}-vendor.tar.bz2
-Source2:        go-vendor-tools.toml
+Source2:        https://raw.githubusercontent.com/BrycensRanch/Rokon/refs/heads/master/go-vendor-tools.toml
+BuildRequires:  go-vendor-tools
 %endif
 
 BuildRequires:  git
