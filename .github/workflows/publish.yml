@@ -226,6 +226,7 @@ jobs:
           done
 
       - name: Move RPMs to workspace
+        continue-on-error: true
         run: |
           mv ~/rpmbuild/RPMS/*/*.rpm $GITHUB_WORKSPACE/
       - name: 🗃️ Upload Built RPMs 📦
