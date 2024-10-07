@@ -33,7 +33,7 @@ changelog() {
 build() {
     cd Rokon
     go mod download all
-    make TARGET=$pkgname PACKAGED=true PACKAGEFORMAT=arch EXTRAGOFLAGS="-buildmode=pie -trimpath -mod=readonly -modcacherw" EXTRALDFLAGS="-compressdwarf=false -linkmode=external" build
+    make BRANCH=$(git rev-parse --abbrev-ref HEAD)  TARGET=$pkgname PACKAGED=true PACKAGEFORMAT=arch EXTRAGOFLAGS="-buildmode=pie -trimpath -mod=readonly -modcacherw" EXTRALDFLAGS="-compressdwarf=false -linkmode=external" build
 }
 
 package() {
