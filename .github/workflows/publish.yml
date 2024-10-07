@@ -103,7 +103,7 @@ jobs:
 
       - name: Remove the Package
         run: |
-          sudo pacman -Rns --noconfirm "$pkg_name"
+          sudo pacman -Rns --noconfirm rokon
 
       - name: Import GPG key
         id: import_gpg
