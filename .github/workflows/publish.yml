@@ -298,7 +298,7 @@ jobs:
           if [ "${{ github.event_name }}" != "pull_request" ]; then
             ./debian/publish.sh
           else
-            debuild -us -uc -b
+            debuild -us -uc -b -d
           fi
       - name: Install Snapcraft
         uses: samuelmeuli/action-snapcraft@v2
