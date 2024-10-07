@@ -80,7 +80,7 @@ jobs:
               grep -qxF "[$repo]" /etc/pacman.conf || echo -e "[$repo]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
           done
           sudo pacman -Sy
-          sudo pacman -S --noconfirm git go gtk4 base-devel gnupg wget curl bash
+          sudo pacman -S --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection
       - name: Build Archlinux Package
         run: |
           makepkg -s --noconfirm
