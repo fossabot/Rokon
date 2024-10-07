@@ -67,7 +67,7 @@ After that, follow the Linux build instructions, as they are the same for macOS 
 
 > If you don't want to use Distrobox, you can always use our prebuilt AppImage which works on old and new distributions. Or our Snap package or Flatpak package.
 
-> Fedora Linux 40+: `sudo dnf in -y git golang gtk4-devel @development-tools @development-libs`
+> Fedora Linux 40+: `sudo dnf in -y git golang gtk4-devel gobject-introspection-devel @development-tools @development-libs`
 
 > Ubuntu 24.04+:
 
