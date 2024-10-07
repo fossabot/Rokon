@@ -80,7 +80,7 @@ jobs:
               grep -qxF "[$repo]" /etc/pacman.conf || echo -e "[$repo]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
           done
           sudo pacman -Sy
-          sudo pacman -S --needed --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap
+          sudo pacman -S --needed --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap fuse2
       - name: Build Archlinux Package
         run: |
           makepkg -s --noconfirm
@@ -280,7 +280,7 @@ jobs:
         # if: ${{ github.event_name == 'pull_request' }}
         continue-on-error: true
         run: |
-          debuild -i -I -d
+          DEB_BUILD_DIR=/tmp debuild -i -I -d
       - name: Install Snapcraft
         uses: samuelmeuli/action-snapcraft@v2
       - uses: chrisdickinson/setup-yq@latest
