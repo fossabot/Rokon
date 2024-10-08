@@ -222,7 +222,7 @@ jobs:
         run: |
           for spec in ./*.spec; do
               echo "Building $spec"
-              spec ool -g -R "$spec"
+              specool -g -R "$spec"
               sudo dnf builddep -y "$spec"
               rpmbuild -ba "$spec" || echo "Failed to build $spec"
           done
