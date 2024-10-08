@@ -19,6 +19,7 @@ jobs:
   docker:
     timeout-minutes: 125
     runs-on: [self-hosted, docker]
+    needs: [archlinux, ubuntu, fedora]
     steps:
       - name: Check out current repository
         uses: actions/checkout@v4
