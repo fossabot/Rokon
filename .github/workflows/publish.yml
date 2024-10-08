@@ -19,7 +19,7 @@ jobs:
   docker:
     timeout-minutes: 125
     runs-on: [self-hosted, docker]
-    needs: [archlinux, ubuntu, fedora]
+    needs: [archlinux]
     steps:
       - name: Check out current repository
         uses: actions/checkout@v4
@@ -153,7 +153,7 @@ jobs:
           fetch-depth: 0
       - name: Install Required System Packages
         run: |
-          sudo dnf update
+          sudo dnf update -y
           sudo dnf copr enable @go-sig/golang-rawhide -y
           sudo dnf install -y git golang gtk4-devel gobject-introspection-devel go-vendor-tools @development-tools @development-libs @c-development flatpak flatpak-builder fedora-packager fedora-review @rpm-development-tools go-rpm-macros
           flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
