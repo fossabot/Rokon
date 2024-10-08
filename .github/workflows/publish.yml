@@ -222,10 +222,14 @@ jobs:
         run: |
           for spec in ./*.spec; do
               echo "Building $spec"
-              spectool -g "$spec"
+              spec ool -g -R "$spec"
+              sudo dnf builddep -y "$spec"
               rpmbuild -ba "$spec" || echo "Failed to build $spec"
           done
-
+      - name: Install RPMs
+        run: sudo dnf in -y ~/rpmbuild/RPMS/*/*.rpm
+      - name: Test built RPM
+        run: rokon --version
       - name: Move RPMs to workspace
         continue-on-error: true
         run: |
