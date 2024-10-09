@@ -464,7 +464,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rokon-source
+          name: rokon-vendored-source
           path: .
       # - name: Login to GitHub Container Registry
       #   uses: docker/login-action@v3
@@ -607,13 +607,13 @@ jobs:
         continue-on-error: true
         run: |
           upx --best -f --force-overwrite ./*.exe
-      - name: 🗃️ Upload Built Result
+      - name: 🗃️ Upload MSI
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: rokon-${{ runner.os }}-${{ matrix.arch }}
-          path: $result
-      - name: 🗃️ Upload Portable
+          path: *.msi
+      - name: 🗃️ Upload Windows Portable
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -730,7 +730,6 @@ jobs:
         with:
           name: rokon-${{ runner.os }}-${{ runner.arch }}
           path: |
-            ./rokon
             *.dmg
             *.app
             *.pkg
