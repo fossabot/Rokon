@@ -165,7 +165,7 @@ jobs:
       - uses: chrisdickinson/setup-yq@latest
         # if: ${{ github.event_name == 'pull_request' }}
         with:
-          yq-version: v4.44.3  # renovate: version from https://github.com/mikefarah/yq
+          yq-version: v4.44.3 # renovate: version from https://github.com/mikefarah/yq
       - name: 🔷 Update Flatpak Data
         run: |
           rm flathub/go.mod.yml flathub/modules.txt
@@ -179,8 +179,8 @@ jobs:
         if: ${{ !startsWith(github.ref, 'refs/heads/dep/') }}
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          # Only golang stuff! Prevents snapcraft.yaml from being updated on a PR branch! 
-          file_pattern: '*.mod *.sum flathub/*.yml flathub/modules.txt'
+          # Only golang stuff! Prevents snapcraft.yaml from being updated on a PR branch!
+          file_pattern: "*.mod *.sum flathub/*.yml flathub/modules.txt"
           commit_options: "--no-verify --no-gpg-sign"
           push_options: "--no-verify --no-signed"
           commit_message: "build(flathub): update go vendor modules [skip ci]"
@@ -223,7 +223,7 @@ jobs:
         run: |
           for spec in ./*.spec; do
               echo "Building $spec"
-              specool -g -R "$spec"
+              spectool -g -R "$spec"
               sudo dnf builddep -y "$spec"
               rpmbuild -ba "$spec" || echo "Failed to build $spec"
           done
@@ -359,7 +359,7 @@ jobs:
         id: find-comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
+          comment-author: "github-actions[bot]"
       - name: Get Artifact URL & PR Info
         continue-on-error: true
         # if: ${{ github.event_name == 'pull_request' }}
@@ -399,7 +399,8 @@ jobs:
         continue-on-error: true
         # if: ${{ github.event_name == 'pull_request' }}
         env:
-          ARTIFACT_URL: "${{ github.server_url }}/${{ github.repository }}/actions/\
+          ARTIFACT_URL:
+            "${{ github.server_url }}/${{ github.repository }}/actions/\
             runs/${{ env.PREVIOUS_JOB_ID }}"
           HEAD_SHA: ${{ env.HEAD_SHA }}
         uses: peter-evans/create-or-update-comment@v2
@@ -407,19 +408,19 @@ jobs:
           issue-number: ${{ steps.find-comment.outputs.comment-id }}
           body: |-
             ## Build Preview
-            
+
             [![badge]](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            
+
             You can find files attached to the below linked Workflow Run URL (Logs).
-            
+
             Please note that files only stay for around 90 days!
-  
+
             | Name      | Link                                                                                |
             |-----------|-------------------------------------------------------------------------------------|
             | Commit    | ${{ github.event.pull_request.head.sha }}                                           |
             | Logs      | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
             | Artifacts | ${{ env.ARTIFACT_URL }}                                                             |
-            
+
             [badge]: https://img.shields.io/badge/Build-Success!-3fb950?logo=github&style=for-the-badge
       - name: Update Comment
         continue-on-error: true
@@ -429,17 +430,17 @@ jobs:
           issue-number: ${{ needs.find-comment.outputs.comment_id }}
           body: |-
             ## Build Preview
-            
+
             [![badge]](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            
+
             There was an issue generating the build artifacts from your Pull request.
             Please review the logs linked below for further information.
-            
+
             | Name   | Link                                                                                |
             |--------|-------------------------------------------------------------------------------------|
             | Commit | ${{ github.event.pull_request.head.sha }}                                           |
             | Logs   | ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} |
-            
+
             [badge]: https://img.shields.io/badge/Build-Failure!-f85149?logo=github&style=for-the-badge
       - name: 🗃️ Upload Deb packages
         uses: actions/upload-artifact@v4
@@ -679,7 +680,7 @@ jobs:
             exit 1
           fi
           echo "Found DMG file: $dmg_file"
-          
+
           # Mount the DMG
           hdiutil attach "$dmg_file" -nobrowse -quiet
           echo "DMG mounted."
@@ -690,13 +691,13 @@ jobs:
       - name: Install DMG
         run: |
           mount_point="/Volumes/Rokon"
-          
+
           # Check if the mount point exists
           if [ -d "$mount_point" ]; then
-            
+
             app_name="$mount_point/Rokon.app"
             sudo tree "$app_name"
-            
+
             if [ -d "$app_name" ]; then
               sudo cp -R "$app_name" /Applications/
               echo "Application installed."
@@ -709,7 +710,6 @@ jobs:
             exit 1
           fi
         shell: /bin/bash -e {0}
-
 
       - name: Unmount DMG
         run: |
