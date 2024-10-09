@@ -119,7 +119,8 @@ mod: ## go mod tidy
 .PHONY: inst
 inst: ## go install tools
 	$(call print-target)
-	cd tools && go install $(shell cd tools && go list -e -f '{{ join .Imports " " }}' -tags=tools)
+	cd tools && go get $(shell cd tools && go list -e -f '{{ join .Imports " " }}' -tags=tools)
+
 
 .PHONY: install
 install: ## installs Rokon into $PATH and places desktop files
