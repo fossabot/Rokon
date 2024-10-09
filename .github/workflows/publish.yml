@@ -1,5 +1,4 @@
 name: Publish
-
 concurrency:
   cancel-in-progress: true
   group: ${{ github.workflow }}-${{ github.event.pull_request.head.label || github.ref }}
@@ -464,7 +463,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rokon-vendored-source
+          name: rokon-source
           path: .
       # - name: Login to GitHub Container Registry
       #   uses: docker/login-action@v3
@@ -607,13 +606,13 @@ jobs:
         continue-on-error: true
         run: |
           upx --best -f --force-overwrite ./*.exe
-      - name: 🗃️ Upload MSI
+      - name: 🗃️ Upload Built Result
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: rokon-${{ runner.os }}-${{ matrix.arch }}
-          path: *.msi
-      - name: 🗃️ Upload Windows Portable
+          path: $result
+      - name: 🗃️ Upload Portable
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -730,6 +729,7 @@ jobs:
         with:
           name: rokon-${{ runner.os }}-${{ runner.arch }}
           path: |
+            ./rokon
             *.dmg
             *.app
             *.pkg
