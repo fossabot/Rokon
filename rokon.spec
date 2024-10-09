@@ -22,7 +22,7 @@
 # https://github.com/BrycensRanch/Rokon
 %global goipath         github.com/brycensranch/rokon
 %global forgeurl        https://github.com/BrycensRanch/Rokon
-%global commit          703f4f9bdbc9c863cb103e64cb03525b0b9db978
+%global commit          8f2cc32ddbf55ed796754b88f6ec44a54c544290
 
 %gometa -L -f
 
@@ -31,7 +31,7 @@ Version:        1.0.0
 %if 0%{?fedora}
 Release:        %autorelease -p
 %else
-Release:        13%{?dist}
+Release:        14%{?dist}
 %endif
 Summary:        Control your Roku device with your desktop!
 
@@ -114,6 +114,7 @@ ls
 %{_datadir}/applications/io.github.brycensranch.Rokon.desktop
 %{_datadir}/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
 %{_datadir}/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png
+%{_datadir}/dbus-1/services/io.github.brycensranch.Rokon.service
 %{_datadir}/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
 %{_datadir}/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
 %{_datadir}/metainfo/io.github.brycensranch.Rokon.metainfo.xml
