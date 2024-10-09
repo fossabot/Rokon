@@ -60,7 +60,6 @@ Whether that be with your keyboard, mouse, or controller.
 ls
 %goprep -A
 %setup -q -a1 %{forgesetupargs}
-%autopatch -p1
 
 %generate_buildrequires
 %go_vendor_license_buildrequires -c %{S:2}
