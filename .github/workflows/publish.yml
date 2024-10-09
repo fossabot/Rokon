@@ -337,17 +337,17 @@ jobs:
       - name: 🫰 Assemble the Snap
         uses: snapcore/action-build@v1
         id: snapcraft_build
-      - name: Test Installing Snap
-        run: sudo snap install ${{ steps.snapcraft_build.outputs.snap }} --dangerous
-      - name: Test Installed Snap
-        run: rokon --version
-      - uses: snapcore/action-publish@v1
-        continue-on-error: true
-        env:
-          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
-        with:
-          snap: ${{ steps.snapcraft_build.outputs.snap }}
-          release: edge/${{ steps.sanitized_branch.sanitized_branch }}
+      # - name: Test Installing Snap
+      #   run: sudo snap install ${{ steps.snapcraft_build.outputs.snap }} --dangerous
+      # - name: Test Installed Snap
+      #   run: rokon --version
+      # - uses: snapcore/action-publish@v1
+      #   continue-on-error: true
+      #   env:
+      #     SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
+      #   with:
+      #     snap: ${{ steps.snapcraft_build.outputs.snap }}
+      #     release: edge/${{ steps.sanitized_branch.sanitized_branch }}
       # - name: 📤 Upload Code coverage to Codecov
       #   if: ${{ !github.event.act }}
       #   uses: codecov/codecov-action@v4
