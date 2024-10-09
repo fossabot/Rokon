@@ -153,6 +153,7 @@ install: ## installs Rokon into $PATH and places desktop files
 	if [ "$(UNAME_S)" = "Darwin" ]; then \
 		echo "Installing desktop file to $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop"; \
 		install -m 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop; \
+		install -m 0644 ./usr/share/dbus-1/services/io.github.brycensranch.Rokon.service $(DESTDIR)$(PREFIX)/share/dbus-1/services/io.github.brycensranch.Rokon.service; \
 		echo "Installing icon to $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png"; \
 		install -m 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png; \
 		echo "Installing icon to $(ICONDIR)/128x128/apps/io.github.brycensranch.Rokon.png"; \
@@ -168,6 +169,7 @@ install: ## installs Rokon into $PATH and places desktop files
 	else \
 		echo "Installing desktop file to $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop"; \
 		install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop; \
+		install -Dpm 0644 ./usr/share/dbus-1/services/io.github.brycensranch.Rokon.service $(DESTDIR)$(PREFIX)/share/dbus-1/services/io.github.brycensranch.Rokon.service; \
 		echo "Installing icon to $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png"; \
 		install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png; \
 		echo "Installing icon to $(ICONDIR)/128x128/apps/io.github.brycensranch.Rokon.png"; \
@@ -207,6 +209,7 @@ uninstall:
 	rm -f $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg
 	rm -f $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml
 	rm -rf $(DOCDIR)/rokon
+	rm -f $(DESTDIR)$(PREFIX)/share/dbus-1/services/io.github.brycensranch.Rokon.service
 	rm -rf $(DESTDIR)$(PREFIX)/share/licenses/rokon
 
 .PHONY: gen
