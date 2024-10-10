@@ -457,6 +457,8 @@ jobs:
         # This is important, artifacts and build directories being left will cause the checkout of the runner when it runs the next job to fail
         if: always()
         run: sudo make clean
+      - name: Vendor dependencies
+        run: go mod vendor
       - name: List files
         run: ls -R
       - name: 🗃️ Upload Vendored Source
