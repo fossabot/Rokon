@@ -14,7 +14,7 @@ WORKDIR /app
 
 # Nvidia GPUs are NOT supported with this container!
 
-RUN apk add --no-cache gtk4.0 gobject-introspection mesa-gles
+RUN apk add --no-cache gtk4.0 gobject-introspection mesa mesa-dri-gallium mesa-gles xf86-video-nouveau
 
 
 COPY --from=builder /app/rokon .
