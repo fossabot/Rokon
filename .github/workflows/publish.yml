@@ -142,13 +142,15 @@ jobs:
           name: rokon-${{runner.os}}-tarball-${{ runner.arch }}
           path: |
             *.tar.gz
-            *.zsync
+            *tar*.zsync
       - name: 🗃️ Upload Built AppImage 📦
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: rokon-AppImage-${{ runner.arch }}
-          path: "*.AppImage"
+          path: |
+            *.AppImage
+            *.AppImage.zsync
       - name: 🗃️ Upload Built ArchLinux Package 📦
         uses: actions/upload-artifact@v4
         if: always()
@@ -160,6 +162,8 @@ jobs:
     runs-on: [self-hosted, fedora]
     # if: github.repository != 'BrycensRanch/Rokon'
     steps:
+      - name: Cleanup directory
+        run: sudo rm -rf $GITHUB_WORKSPACE/* || true
       - name: Check out current repository
         uses: actions/checkout@v4
         with:
@@ -278,6 +282,8 @@ jobs:
     runs-on: [self-hosted, ubuntu]
 
     steps:
+      - name: Cleanup directory
+        run: sudo rm -rf $GITHUB_WORKSPACE/* || true
       - name: Check out current repository
         uses: actions/checkout@v4
         with:
