@@ -104,6 +104,7 @@ fatimage: ## build self contained AppImage that can run on older Linux systems w
 	$(MAKE) PACKAGED=true PACKAGEFORMAT=AppImage EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w" build
 	$(MAKE) PREFIX=AppDir/usr install
 	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 appimagetool -s deploy ./AppDir/usr/share/applications/io.github.brycensranch.Rokon.desktop
+	rm AppDir/usr/lib64/libLLVM* || true
 	# My application follows the https://docs.fedoraproject.org/en-US/packaging-guidelines/AppData/ but this tool doesn't care lol
 	mv AppDir/usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml AppDir/usr/share/metainfo/io.github.brycensranch.Rokon.appdata.xml
 	cp ./AppDir/usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png ./AppDir
@@ -130,7 +131,7 @@ tarball: ## build self contained Tarball that auto updates
 	echo 'export LD_PRELOAD="./libs/libc.so.6"' >> $(TARBALLDIR)/rokon.sh; \
 	echo 'export XKB_DEFAULT_INCLUDE_PATH=./share/X11/xkb' >> $(TARBALLDIR)/rokon.sh; \
 	echo 'export XKB_CONFIG_ROOT=./share/X11/xkb' >> $(TARBALLDIR)/rokon.sh; \
-	echo 'exec ./libs/ld-linux-$(shell uname -m).so.2 ./$(TARGET) "$$@"' >> $(TARBALLDIR)/rokon.sh; \
+	echo 'exec ./libs/ld-linux-$(subst -,_,$(shell uname -m)).so.2 ./$(TARGET) "$$@"' >> $(TARBALLDIR)/rokon.sh; \
 	chmod +x $(TARBALLDIR)/rokon.sh
 	cd /usr && cp -r --parents -L -v --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita share/icons/AdwaitaLegacy lib/gdk-pixbuf-2.0 $(ABS_TARBALLDIR)
 	sed -i 's/rokon/\.\/rokon.sh/g' $(TARBALLDIR)/io.github.brycensranch.Rokon.desktop
