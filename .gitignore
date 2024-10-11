@@ -51,6 +51,7 @@ appimagetool
 flathub/build
 flathub/export
 flathub/builddir
+tarball
 rpm
 debian/.debhelper
 io.github.brycensranch.Rokon.desktop
@@ -58,6 +59,7 @@ io.github.brycensranch.Rokon.metainfo.xml
 
 *.rtf
 *.txt
+.ptmp*
 
 # Arch Linux MAKEPKG
 pkg/

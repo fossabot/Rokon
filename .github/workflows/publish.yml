@@ -30,16 +30,20 @@ jobs:
         with:
           # list of Docker images to use as base name for tags
           images: |
-            ghcr.io/${{ github.repository_owner }}/Rokon
+            ghcr.io/${{ github.repository_owner }}/rokon
           # generate Docker tags based on the following events/attribute
           tags: |
-            type=schedule
+            type=edge,branch=master
+            type=schedule,pattern=nightly
             type=ref,event=branch
+            type=ref,event=tag
             type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
             type=sha
+            type=raw,value=latest
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
@@ -129,6 +133,16 @@ jobs:
           sudo pacman -S --needed --noconfirm binutils coreutils desktop-file-utils fakeroot gdk-pixbuf2 patchelf python python-pip python-setuptools squashfs-tools strace util-linux zsync appstream
           make fatimage
           ./*.AppImage --version
+      - name: 🖼️ Assemble the Self updating Tarball
+        run: make tarball
+      - name: 🗃️ Upload Built Tarball 📦
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rokon-${{runner.os}}-tarball-${{ runner.arch }}
+          path: |
+            *.tar.gz
+            *.zsync
       - name: 🗃️ Upload Built AppImage 📦
         uses: actions/upload-artifact@v4
         if: always()
@@ -601,7 +615,7 @@ jobs:
       - name: Make Portable
         run: |
           export RESULTSDIR=$(realpath "${{ runner.temp }}\\exe")
-          make TARGET="$RESULTSDIR/Rokon.exe" EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=portable PACKAGED=true build
+          make TARGET="$RESULTSDIR/Rokon.exe" EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=portable  PACKAGED=true build
           cp windows/*.txt "$RESULTSDIR"
       - name: Minimize portable executable size using upx
         working-directory: ${{ runner.temp }}\exe
