@@ -142,7 +142,13 @@ tarball: ## build self contained Tarball that auto updates
 	chmod +x $(TARBALLDIR)/rokon.sh
 	cd /usr && cp -r --parents -L -v --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita share/icons/AdwaitaLegacy lib/gdk-pixbuf-2.0 $(ABS_TARBALLDIR)
 	sed -i 's/rokon/\.\/rokon.sh/g' $(TARBALLDIR)/io.github.brycensranch.Rokon.desktop
-	cd $(TARBALLDIR) && ./rokon.sh --version # sanity check
+	@cd $(TARBALLDIR) && ./rokon.sh --version > sanity_check.log 2>&1; \
+	if [ $$? -ne 0 ]; then \
+		echo "Sanity check failed. See sanity_check.log for details."; \
+		exit $$? ; \
+	else \
+		echo "Sanity check succeeded."; \
+	fi
 	tar -czf $(TAR_NAME) $(TARBALLDIR)
 	@if command -v zsyncmake >/dev/null 2>&1; then \
 		zsyncmake $(TAR_NAME) -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-$(shell uname)-*-$(shell uname -m).tar.gz.zsync"; \

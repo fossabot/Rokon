@@ -84,7 +84,7 @@ jobs:
               grep -qxF "[$repo]" /etc/pacman.conf || echo -e "[$repo]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
           done
           sudo pacman -Sy
-          sudo pacman -S --needed --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap fuse2
+          sudo pacman -S --needed --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap fuse2 upx
       - name: Build Archlinux Package
         run: |
           makepkg -s --noconfirm
@@ -135,6 +135,12 @@ jobs:
           ./*.AppImage --version
       - name: 🖼️ Assemble the Self updating Tarball
         run: make tarball
+      - name: 😭 Upload Failed Tarball For Debug
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: rokon-${{runner.os}}-failed-tarball-${{ runner.arch }}
+          path: tarball
       - name: 🗃️ Upload Built Tarball 📦
         uses: actions/upload-artifact@v4
         if: always()
