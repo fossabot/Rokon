@@ -629,7 +629,7 @@ jobs:
         if: always()
         with:
           name: rokon-${{ runner.os }}-${{ matrix.arch }}
-          path: *.msi
+          path: "*.msi"
       - name: Remove msi executable
         run: rm "${{ runner.temp }}\\exe\\Rokon.exe"
       - name: Make Portable
