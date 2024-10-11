@@ -122,13 +122,15 @@ tarball: ## build self contained Tarball that auto updates
 	ldd -d -r $(TARGET) | awk '{print $$3}' | grep -v 'not found' | while read -r dep; do \
 		cp -L --no-preserve=mode --debug "$$dep" $(LIBS_DIR); \
 	done
+	@cp -L --no-preserve=mode --debug $$(ldd ./rokon | grep 'ld-linux' | awk '{print $$1}') $(TARBALLDIR)/libs/
+	@chmod +x $(TARBALLDIR)/libs/*.so*
 	patchelf --force-rpath --set-rpath ./libs $(TARBALLDIR)/$(TARGET)
 	echo '#!/bin/sh' > $(TARBALLDIR)/rokon.sh; \
 	echo 'export LD_LIBRARY_PATH="./libs:$${LD_LIBRARY_PATH}"' >> $(TARBALLDIR)/rokon.sh; \
-	echo 'export LD_PRELOAD="./libs:$${LD_PRELOAD}"' >> $(TARBALLDIR)/rokon.sh; \
+	echo 'export LD_PRELOAD="./libs/libc.so.6"' >> $(TARBALLDIR)/rokon.sh; \
 	echo 'export XKB_DEFAULT_INCLUDE_PATH=./share/X11/xkb' >> $(TARBALLDIR)/rokon.sh; \
 	echo 'export XKB_CONFIG_ROOT=./share/X11/xkb' >> $(TARBALLDIR)/rokon.sh; \
-	echo 'exec ./$(TARGET) "$$@"' >> $(TARBALLDIR)/rokon.sh; \
+	echo 'exec ./libs/ld-linux-$(shell uname -m).so.2 ./$(TARGET) "$$@"' >> $(TARBALLDIR)/rokon.sh; \
 	chmod +x $(TARBALLDIR)/rokon.sh
 	cd /usr && cp -r --parents -L -v --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita share/icons/AdwaitaLegacy lib/gdk-pixbuf-2.0 $(ABS_TARBALLDIR)
 	sed -i 's/rokon/\.\/rokon.sh/g' $(TARBALLDIR)/io.github.brycensranch.Rokon.desktop
