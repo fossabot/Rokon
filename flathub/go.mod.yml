@@ -53,10 +53,10 @@
   type: archive
   url: https://proxy.golang.org/go4.org/unsafe/assume-no-moving-gc/@v/v0.0.0-20231121144256-b99613f794b6.zip
 - dest: vendor/golang.org/x/exp
-  sha256: 4803c1cef3bee3b4824a35f47ce1b74b7b18b67ef732c2e5268700e73117863e
+  sha256: a855abb628f058ba7fc33e7b6c46552f2fe0b86bc70c9507982f77b0826e2fa0
   strip-components: 3
   type: archive
-  url: https://proxy.golang.org/golang.org/x/exp/@v/v0.0.0-20241004190924-225e2abe05e6.zip
+  url: https://proxy.golang.org/golang.org/x/exp/@v/v0.0.0-20241009180824-f66d83c29e7c.zip
 - dest: vendor/golang.org/x/net
   sha256: c357b779cdc08d0952f7bad4c45ce84223b7c6005d775822a17901ae8f65bbba
   strip-components: 3

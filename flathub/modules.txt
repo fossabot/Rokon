@@ -52,7 +52,7 @@ github.com/koron/go-ssdp/internal/ssdplog
 # go4.org/unsafe/assume-no-moving-gc v0.0.0-20231121144256-b99613f794b6
 ## explicit; go 1.11
 go4.org/unsafe/assume-no-moving-gc
-# golang.org/x/exp v0.0.0-20241004190924-225e2abe05e6
+# golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c
 ## explicit; go 1.22.0
 golang.org/x/exp/rand
 # golang.org/x/net v0.30.0
