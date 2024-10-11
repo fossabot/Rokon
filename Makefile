@@ -47,6 +47,12 @@ LICENSEDIR = $(DESTDIR)$(PREFIX)/share/licenses/rokon
 APPLICATIONSDIR = $(DESTDIR)$(PREFIX)/share/applications
 ICONDIR = $(DESTDIR)$(PREFIX)/share/icons/hicolor
 METAINFODIR = $(DESTDIR)$(PREFIX)/share/metainfo
+TARBALLDIR ?= ./tarball
+ABS_TARBALLDIR := $(shell realpath $(TARBALLDIR))
+
+LIBS_DIR ?= $(TARBALLDIR)/libs
+TAR_NAME ?= rokon-$(shell uname)-$(VERSION)-$(shell uname -m).tar.gz
+
 
 .DEFAULT_GOAL := build
 .PHONY: all
@@ -68,7 +74,7 @@ help:
 .PHONY: clean
 clean: ## remove files created during build pipeline
 	$(call print-target)
-	rm -rf dist .flatpak io.github.brycensranch.Rokon.desktop io.github.brycensranch.Rokon.metainfo.xml macos/rokon .flatpak-builder flathub/.flatpak-builder flathub/repo flathub/export macos/share flathub/*.flatpak AppDir *.AppImage *.rpm *.pdf *.rtf windows/*.rtf *.deb *.msi *.exe pkg/ *.pkg.tar.zst *.snap *.zsync rokon debian/tmp debian/rokon debian/.debhelper debian/rokon-dbg coverage.* '"$(shell go env GOCACHE)/../golangci-lint"'
+	rm -rf dist .flatpak io.github.brycensranch.Rokon.desktop tarball io.github.brycensranch.Rokon.metainfo.xml macos/rokon .flatpak-builder flathub/.flatpak-builder flathub/repo flathub/export macos/share flathub/*.flatpak AppDir *.AppImage *.rpm *.pdf *.rtf windows/*.rtf *.deb *.msi *.exe pkg/ *.pkg.tar.zst .ptmp* *.tar* *.snap *.zsync rokon debian/tmp debian/rokon debian/.debhelper debian/rokon-dbg coverage.* '"$(shell go env GOCACHE)/../golangci-lint"'
 	# go clean -i -cache -testcache -modcache -fuzzcache -x
 
 .PHONY: nuke
@@ -101,7 +107,39 @@ fatimage: ## build self contained AppImage that can run on older Linux systems w
 	# My application follows the https://docs.fedoraproject.org/en-US/packaging-guidelines/AppData/ but this tool doesn't care lol
 	mv AppDir/usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml AppDir/usr/share/metainfo/io.github.brycensranch.Rokon.appdata.xml
 	cp ./AppDir/usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png ./AppDir
-	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 mkappimage -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-*x86_64.AppImage.zsync" ./AppDir
+	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 mkappimage -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-*$(shell uname -m).AppImage.zsync" ./AppDir
+
+.PHONY: tarball
+tarball: ## build self contained Tarball that auto updates
+	$(call print-target)
+	@echo "Building Rokon Tarball version: $(VERSION)"
+	rm -v -rf $(TARBALLDIR) || sudo rm -rf $(TARBALLDIR)
+	mkdir -p $(TARBALLDIR)
+	mkdir -p $(LIBS_DIR)
+	$(MAKE) PACKAGED=true PACKAGEFORMAT=portable EXTRAGOFLAGS="-trimpath -buildmode=pie" EXTRALDFLAGS="-s -w -linkmode=external" build
+	$(MAKE) PREFIX=$(TARBALLDIR) BINDIR=$(TARBALLDIR) APPLICATIONSDIR=$(TARBALLDIR) install
+	cp -v ./windows/portable.txt $(TARBALLDIR)
+	ldd -d -r $(TARGET) | awk '{print $$3}' | grep -v 'not found' | while read -r dep; do \
+		cp -L --no-preserve=mode --debug "$$dep" $(LIBS_DIR); \
+	done
+	patchelf --force-rpath --set-rpath ./libs $(TARBALLDIR)/$(TARGET)
+	echo '#!/bin/sh' > $(TARBALLDIR)/rokon.sh; \
+	echo 'export LD_LIBRARY_PATH="./libs:$${LD_LIBRARY_PATH}"' >> $(TARBALLDIR)/rokon.sh; \
+	echo 'export LD_PRELOAD="./libs:$${LD_PRELOAD}"' >> $(TARBALLDIR)/rokon.sh; \
+	echo 'export XKB_DEFAULT_INCLUDE_PATH=./share/X11/xkb' >> $(TARBALLDIR)/rokon.sh; \
+	echo 'export XKB_CONFIG_ROOT=./share/X11/xkb' >> $(TARBALLDIR)/rokon.sh; \
+	echo 'exec ./$(TARGET) "$$@"' >> $(TARBALLDIR)/rokon.sh; \
+	chmod +x $(TARBALLDIR)/rokon.sh
+	cd /usr && cp -r --parents -L -v --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita share/icons/AdwaitaLegacy lib/gdk-pixbuf-2.0 $(ABS_TARBALLDIR)
+	sed -i 's/rokon/\.\/rokon.sh/g' $(TARBALLDIR)/io.github.brycensranch.Rokon.desktop
+	tar -czf $(TAR_NAME) $(TARBALLDIR)
+	@if command -v zsyncmake >/dev/null 2>&1; then \
+		zsyncmake $(TAR_NAME) -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-$(shell uname)-*-$(shell uname -m).tar.gz.zsync"; \
+	else \
+		@echo "zsyncmake not found. Please install it to generate the zsync file."; \
+	fi
+	rm $(TARGET)
+	@echo "Tarball created: $(TAR_NAME)"
 
 .PHONY: dev
 dev: ## go run -v .
@@ -109,6 +147,9 @@ dev: ## go run -v .
 	@echo "Starting development server for Rokon: $(VERSION)"
 	go run -v .
 
+.PHONY: run
+run: ## go run -v .
+run: dev
 
 .PHONY: mod
 mod: ## go mod tidy
