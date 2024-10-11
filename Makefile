@@ -124,17 +124,19 @@ tarball: ## build self contained Tarball that auto updates
 		cp -L --no-preserve=mode --debug "$$dep" $(LIBS_DIR); \
 	done
 	@cp -L --no-preserve=mode --debug $$(ldd ./rokon | grep 'ld-linux' | awk '{print $$1}') $(TARBALLDIR)/libs/
-	@chmod +x $(TARBALLDIR)/libs/*.so*
+	@chmod +x $(LIBS_DIR)/*.so*
+	@strip -p -v $(LIBS_DIR)/*.so*
 	patchelf --force-rpath --set-rpath ./libs $(TARBALLDIR)/$(TARGET)
 	echo '#!/bin/sh' > $(TARBALLDIR)/rokon.sh; \
 	echo 'export LD_LIBRARY_PATH="./libs:$${LD_LIBRARY_PATH}"' >> $(TARBALLDIR)/rokon.sh; \
 	echo 'export LD_PRELOAD="./libs/libc.so.6"' >> $(TARBALLDIR)/rokon.sh; \
 	echo 'export XKB_DEFAULT_INCLUDE_PATH=./share/X11/xkb' >> $(TARBALLDIR)/rokon.sh; \
 	echo 'export XKB_CONFIG_ROOT=./share/X11/xkb' >> $(TARBALLDIR)/rokon.sh; \
-	echo 'exec ./libs/ld-linux-$(subst -,_,$(shell uname -m)).so.2 ./$(TARGET) "$$@"' >> $(TARBALLDIR)/rokon.sh; \
+	echo 'exec ./libs/$(shell /bin/ls $(LIBS_DIR) | grep "ld-linux") ./$(TARGET) "$$@"' >> $(TARBALLDIR)/rokon.sh; \
 	chmod +x $(TARBALLDIR)/rokon.sh
 	cd /usr && cp -r --parents -L -v --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita share/icons/AdwaitaLegacy lib/gdk-pixbuf-2.0 $(ABS_TARBALLDIR)
 	sed -i 's/rokon/\.\/rokon.sh/g' $(TARBALLDIR)/io.github.brycensranch.Rokon.desktop
+	cd $(TARBALLDIR) && ./rokon.sh --version # sanity check
 	tar -czf $(TAR_NAME) $(TARBALLDIR)
 	@if command -v zsyncmake >/dev/null 2>&1; then \
 		zsyncmake $(TAR_NAME) -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-$(shell uname)-*-$(shell uname -m).tar.gz.zsync"; \
