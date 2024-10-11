@@ -624,6 +624,12 @@ jobs:
       - name: Check --version command
         run: |
           "C:\Program Files\BrycensRanch\Rokon\Rokon.exe" --version
+      - name: 🗃️ Upload MSI
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rokon-${{ runner.os }}-${{ matrix.arch }}
+          path: *.msi
       - name: Remove msi executable
         run: rm "${{ runner.temp }}\\exe\\Rokon.exe"
       - name: Make Portable
@@ -636,12 +642,6 @@ jobs:
         continue-on-error: true
         run: |
           upx --best -f --force-overwrite ./*.exe
-      - name: 🗃️ Upload Built Result
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: rokon-${{ runner.os }}-${{ matrix.arch }}
-          path: $result
       - name: 🗃️ Upload Portable
         uses: actions/upload-artifact@v4
         if: always()
