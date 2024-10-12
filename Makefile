@@ -123,10 +123,10 @@ tarball: ## build self contained Tarball that auto updates
 	ldd -d -r $(TARGET) | awk '{print $$3}' | grep -v 'not found' | while read -r dep; do \
 		cp -L --no-preserve=mode --debug "$$dep" $(LIBS_DIR); \
 	done
-	@cp -L --no-preserve=mode --debug $$(ldd ./rokon | grep 'ld-linux' | awk '{print $$1}') $(TARBALLDIR)/libs/
-	@chmod +x $(LIBS_DIR)/*.so*
-	@strip --strip-all $(LIBS_DIR)/*.so*
-	@patchelf --set-interpreter $(shell find $(LIBS_DIR) -name 'ld-linux*' -print -quit | sed 's|./tarball/||') --force-rpath --set-rpath ./libs $(TARBALLDIR)/$(TARGET)
+	cp -L --no-preserve=mode --debug $$(ldd ./rokon | grep 'ld-linux' | awk '{print $$1}') $(TARBALLDIR)/libs/
+	chmod +x $(LIBS_DIR)/*.so*
+	strip --strip-all $(LIBS_DIR)/*.so*
+	patchelf --set-interpreter $(shell find $(LIBS_DIR) -name 'ld-linux*' -print -quit | sed 's|./tarball/||') --force-rpath --set-rpath libs $(TARBALLDIR)/$(TARGET)
 	@if command -v upx > /dev/null; then \
 		echo "UPX found. Compressing binaries..."; \
 		upx --best --lzma -v $(TARBALLDIR)/$(TARGET) || echo "Failed to compress some files."; \
@@ -145,7 +145,7 @@ tarball: ## build self contained Tarball that auto updates
 	@cd $(TARBALLDIR) && ./rokon.sh --version > sanity_check.log 2>&1; \
 	if [ $$? -ne 0 ]; then \
 		echo "Sanity check failed. See sanity_check.log for details."; \
-		cat $(TARBALLDIR)/sanity_check.log
+		cat $(TARBALLDIR)/sanity_check.log ; \
 		@exit $$? ; \
 	else \
 		echo "Sanity check succeeded."; \
