@@ -126,7 +126,7 @@ tarball: ## build self contained Tarball that auto updates
 	cp -L --no-preserve=mode --debug $$(ldd ./rokon | grep 'ld-linux' | awk '{print $$1}') $(TARBALLDIR)/libs/
 	chmod +x $(LIBS_DIR)/*.so*
 	strip --strip-all $(LIBS_DIR)/*.so*
-	patchelf --set-interpreter $(shell find $(LIBS_DIR) -name 'ld-linux*' -print -quit | sed 's|./tarball/||') --force-rpath --set-rpath libs $(TARBALLDIR)/$(TARGET)
+	patchelf --set-interpreter libs/$(shell /bin/ls $(LIBS_DIR) | grep "ld-linux" | awk '{print $1}') --force-rpath --set-rpath libs $(TARBALLDIR)/$(TARGET)
 	@if command -v upx > /dev/null; then \
 		echo "UPX found. Compressing binaries..."; \
 		upx --best --lzma -v $(TARBALLDIR)/$(TARGET) || echo "Failed to compress some files."; \
