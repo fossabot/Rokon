@@ -145,7 +145,7 @@ tarball: ## build self contained Tarball that auto updates
 	@cd $(TARBALLDIR) && ./rokon.sh --version > sanity_check.log 2>&1; \
 	if [ $$? -ne 0 ]; then \
 		echo "Sanity check failed. See sanity_check.log for details."; \
-		exit $$? ; \
+		@exit $$? ; \
 	else \
 		echo "Sanity check succeeded."; \
 	fi
