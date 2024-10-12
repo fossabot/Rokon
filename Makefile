@@ -125,11 +125,11 @@ tarball: ## build self contained Tarball that auto updates
 	done
 	@cp -L --no-preserve=mode --debug $$(ldd ./rokon | grep 'ld-linux' | awk '{print $$1}') $(TARBALLDIR)/libs/
 	@chmod +x $(LIBS_DIR)/*.so*
-	@strip --strip-all -v $(LIBS_DIR)/*.so*
+	@strip -v $(LIBS_DIR)/*.so*
 	patchelf --force-rpath --set-rpath ./libs $(TARBALLDIR)/$(TARGET)
 	@if command -v upx > /dev/null; then \
 		echo "UPX found. Compressing binaries..."; \
-		upx --best -v --force $(TARBALLDIR)/$(TARGET) $(LIBS_DIR)/*.so* || echo "Failed to compress some files."; \
+		upx --best -v $(TARBALLDIR)/$(TARGET) $(LIBS_DIR)/*.so* || echo "Failed to compress some files."; \
 	else \
 		echo "UPX not found. Skipping compression."; \
 	fi
