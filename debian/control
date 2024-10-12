@@ -1,7 +1,7 @@
 Source: rokon
 Section: universe/utils
 Priority: optional
-Maintainer: Brycen Granville <brycengranville@outlook.com>
+Maintainer: Brycen G <brycengranville@outlook.com>
 Build-Depends: libgtk-4-1, golang-go, pkgconf, make (>= 4), debhelper (>= 14)
 Standards-Version: 4.5.1
 Homepage: https://github.com/BrycensRanch/Rokon
