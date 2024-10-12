@@ -20,6 +20,8 @@ jobs:
     runs-on: [self-hosted, docker]
     needs: [archlinux]
     steps:
+      - name: Cleanup directory
+        run: sudo rm -rf $GITHUB_WORKSPACE/* || true
       - name: Check out current repository
         uses: actions/checkout@v4
         with:
@@ -69,6 +71,8 @@ jobs:
     runs-on: [self-hosted, archlinux]
     # if: github.repository != 'BrycensRanch/Rokon'
     steps:
+      - name: Cleanup directory
+        run: sudo rm -rf $GITHUB_WORKSPACE/* || true
       - name: Check out current repository
         uses: actions/checkout@v4
         with:
