@@ -114,10 +114,10 @@ fatimage: ## build self contained AppImage that can run on older Linux systems w
 tarball: ## build self contained Tarball that auto updates
 	$(call print-target)
 	@echo "Building Rokon Tarball version: $(VERSION)"
-	rm -v -rf $(TARBALLDIR) || sudo rm -rf $(TARBALLDIR)
+	rm -rf $(TARBALLDIR) || sudo rm -v -rf $(TARBALLDIR)
 	mkdir -p $(TARBALLDIR)
 	mkdir -p $(LIBS_DIR)
-	$(MAKE) PACKAGED=true PACKAGEFORMAT=portable EXTRAGOFLAGS="-trimpath -buildmode=pie" EXTRALDFLAGS="-s -w -linkmode=external" build
+	$(MAKE) PACKAGED=true PACKAGEFORMAT=portable EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w -linkmode=external" build
 	$(MAKE) PREFIX=$(TARBALLDIR) BINDIR=$(TARBALLDIR) APPLICATIONSDIR=$(TARBALLDIR) install
 	cp -v ./windows/portable.txt $(TARBALLDIR)
 	ldd -d -r $(TARGET) | awk '{print $$3}' | grep -v 'not found' | while read -r dep; do \
@@ -125,10 +125,11 @@ tarball: ## build self contained Tarball that auto updates
 	done
 	@cp -L --no-preserve=mode --debug $$(ldd ./rokon | grep 'ld-linux' | awk '{print $$1}') $(TARBALLDIR)/libs/
 	@chmod +x $(LIBS_DIR)/*.so*
-	patchelf --force-rpath --set-rpath $(LIBS_DIR) $(TARBALLDIR)/$(TARGET)
+	@strip --strip-all $(LIBS_DIR)/*.so*
+	@patchelf --set-interpreter $(shell find $(LIBS_DIR) -name 'ld-linux*' -print -quit | sed 's|./tarball/||') --force-rpath --set-rpath ./libs $(TARBALLDIR)/$(TARGET)
 	@if command -v upx > /dev/null; then \
 		echo "UPX found. Compressing binaries..."; \
-		upx --best -v $(TARBALLDIR)/$(TARGET) $(LIBS_DIR)/*.so* || echo "Failed to compress some files."; \
+		upx --best --lzma -v $(TARBALLDIR)/$(TARGET) || echo "Failed to compress some files."; \
 	else \
 		echo "UPX not found. Skipping compression."; \
 	fi
@@ -137,9 +138,9 @@ tarball: ## build self contained Tarball that auto updates
 	echo 'export LD_PRELOAD="./libs/libc.so.6"' >> $(TARBALLDIR)/rokon.sh; \
 	echo 'export XKB_DEFAULT_INCLUDE_PATH=./share/X11/xkb' >> $(TARBALLDIR)/rokon.sh; \
 	echo 'export XKB_CONFIG_ROOT=./share/X11/xkb' >> $(TARBALLDIR)/rokon.sh; \
-	echo 'exec ./libs/$(shell /bin/ls $(LIBS_DIR) | grep "ld-linux") ./$(TARGET) "$$@"' >> $(TARBALLDIR)/rokon.sh; \
+	echo 'exec ./libs/ld-linux* ./$(TARGET) "$$@"' >> $(TARBALLDIR)/rokon.sh; \
 	chmod +x $(TARBALLDIR)/rokon.sh
-	cd /usr && cp -r --parents -L -v --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita share/icons/AdwaitaLegacy lib/gdk-pixbuf-2.0 $(ABS_TARBALLDIR)
+	cd /usr && cp -r --parents -L --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita share/icons/AdwaitaLegacy lib/gdk-pixbuf-2.0 $(ABS_TARBALLDIR)
 	sed -i 's/rokon/\.\/rokon.sh/g' $(TARBALLDIR)/io.github.brycensranch.Rokon.desktop
 	@cd $(TARBALLDIR) && ./rokon.sh --version > sanity_check.log 2>&1; \
 	if [ $$? -ne 0 ]; then \
