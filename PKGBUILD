@@ -8,7 +8,7 @@ maintainer="Brycen Granville <brycengranville@outlook.com>"
 pkgdesc="A roku remote for your desktop"
 arch=('x86_64' 'aarch64' 'armv7h')
 url="https://github.com/BrycensRanch/Rokon"
-license=('AGPL3-or-later')
+license=('AGPL-3.0-or-later')
 depends=('gtk4')
 makedepends=('gtk4' 'git' 'gcc' 'go' 'make')
 source=("git+https://github.com/BrycensRanch/Rokon.git#branch=master")
