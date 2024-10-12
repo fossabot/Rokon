@@ -100,7 +100,6 @@ runs:
             lib/gdk-pixbuf-2.0 \
             $out
         )
-        find $out -type f -name "*.dll" -exec upx -f --best --force-overwrite {} +
       shell: msys2 {0}
       env:
         GOROOT: /clang64/lib/go
