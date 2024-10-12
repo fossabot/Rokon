@@ -53,6 +53,25 @@ ABS_TARBALLDIR := $(shell realpath $(TARBALLDIR))
 LIBS_DIR ?= $(TARBALLDIR)/libs
 TAR_NAME ?= rokon-$(shell uname)-$(VERSION)-$(shell uname -m).tar.gz
 
+resolve_deps = \
+	ldd -d -r $1 | awk '{print $$3}' | grep -v 'not found' | while read -r dep; do \
+		if [ -n "$$dep" ]; then \
+			echo "Copying dependency: $$dep"; \
+			cp -L --no-preserve=mode -v "$$dep" $(LIBS_DIR) || { echo "Failed to copy $$dep"; exit 1; }; \
+		fi; \
+		ldd -d -r "$$dep" | awk '{print $$3}' | grep -v 'not found' | while read -r subdep; do \
+			if [ -n "$$subdep" ]; then \
+				echo "Copying sub-dependency: $$subdep"; \
+				cp -L --no-preserve=mode -v "$$subdep" $(LIBS_DIR) || { echo "Failed to copy $$subdep"; exit 1; }; \
+			fi; \
+		done; \
+	done
+
+
+# Target to resolve dependencies
+resolve:
+	$(call resolve_deps, $(TARGET))
+
 
 .DEFAULT_GOAL := build
 .PHONY: all
@@ -120,13 +139,11 @@ tarball: ## build self contained Tarball that auto updates
 	$(MAKE) PACKAGED=true PACKAGEFORMAT=portable EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w -linkmode=external" build
 	$(MAKE) PREFIX=$(TARBALLDIR) BINDIR=$(TARBALLDIR) APPLICATIONSDIR=$(TARBALLDIR) install
 	cp -v ./windows/portable.txt $(TARBALLDIR)
-	ldd -d -r $(TARGET) | awk '{print $$3}' | grep -v 'not found' | while read -r dep; do \
-		cp -L --no-preserve=mode --debug "$$dep" $(LIBS_DIR); \
-	done
-	cp -L --no-preserve=mode --debug $$(ldd ./rokon | grep 'ld-linux' | awk '{print $$1}') $(TARBALLDIR)/libs/
+	$(call resolve_deps,$(TARGET))
+	cp -L --no-preserve=mode -v $$(ldd ./tarball/rokon | grep 'ld-linux' | awk '{print $$1}') $(TARBALLDIR)/libs/
 	chmod +x $(LIBS_DIR)/*.so*
 	strip --strip-all $(LIBS_DIR)/*.so*
-	patchelf --set-interpreter libs/$(shell /bin/ls $(LIBS_DIR) | grep "ld-linux" | awk '{print $1}') --force-rpath --set-rpath libs $(TARBALLDIR)/$(TARGET)
+	patchelf --set-interpreter libs/$(shell /bin/ls $(LIBS_DIR) | grep "ld-linux" | awk '{print $$1}') --force-rpath --set-rpath libs $(TARBALLDIR)/$(TARGET)
 	@if command -v upx > /dev/null; then \
 		echo "UPX found. Compressing binaries..."; \
 		upx --best --lzma -v $(TARBALLDIR)/$(TARGET) || echo "Failed to compress some files."; \
@@ -146,7 +163,7 @@ tarball: ## build self contained Tarball that auto updates
 	if [ $$? -ne 0 ]; then \
 		echo "Sanity check failed. See sanity_check.log for details."; \
 		cat $(TARBALLDIR)/sanity_check.log ; \
-		@exit $$? ; \
+		exit $$? ; \
 	else \
 		echo "Sanity check succeeded."; \
 	fi

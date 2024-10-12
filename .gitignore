@@ -51,6 +51,7 @@ appimagetool
 flathub/build
 flathub/export
 flathub/builddir
+squashfs-root
 tarball
 rpm
 debian/.debhelper
