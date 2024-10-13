@@ -186,6 +186,28 @@ jobs:
           flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
           flatpak remote-add --user --if-not-exists flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
           flatpak install --user -y flathub org.flatpak.Builder
+      - name: Create RPM build environment
+        run: |
+          rpmdev-setuptree
+      - name: Build RPMs
+        continue-on-error: true
+        run: |
+          for spec in ./*.spec; do
+              echo "Building $spec"
+              spectool -g -R "$spec"
+              sudo dnf builddep -y "$spec"
+              rpmbuild -ba "$spec" || echo "Failed to build $spec"
+          done
+      - name: Install RPMs
+        run: sudo dnf in -y ~/rpmbuild/RPMS/*/*.rpm
+        continue-on-error: true
+      - name: Test built RPM
+        continue-on-error: true
+        run: rokon --version
+      - name: Move RPMs to workspace
+        continue-on-error: true
+        run: |
+          mv ~/rpmbuild/RPMS/*/*.rpm $GITHUB_WORKSPACE/
       - name: Lint AppStream Metadata
         run: |
           flatpak run --command=flatpak-builder-lint --user org.flatpak.Builder appstream usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
@@ -242,28 +264,6 @@ jobs:
         # if: ${{ github.event_name == 'pull_request' }}
         run: |
           flatpak --branch=beta --user run io.github.brycensranch.Rokon --version
-      - name: Create RPM build environment
-        run: |
-          rpmdev-setuptree
-      - name: Build RPMs
-        continue-on-error: true
-        run: |
-          for spec in ./*.spec; do
-              echo "Building $spec"
-              spectool -g -R "$spec"
-              sudo dnf builddep -y "$spec"
-              rpmbuild -ba "$spec" || echo "Failed to build $spec"
-          done
-      - name: Install RPMs
-        run: sudo dnf in -y ~/rpmbuild/RPMS/*/*.rpm
-        continue-on-error: true
-      - name: Test built RPM
-        continue-on-error: true
-        run: rokon --version
-      - name: Move RPMs to workspace
-        continue-on-error: true
-        run: |
-          mv ~/rpmbuild/RPMS/*/*.rpm $GITHUB_WORKSPACE/
       - name: 🗃️ Upload Built RPMs 📦
         uses: actions/upload-artifact@v4
         if: always()
@@ -314,28 +314,6 @@ jobs:
       # - name: 🚧 Ensure Code is Formatted
       #   run: |
       #     pnpm format:check
-      - name: Import GPG key
-        id: import_gpg
-        if: github.event_name != 'pull_request'
-        uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_tag_gpgsign: true
-          git_push_gpgsign: false
-      - name: 🤠 Assemble the DEB
-        continue-on-error: true
-        env:
-          DEBEMAIL: brycengranville@outlook.com
-          DEBFULLNAME: brycensranch
-        run: |
-          if [ "${{ github.event_name }}" != "pull_request" ]; then
-            ./debian/publish.sh
-          else
-            debuild -us -uc -b -d
-          fi
       - name: Install Snapcraft
         uses: samuelmeuli/action-snapcraft@v2
       - uses: chrisdickinson/setup-yq@latest
@@ -383,6 +361,28 @@ jobs:
       # - name: 📤 Upload Code coverage to Codecov
       #   if: ${{ !github.event.act }}
       #   uses: codecov/codecov-action@v4
+      - name: Import GPG key
+        id: import_gpg
+        if: github.event_name != 'pull_request'
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_tag_gpgsign: true
+          git_push_gpgsign: false
+      - name: 🤠 Assemble the DEB
+        continue-on-error: true
+        env:
+          DEBEMAIL: brycengranville@outlook.com
+          DEBFULLNAME: brycensranch
+        run: |
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            ./debian/publish.sh
+          else
+            debuild -us -uc -b -d
+          fi
       - name: Find Comment
         if: always()
         uses: peter-evans/find-comment@v2
