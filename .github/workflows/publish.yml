@@ -376,13 +376,16 @@ jobs:
         continue-on-error: true
         env:
           DEBEMAIL: brycengranville@outlook.com
-          DEBFULLNAME: brycensranch
+          DEBFULLNAME: Brycen G
         run: |
           if [ "${{ github.event_name }}" != "pull_request" ]; then
             ./debian/publish.sh
           else
             debuild -us -uc -b -d
           fi
+      - name: Collect generated Debian files
+        run: |
+          cp ../*.{deb,buildinfo,changes} ./ || true
       - name: Find Comment
         if: always()
         uses: peter-evans/find-comment@v2
