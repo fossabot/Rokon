@@ -259,7 +259,7 @@ func applicationInfo() string {
 		switch {
 		case os.Getenv("SNAP") != "":
 			return " (Snap)"
-		case os.Getenv("FLATPAK") != "":
+		case os.Getenv("container") == "flatpak":
 			return " (Flatpak)"
 		case os.Getenv("APPIMAGE") != "":
 			return " (AppImage)"

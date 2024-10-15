@@ -45,6 +45,7 @@ flathub/repo
 appimage-build
 *.zsync
 appimagetool
+zig*
 *.upx
 *.000
 .flatpak-builder
