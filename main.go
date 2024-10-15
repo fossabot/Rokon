@@ -325,8 +325,9 @@ func searchForRokus() chan []ssdp.Service {
 }
 
 // Show the "About" window.
-func showAboutWindow(_ *gtk.ApplicationWindow, app *gtk.Application) {
+func showAboutWindow(mainWindow *gtk.ApplicationWindow, app *gtk.Application) {
 	aboutWindow := gtk.NewAboutDialog()
+	aboutWindow.SetApplication(app)
 	aboutWindow.SetProgramName(applicationInfo())
 	aboutWindow.SetVersion(app.Version())
 	aboutWindow.SetComments("Control your Roku TV from your desktop")
