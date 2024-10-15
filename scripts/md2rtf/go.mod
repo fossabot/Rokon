@@ -8,7 +8,7 @@ require (
 	github.com/andybalholm/brotli v1.1.0
 	github.com/stephenafamo/goldmark-pdf v0.4.1
 	github.com/therox/rtf-doc v0.8.27
-	github.com/yuin/goldmark v1.7.4
+	github.com/yuin/goldmark v1.7.6
 )
 
 require (
