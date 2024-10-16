@@ -93,7 +93,7 @@ help:
 .PHONY: clean
 clean: ## remove files created during build pipeline
 	$(call print-target)
-	rm -rf dist .flatpak io.github.brycensranch.Rokon.desktop tarball io.github.brycensranch.Rokon.metainfo.xml macos/rokon .flatpak-builder flathub/.flatpak-builder flathub/repo flathub/export macos/share flathub/*.flatpak AppDir squashfs-root *.AppImage *.rpm *.pdf *.rtf windows/*.rtf *.deb *.msi *.exe pkg/ *.pkg.tar.zst .ptmp* *.tar* *.snap *.zsync rokon debian/tmp debian/rokon* debian/.debhelper coverage.* '"$(shell go env GOCACHE)/../golangci-lint"'
+	rm -rf dist .flatpak io.github.brycensranch.Rokon.desktop tarball io.github.brycensranch.Rokon.metainfo.xml macos/rokon .flatpak-builder flathub/.flatpak-builder flathub/repo flathub/export macos/share flathub/*.flatpak AppDir squashfs-root *.AppImage *.rpm *.pdf *.rtf windows/*.rtf *.deb *.msi *.exe pkg/ *.pkg.tar.zst .ptmp* *.tar* *.snap *.zsync rokon debian/tmp debian/rokon* *.changes *.buildinfo debian/.debhelper coverage.* '"$(shell go env GOCACHE)/../golangci-lint"'
 	# go clean -i -cache -testcache -modcache -fuzzcache -x
 
 .PHONY: nuke

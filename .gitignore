@@ -45,6 +45,10 @@ flathub/repo
 appimage-build
 *.zsync
 appimagetool
+debian/rokon*
+debian/tmp
+*.changes
+*.buildinfo
 zig*
 *.upx
 *.000
