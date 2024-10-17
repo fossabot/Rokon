@@ -22,7 +22,10 @@
 %global forgeurl        https://github.com/BrycensRanch/Rokon
 %global commit          8f2cc32ddbf55ed796754b88f6ec44a54c544290
 
-%{?gometa: %gometa -L -f}
+
+%if 0%{?fedora}
+%gometa -L -f
+%endif
 
 
 Name:           rokon
