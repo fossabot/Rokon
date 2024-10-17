@@ -115,6 +115,17 @@ appimage: ## build AppImage using appimage-builder
 	$(MAKE) PREFIX=AppDir/usr BINDIR=AppDir install
 	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 appimage-builder
 
+
+# This was only added to not add duplicate version detection logic.
+.PHONY: obsimage
+obsimage: ## Turns AppDir into AppImage built on OpenSUSE Build Service
+	$(call print-target)
+	@echo "Building AppImage version: $(VERSION)"
+	rm -rf AppDir
+	mv AppDir/usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml AppDir/usr/share/metainfo/io.github.brycensranch.Rokon.appdata.xml
+	cp ./AppDir/usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png ./AppDir
+	APPIMAGELAUNCHER_DISABLE=1 NO_STRIP=true linuxdeploy --appdir=AppDir --output appimage
+
 .PHONY: fatimage
 fatimage: ## build self contained AppImage that can run on older Linux systems while CI is on development branch
 	$(call print-target)

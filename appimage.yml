@@ -3,7 +3,7 @@ binpatch: false
 
 ingredients:
   packages:
-    - linuxdeployqt
+    - linuxdeploy
     - git # you never know with CIs these days...
     - gcc
     - gcc-c++
@@ -17,6 +17,6 @@ script:
   - cd $BUILD_APPDIR/Rokon
   - go mod download all
   - ls
-  - make PACKAGED=true PACKAGEFORMAT=AppImage EXTRALDFLAGS="-compressdwarf=false" EXTRAGOFLAGS="-buildmode=pie -trimpath" build
-  - make PREFIX=$BUILD_APPDIR/usr BINDIR=$BUILD_APPDIR install
-  - linuxdeployqt $BUILD_APPDIR/usr/share/applications/*.desktop -bundle-non-qt-libs -verbose=2 -no-strip
+  - make PACKAGED=true PACKAGEFORMAT=AppImage EXTRALDFLAGS="-s -w" EXTRAGOFLAGS="-buildmode=pie -trimpath" build
+  - make DESTDIR=$BUILD_APPDIR PREFIX=/usr install
+  - make obsimage
