@@ -145,11 +145,13 @@ jobs:
         with:
           name: rokon-${{runner.os}}-failed-tarball-${{ runner.arch }}
           path: tarball
+          include-hidden-files: true
       - name: 🗃️ Upload Built Tarball 📦
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: rokon-${{runner.os}}-tarball-${{ runner.arch }}
+          include-hidden-files: true
           path: |
             *.tar.gz
             *tar*.zsync
@@ -502,6 +504,7 @@ jobs:
         with:
           name: rokon-vendored-source
           path: .
+          include-hidden-files: true
       # - name: Login to GitHub Container Registry
       #   uses: docker/login-action@v3
       #   with:
@@ -645,6 +648,7 @@ jobs:
         with:
           name: rokon-${{ runner.os }}-Portable-${{ matrix.arch }}
           path: ${{ runner.temp }}/exe
+          include-hidden-files: true
   macos:
     timeout-minutes: 45
     strategy:
