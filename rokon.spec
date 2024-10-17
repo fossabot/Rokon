@@ -109,8 +109,8 @@ ls
 
 %check
 %if 0%{?fedora}
-%go_vendor_license_check -c go-vendor-tools.toml
 %if %{with check}
+%go_vendor_license_check -c go-vendor-tools.toml
 %gocheck
 %endif
 %endif
