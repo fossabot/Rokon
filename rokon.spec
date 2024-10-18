@@ -62,7 +62,7 @@ Whether that be with your keyboard, mouse, or controller.
 %prep
 ls
 
-%setup -c -b 0
+%setup -c
 ls
 
 %generate_buildrequires
