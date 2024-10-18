@@ -5,12 +5,12 @@
     </service>
     <service name="tar" mode="buildtime"/>
     <service name="extract_file">
-        <param name="archive">rokon-vendored-source.zip</param>
+        <param name="archive">*.zip</param>
         <param name="files">*/debian/* *.changes *.buildinfo */*.spec */appimage.yml */PKGBUILD</param>
     </service>
     <service name="recompress" mode="buildtime">
         <param name="compression">xz</param>
-        <param name="file">*.tar</param>
+        <param name="file">*.zip</param>
     </service>
     <service name="set_version" mode="buildtime"/>
     <service name="appimage"/>
