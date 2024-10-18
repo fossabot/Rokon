@@ -49,6 +49,7 @@ BuildRequires:  go-vendor-tools
 %endif
 
 BuildRequires:  gcc
+BuildRequires:  unzip
 BuildRequires:  gcc-c++
 BuildRequires:  gtk4-devel
 BuildRequires:  gobject-introspection-devel
