@@ -1,24 +1,32 @@
-FROM alpine:edge AS builder
 
-RUN apk add --no-cache alpine-sdk go gtk4.0-dev gobject-introspection-dev bash
+# This container *can* work under NVIDIA.
+# For example, you could run the command `distrobox create --name rokon --image ghcr.io/brycensranch/rokon --nvidia`
+
+FROM fedora:rawhide AS builder
+
+RUN sudo dnf install -y \
+    make \
+    go \
+    gtk4-devel \
+    gobject-introspection-devel \
+    which \
+    patchelf \
+    upx
+RUN sudo dnf clean all
+
+
 
 WORKDIR /app
-
 COPY . .
 
-RUN make PACKAGED=true PACKAGEFORMAT=docker build
+# TBPKGFMT = TARBALL PACKAGE FORMAT (This is used for telemetry and logging purposes, does not affect the package whatsoever)
+# NOTB = Prevents the creation of tar.gz files. It's not needed and the container won't use it.
+RUN make PACKAGED=true TBPKGFMT=docker NOTB=1 tarball
 
-FROM alpine:edge AS runner
+FROM fedora:rawhide AS runner
 
 WORKDIR /app
 
-# Nvidia GPUs are NOT supported with this container!
+COPY --from=builder /app/tarball .
 
-RUN apk add --no-cache gtk4.0 gobject-introspection mesa mesa-dri-gallium mesa-gles xf86-video-nouveau
-
-
-COPY --from=builder /app/rokon .
-
-# Run the application
-
-CMD ["./rokon"]
+CMD "./rokon.sh"

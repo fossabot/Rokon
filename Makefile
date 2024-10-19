@@ -9,6 +9,7 @@ DATE := $(shell date -u +%Y-%m-%d)
 PACKAGED ?= false
 PACKAGEFORMAT ?=
 NODOCUMENTATION ?= 0
+NOTB ?= 0
 EXTRALDFLAGS :=
 EXTRAGOFLAGS :=
 BUILDTAGS :=
@@ -48,6 +49,7 @@ APPLICATIONSDIR = $(DESTDIR)$(PREFIX)/share/applications
 ICONDIR = $(DESTDIR)$(PREFIX)/share/icons/hicolor
 METAINFODIR = $(DESTDIR)$(PREFIX)/share/metainfo
 TARBALLDIR ?= ./tarball
+TBPKGFMT ?= portable
 ABS_TARBALLDIR := $(shell realpath $(TARBALLDIR))
 
 LIBS_DIR ?= $(TARBALLDIR)/libs
@@ -147,7 +149,7 @@ tarball: ## build self contained Tarball that auto updates
 	rm -rf $(TARBALLDIR) || sudo rm -v -rf $(TARBALLDIR)
 	mkdir -p $(TARBALLDIR)
 	mkdir -p $(LIBS_DIR)
-	$(MAKE) PACKAGED=true PACKAGEFORMAT=portable EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w -linkmode=external" build
+	$(MAKE) PACKAGED=true PACKAGEFORMAT=$(TBPKGFMT) EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w -linkmode=external" build
 	$(MAKE) PREFIX=$(TARBALLDIR) BINDIR=$(TARBALLDIR) APPLICATIONSDIR=$(TARBALLDIR) install
 	cp -v ./windows/portable.txt $(TARBALLDIR)
 	$(call resolve_deps,./tarball/rokon)
@@ -168,7 +170,7 @@ tarball: ## build self contained Tarball that auto updates
 	echo 'export XKB_CONFIG_ROOT=./share/X11/xkb' >> $(TARBALLDIR)/rokon.sh; \
 	echo 'exec ./libs/ld-linux* ./$(TARGET) "$$@"' >> $(TARBALLDIR)/rokon.sh; \
 	chmod +x $(TARBALLDIR)/rokon.sh
-	cd /usr && cp -r --parents -L --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita share/icons/AdwaitaLegacy lib/gdk-pixbuf-2.0 $(ABS_TARBALLDIR)
+	cd /usr && cp -r --parents -L --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita share/icons/AdwaitaLegacy $(ABS_TARBALLDIR)
 	sed -i 's/rokon/\.\/rokon.sh/g' $(TARBALLDIR)/io.github.brycensranch.Rokon.desktop
 	@cd $(TARBALLDIR) && ./rokon.sh --version > sanity_check.log 2>&1; \
 	if [ $$? -ne 0 ]; then \
@@ -178,6 +180,10 @@ tarball: ## build self contained Tarball that auto updates
 	else \
 		echo "Sanity check succeeded."; \
 	fi
+
+ifeq ($(NOTB),1)
+	@echo "Finished making tarball directory. You have specified that a tarball shouldn't be created with NOTB=1"
+else
 	tar -czf $(TAR_NAME) $(TARBALLDIR)
 	@if command -v zsyncmake >/dev/null 2>&1; then \
 		zsyncmake $(TAR_NAME) -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-$(shell uname)-*-$(shell uname -m).tar.gz.zsync"; \
@@ -186,6 +192,7 @@ tarball: ## build self contained Tarball that auto updates
 	fi
 	rm $(TARGET)
 	@echo "Tarball created: $(TAR_NAME)"
+endif
 
 .PHONY: dev
 dev: ## go run -v .
