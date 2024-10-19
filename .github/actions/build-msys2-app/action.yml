@@ -55,7 +55,7 @@ runs:
         out=$(realpath "$OUT_PATH")
 
         # Build Rokon
-        make TARGET=$out/$EXE_NAME EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=msi PACKAGED=true build
+        make TARGET=$EXE_NAME EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" BUILDTAGS=$BUILD_TAGS PACKAGEFORMAT=msi PACKAGED=true build
 
         # copyDLLs copies all required DLLs of the given binaries to the
         # result directory.
@@ -67,7 +67,7 @@ runs:
         }
 
         # Copy all of the binary's dependencies to the result directory.
-        copyDLLs "$out/$EXE_NAME"
+        copyDLLs $EXE_NAME
         # countDLLs returns the number of DLLs in the result directory.
         # We use this to recursively copy dependencies until no new DLLs are
         # found.
