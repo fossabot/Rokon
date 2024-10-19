@@ -38,6 +38,6 @@ build() {
 
 package() {
     cd Rokon
-    make TARGET=$pkgname PREFIX=$pkgdir/usr install
+    make TARGET=$pkgname DESTDIR=$pkgdir PREFIX=/usr install
 }
 
