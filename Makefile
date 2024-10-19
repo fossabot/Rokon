@@ -78,7 +78,11 @@ resolve:
 .DEFAULT_GOAL := build
 .PHONY: all
 all: ## build pipeline
-all: mod inst gen build spell lint test
+all: mod inst gen build tarball fatimage spell lint test
+
+.PHONY: check
+check: ## alias for all to make GNU Standard Targets happy
+check: all vuln
 
 .PHONY: precommit
 precommit: ## validate the branch before commit
@@ -232,55 +236,34 @@ install: ## installs Rokon into $PATH and places desktop files
 	mkdir -p $(METAINFODIR)
 	@echo "Detected OS: $(UNAME_S)"
 
-	# Install the target
-	@echo "Installing target..."
-	if [ "$(UNAME_S)" = "Darwin" ]; then \
-		echo "Installing $(TARGET) to $(BINDIR) as macOS binary..."; \
-		install -m 0755 $(TARGET) $(BINDIR) || true; \
-	else \
-		echo "Installing $(TARGET) to $(BINDIR) as Linux binary..."; \
-		install -Dpm 0755 $(TARGET) $(BINDIR) || true; \
-	fi
+ifeq ($(UNAME_S),Darwin)
+	install -m 0755 $(TARGET) $(BINDIR)
+else
+	install -Dpm 0755 $(TARGET) $(BINDIR)
+endif
 
-	# Install desktop files and icons
-	@echo "Installing desktop files and icons..."
-	if [ "$(UNAME_S)" = "Darwin" ]; then \
-		echo "Installing desktop file to $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop"; \
-		install -m 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop; \
-		install -m 0644 ./usr/share/dbus-1/services/io.github.brycensranch.Rokon.service $(DESTDIR)$(PREFIX)/share/dbus-1/services/io.github.brycensranch.Rokon.service; \
-		echo "Installing icon to $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png"; \
-		install -m 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png; \
-		echo "Installing icon to $(ICONDIR)/128x128/apps/io.github.brycensranch.Rokon.png"; \
-		install -m 0644 ./usr/share/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/128x128/apps/io.github.brycensranch.Rokon.png; \
-		echo "Installing icon to $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png"; \
-		install -m 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png; \
-		echo "Installing SVG icon to $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg"; \
-		install -m 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg; \
-		echo "Installing metainfo file to $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml"; \
-		install -m 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml; \
-		echo "Installing license to $(LICENSEDIR)/LICENSE.md"; \
-		install -m 0644 ./LICENSE.md $(LICENSEDIR)/LICENSE.md; \
-	else \
-		echo "Installing desktop file to $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop"; \
-		install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop; \
-		install -Dpm 0644 ./usr/share/dbus-1/services/io.github.brycensranch.Rokon.service $(DESTDIR)$(PREFIX)/share/dbus-1/services/io.github.brycensranch.Rokon.service; \
-		echo "Installing icon to $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png"; \
-		install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png; \
-		echo "Installing icon to $(ICONDIR)/128x128/apps/io.github.brycensranch.Rokon.png"; \
-		install -Dpm 0644 ./usr/share/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/128x128/apps/io.github.brycensranch.Rokon.png; \
-		echo "Installing icon to $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png"; \
-		install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png; \
-		echo "Installing SVG icon to $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg"; \
-		install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg; \
-		echo "Installing metainfo file to $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml"; \
-		install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml; \
-		echo "Installing license to $(LICENSEDIR)/LICENSE.md"; \
-		install -Dpm 0644 ./LICENSE.md $(LICENSEDIR)/LICENSE.md; \
-	fi
+ifeq ($(UNAME_S),Darwin)
+		install -m 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop
+		install -m 0644 ./usr/share/dbus-1/services/io.github.brycensranch.Rokon.service $(DESTDIR)$(PREFIX)/share/dbus-1/services/io.github.brycensranch.Rokon.service
+		install -m 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
+		install -m 0644 ./usr/share/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/128x128/apps/io.github.brycensranch.Rokon.png
+		install -m 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png
+		install -m 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg
+		install -m 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml
+		install -m 0644 ./LICENSE.md $(LICENSEDIR)/LICENSE.md;
+else
+		install -Dpm 0644 ./usr/share/applications/io.github.brycensranch.Rokon.desktop $(APPLICATIONSDIR)/io.github.brycensranch.Rokon.desktop
+		install -Dpm 0644 ./usr/share/dbus-1/services/io.github.brycensranch.Rokon.service $(DESTDIR)$(PREFIX)/share/dbus-1/services/io.github.brycensranch.Rokon.service
+		install -Dpm 0644 ./usr/share/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/48x48/apps/io.github.brycensranch.Rokon.png
+		install -Dpm 0644 ./usr/share/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/128x128/apps/io.github.brycensranch.Rokon.png;
+		install -Dpm 0644 ./usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(ICONDIR)/256x256/apps/io.github.brycensranch.Rokon.png
+		install -Dpm 0644 ./usr/share/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg $(ICONDIR)/scalable/apps/io.github.brycensranch.Rokon.svg
+		install -Dpm 0644 ./usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(METAINFODIR)/io.github.brycensranch.Rokon.metainfo.xml
+		install -Dpm 0644 ./LICENSE.md $(LICENSEDIR)/LICENSE.md
+endif
 
-	# Check if NODOCUMENTATION is set to 1
 	@if [ "$(NODOCUMENTATION)" != "1" ]; then \
-		echo "Installing documentation..."; \
+		echo "Installing documentation (PRIVACY.md, README.md) to $(DESTDIR)$(PREFIX)/share/doc/rokon"; \
 		if [ "$(UNAME_S)" = "Darwin" ]; then \
 			install -m 0644 ./PRIVACY.md ./README.md $(DESTDIR)$(PREFIX)/share/doc/rokon; \
 		else \
