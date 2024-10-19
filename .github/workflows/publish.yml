@@ -480,7 +480,7 @@ jobs:
       - name: Install
         run: |
           export RESULTSDIR=$(realpath "${{ runner.temp }}\\exe")
-          make TARGET="$RESULTSDIR/Rokon.exe" PREFIX="$RESULTSDIR" BINDIR="$RESULTSDIR" install || true
+          make DESTDIR="$RESULTSDIR" TARGET="Rokon.exe" PREFIX="" BINDIR="$RESULTSDIR" install
 
       - name: Produce rtf files for installer and PDF files for end user
         working-directory: scripts/md2rtf
