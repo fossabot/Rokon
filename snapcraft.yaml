@@ -67,7 +67,7 @@ parts:
     override-build: |
       go mod download all
       make VERSION=$SNAPCRAFT_PROJECT_VERSION PACKAGED=true PACKAGEFORMAT=snap build
-      make PREFIX=$SNAPCRAFT_PART_INSTALL/usr install
+      make DESTDIR=$SNAPCRAFT_PART_INSTALL PREFIX=/usr install
     build-snaps: [go/latest/stable, gnome-46-2404-sdk/latest/edge]
     build-packages:
       # For goreleaser or git information in general.
