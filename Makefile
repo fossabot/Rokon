@@ -81,8 +81,8 @@ all: ## build pipeline
 all: mod inst gen build tarball fatimage spell lint test
 
 .PHONY: check
-check: ## alias for all to make GNU Standard Targets happy
-check: all vuln
+check: ## runs basic checks
+check: spell lint test
 
 .PHONY: precommit
 precommit: ## validate the branch before commit
@@ -223,7 +223,6 @@ inst: ## go install tools
 .PHONY: install
 install: ## installs Rokon into $PATH and places desktop files
 	$(call print-target)
-	@echo "Installing $(TARGET) to $(BINDIR)"
 	@echo "Version: $(VERSION)"
 	@echo "Creating necessary directories..."
 	mkdir -p $(BINDIR)
@@ -236,6 +235,7 @@ install: ## installs Rokon into $PATH and places desktop files
 	mkdir -p $(ICONDIR)/scalable/apps
 	mkdir -p $(DESTDIR)$(PREFIX)/share/dbus-1/services
 	mkdir -p $(METAINFODIR)
+	rm $(BINDIR)/$(TARGET) || true
 	@echo "Detected OS: $(UNAME_S)"
 
 ifeq ($(UNAME_S),Darwin)
