@@ -231,8 +231,10 @@ install: ## installs Rokon into $PATH and places desktop files
 	mkdir -p $(APPLICATIONSDIR)
 	mkdir -p $(LICENSEDIR)
 	mkdir -p $(ICONDIR)/48x48/apps
+	mkdir -p $(ICONDIR)/128x128/apps
 	mkdir -p $(ICONDIR)/256x256/apps
 	mkdir -p $(ICONDIR)/scalable/apps
+	mkdir -p $(DESTDIR)$(PREFIX)/share/dbus-1/services
 	mkdir -p $(METAINFODIR)
 	@echo "Detected OS: $(UNAME_S)"
 
