@@ -573,7 +573,7 @@ jobs:
           make PACKAGED=true PACKAGEFORMAT=dmg EXTRAGOFLAGS="-trimpath" build
       - name: 🐕 Install
         run: |
-          make PREFIX=./macos BINDIR=./macos APPLICATIONSDIR=. METAINFODIR=. install
+          make DESTDIR=./macos PREFIX= BINDIR=./macos APPLICATIONSDIR=. METAINFODIR=. install
       # Attribution: https://github.com/getseabird/seabird/blob/main/.github/workflows/release.yaml#L194
       # Word for Word, bar for bar.
       - name: 🗿 Produce DMG
