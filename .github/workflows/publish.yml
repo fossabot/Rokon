@@ -375,6 +375,7 @@ jobs:
             debuild -us -uc -b -d
           fi
       - name: Collect generated Debian files
+        if: always()
         run: |
           cp ../*.{deb,buildinfo,changes} ./ || true
       - name: 🗃️ Upload Deb packages
