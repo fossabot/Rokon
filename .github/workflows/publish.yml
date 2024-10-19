@@ -191,7 +191,6 @@ jobs:
         run: |
           rpmdev-setuptree
       - name: Build RPMs
-        continue-on-error: true
         run: |
           for spec in ./*.spec; do
               echo "Building $spec"
@@ -201,14 +200,12 @@ jobs:
           done
       - name: Install RPMs
         run: sudo dnf in -y ~/rpmbuild/RPMS/*/*.rpm
-        continue-on-error: true
       - name: Test built RPM
-        continue-on-error: true
         run: rokon --version
-      - name: Move RPMs to workspace
-        continue-on-error: true
-        run: |
-          mv ~/rpmbuild/RPMS/*/*.rpm $GITHUB_WORKSPACE/
+      - name: Copy RPMs to workspace
+        run: "cp ~/rpmbuild/RPMS/*/*.rpm $GITHUB_WORKSPACE/"
+      - name: Uninstall built RPMs
+        run: "sudo dnf remove -y *rokon* *brycensranch* *aptabase*"
       - name: Lint AppStream Metadata
         run: |
           flatpak run --command=flatpak-builder-lint --user org.flatpak.Builder appstream usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
