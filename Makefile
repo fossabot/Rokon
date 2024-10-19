@@ -181,18 +181,18 @@ tarball: ## build self contained Tarball that auto updates
 		echo "Sanity check succeeded."; \
 	fi
 
-ifeq ($(NOTB),1)
-	@echo "Finished making tarball directory. You have specified that a tarball shouldn't be created with NOTB=1"
-else
-	tar -czf $(TAR_NAME) $(TARBALLDIR)
-	@if command -v zsyncmake >/dev/null 2>&1; then \
-		zsyncmake $(TAR_NAME) -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-$(shell uname)-*-$(shell uname -m).tar.gz.zsync"; \
-	else \
-		@echo "zsyncmake not found. Please install it to generate the zsync file."; \
-	fi
-	rm $(TARGET)
-	@echo "Tarball created: $(TAR_NAME)"
-endif
+	ifeq ($(NOTB),1)
+		@echo "Finished making tarball directory. You have specified that a tarball shouldn't be created with NOTB=1"
+	else
+		tar -czf $(TAR_NAME) $(TARBALLDIR)
+		@if command -v zsyncmake >/dev/null 2>&1; then \
+			zsyncmake $(TAR_NAME) -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-$(shell uname)-*-$(shell uname -m).tar.gz.zsync"; \
+		else \
+			@echo "zsyncmake not found. Please install it to generate the zsync file."; \
+		fi
+		rm $(TARGET)
+		@echo "Tarball created: $(TAR_NAME)"
+	endif
 
 .PHONY: dev
 dev: ## go run -v .
