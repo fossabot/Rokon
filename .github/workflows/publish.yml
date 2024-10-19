@@ -64,8 +64,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Test Docker Container
-        continue-on-error: true
-        run: docker run --rm ${{ steps.meta.outputs.tags }} /bin/sh -c "/app/rokon --version"
+        run: docker run --rm rokon /bin/bash -c "cd /app && ./rokon.sh --version"
   archlinux:
     timeout-minutes: 125
     runs-on: [self-hosted, archlinux]
