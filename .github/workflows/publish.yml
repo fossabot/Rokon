@@ -366,8 +366,8 @@ jobs:
           git_push_gpgsign: false
       - name: 🤠 Assemble the DEB
         env:
-          DEBEMAIL: brycengranville@outlook.com
-          DEBFULLNAME: Brycen G
+          DEBEMAIL: ${{steps.import_gpg.outputs.email}}
+          DEBFULLNAME: ${{steps.import_gpg.outputs.name}}
         run: |
           if [ "${{ github.event_name }}" != "pull_request" ]; then
             ./debian/publish.sh
