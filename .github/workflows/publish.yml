@@ -86,7 +86,6 @@ jobs:
           for repo in "extra" "testing" "extra-testing"; do
               grep -qxF "[$repo]" /etc/pacman.conf || echo -e "[$repo]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
           done
-          sudo pacman -Sy
           sudo pacman -S --needed --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap fuse2 upx
       - name: Build Archlinux Package
         run: |
