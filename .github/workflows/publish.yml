@@ -33,7 +33,6 @@ jobs:
           # list of Docker images to use as base name for tags
           images: |
             ghcr.io/${{ github.repository_owner }}/rokon
-            rokon
           # generate Docker tags based on the following events/attribute
           tags: |
             type=edge,branch=master
@@ -65,7 +64,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Test Docker Container
-        run: docker run --rm rokon /bin/bash -c "cd /app && ./rokon.sh --version"
+        run: docker build -t rokon. && docker run --rm rokon /bin/bash -c "cd /app && ./rokon.sh --version"
   archlinux:
     timeout-minutes: 125
     runs-on: [self-hosted, archlinux]
