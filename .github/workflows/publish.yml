@@ -64,7 +64,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
       - name: Test Docker Container
-        run: docker build -t rokon. && docker run --rm rokon /bin/bash -c "cd /app && ./rokon.sh --version"
+        run: docker build -t rokon . && docker run --rm rokon /bin/bash -c "cd /app && ./rokon.sh --version"
   archlinux:
     timeout-minutes: 125
     runs-on: [self-hosted, archlinux]
