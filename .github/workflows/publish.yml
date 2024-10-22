@@ -173,6 +173,22 @@ jobs:
           name: rokon-archlinux-pkg-${{ runner.arch }}
           if-no-files-found: error
           path: "*pkg*"
+      - name: 🗑️ Remove Artifacts
+        # This is important, artifacts and build directories being left will cause the checkout of the runner when it runs the next job to fail
+        if: always()
+        run: sudo make clean
+      - name: Vendor dependencies
+        run: go mod vendor
+      - name: List files
+        run: ls -R
+      - name: 🗃️ Upload Vendored Source
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rokon-vendored-source
+          path: .
+          include-hidden-files: true
+          if-no-files-found: error
   fedora:
     timeout-minutes: 125
     runs-on: [self-hosted, fedora]
@@ -409,23 +425,6 @@ jobs:
         with:
           name: rokon-deb-${{ matrix.arch }}
           path: "*.deb"
-      - name: 🗑️ Remove Artifacts
-        # This is important, artifacts and build directories being left will cause the checkout of the runner when it runs the next job to fail
-        if: always()
-        run: sudo make clean
-      - name: Vendor dependencies
-        run: go mod vendor
-      - name: List files
-        run: ls -R
-      - name: 🗃️ Upload Vendored Source
-        uses: actions/upload-artifact@v4
-        
-        if: always()
-        with:
-          name: rokon-vendored-source
-          path: .
-          include-hidden-files: true
-          if-no-files-found: error
       # - name: Login to GitHub Container Registry
       #   uses: docker/login-action@v3
       #   with:
