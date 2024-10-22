@@ -362,6 +362,13 @@ jobs:
       #   with:
       #     snap: ${{ steps.snapcraft_build.outputs.snap }}
       #     release: edge/${{ steps.sanitized_branch.sanitized_branch }}
+      - name: 🗃️ Upload Snap
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rokon-snap-${{ matrix.arch }}
+          path: ${{ steps.snapcraft_build.outputs.snap }}
+          if-no-files-found: error
       # - name: 📤 Upload Code coverage to Codecov
       #   if: ${{ !github.event.act }}
       #   uses: codecov/codecov-action@v4
@@ -398,14 +405,6 @@ jobs:
         with:
           name: rokon-deb-${{ matrix.arch }}
           path: "*.deb"
-      - name: 🗃️ Upload Snap
-        uses: actions/upload-artifact@v4
-        
-        if: always()
-        with:
-          name: rokon-snap-${{ matrix.arch }}
-          path: "*.snap"
-          if-no-files-found: error
       - name: 🗑️ Remove Artifacts
         # This is important, artifacts and build directories being left will cause the checkout of the runner when it runs the next job to fail
         if: always()
