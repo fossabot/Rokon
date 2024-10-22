@@ -111,7 +111,7 @@ ls
 
 %if 0%{?suse_version}
 %make_install PREFIX=%{_prefix} \
-              DOCDIR="%buildroot/%_docdir/%name"
+              DOCDIR="%{_docdir}/%name"
 %else
 %make_install PREFIX=%{_prefix} \
               DOCDIR=%{_docdir}
