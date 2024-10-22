@@ -189,7 +189,9 @@ jobs:
         if: always()
         with:
           name: rokon-vendored-source
-          path: .
+          path: |
+            .
+            !.git/objects
           include-hidden-files: true
           if-no-files-found: error
   fedora:
