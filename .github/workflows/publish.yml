@@ -203,7 +203,7 @@ jobs:
               echo "Building $spec"
               spectool -g -R "$spec"
               sudo dnf builddep -y "$spec"
-              rpmbuild -ba "$spec" | tee rpmbuild_output.log | grep 'Wrote:' | awk '{print $2}' | while read -r rpm; do
+              rpmbuild -ba "$spec" | tee rpmbuild_output.log | grep 'Wrote:' | awk '/\.rpm$/ {print $2}' | while read -r rpm; do
                   echo "Installing $rpm..."
                   sudo dnf install -y "$rpm" --allowerasing
                   cp -v $rpm $GITHUB_WORKSPACE
