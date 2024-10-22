@@ -204,7 +204,7 @@ jobs:
               rpmbuild -ba "$spec" || echo "Failed to build $spec"
           done
       - name: Install RPMs
-        run: sudo dnf in -y ~/rpmbuild/RPMS/*/*.rpm
+        run: sudo dnf in -y ~/rpmbuild/RPMS/*/*.rpm --allowerasing
       - name: Test built RPM
         run: rokon --version
       - name: Copy RPMs to workspace
