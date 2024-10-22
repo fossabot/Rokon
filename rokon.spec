@@ -20,7 +20,7 @@
 # https://github.com/BrycensRanch/Rokon
 %global goipath         github.com/brycensranch/rokon
 %global forgeurl        https://github.com/BrycensRanch/Rokon
-%global commit          8f2cc32ddbf55ed796754b88f6ec44a54c544290
+%global commit          d7945dc774573152b80125d74105c233fe5fdc45
 
 
 %if 0%{?fedora}
@@ -33,7 +33,7 @@ Version:        1.0.0
 %if 0%{?fedora}
 Release:        %autorelease -p
 %else
-Release:        15%{?dist}
+Release:        16%{?dist}
 %endif
 Summary:        Control your Roku device with your desktop!
 
@@ -98,7 +98,7 @@ ls
     BUILDTAGS="rpm_crashtraceback" \
     PACKAGEFORMAT=rpm \
     EXTRALDFLAGS="-compressdwarf=false -X main.rpmRelease=%{rpmRelease}" \
-    EXTRAGOFLAGS="-mod=vendor -buildmode=pie -trimpath"
+    EXTRAGOFLAGS="-x -mod=vendor -buildmode=pie -trimpath"
 
 %install
 %if 0%{?fedora}
@@ -122,6 +122,9 @@ ls
 %files
 %endif
 %{_bindir}/%{name}
+%if 0%{?suse_version}
+%{_docdir}/%name
+%endif
 %{_datadir}/applications/io.github.brycensranch.Rokon.desktop
 %{_datadir}/metainfo/io.github.brycensranch.Rokon.metainfo.xml
 %{_datadir}/dbus-1/services/io.github.brycensranch.Rokon.service
@@ -129,7 +132,11 @@ ls
 %{_datadir}/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png
 %{_datadir}/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
 %{_datadir}/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
+%if 0%{?fedora}
+%else
 %license vendor/modules.txt LICENSE.md
+%endif
+
 %doc *.md
 
 
