@@ -87,6 +87,9 @@ jobs:
               grep -qxF "[$repo]" /etc/pacman.conf || echo -e "[$repo]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
           done
           sudo pacman -S --needed --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap fuse2 upx
+      - name: 👁️ Ensure Code is Linted
+        continue-on-error: true
+        run: make check
       - name: Build Archlinux Package
         run: |
           makepkg -s --noconfirm
@@ -239,7 +242,7 @@ jobs:
         run: |
           flatpak run --command=flatpak-builder-lint --user org.flatpak.Builder appstream usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
       - uses: chrisdickinson/setup-yq@latest
-        # if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }}
         with:
           yq-version: v4.44.3 # renovate: version from https://github.com/mikefarah/yq
       - name: 🔷 Update Flatpak Data
@@ -262,24 +265,24 @@ jobs:
           commit_message: "build(flathub): update go vendor modules [skip ci]"
           commit_author: "github-actions <41898282+github-actions[bot]@users.noreply.github.com>"
       - name: Extract branch name
-        # if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }}
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
       - name: Set source branch for Flatpak
-        # if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }}
         run: yq '.modules[0].sources[0].branch = "${{env.BRANCH_NAME}}"' -i flathub/io.github.brycensranch.Rokon-beta.yml
         env:
           BRANCH_NAME: ${{ steps.extract_branch.outputs.branch }}
 
       - name: Set source URL for Flatpak
-        # if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }}
         run: yq '.modules[0].sources[0].url = "${{env.GITHUB_REPOSITORY_URL}}"' -i flathub/io.github.brycensranch.Rokon-beta.yml
         env:
           GITHUB_REPOSITORY_URL: "${{ github.server_url }}/${{ github.repository }}.git"
 
       - name: ⚙️ Assemble the Flatpak!
-        # if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }}
         working-directory: flathub
         run: |
           flatpak-builder --disable-rofiles-fuse --install --user --install-deps-from=flathub --force-clean repo/ io.github.brycensranch.Rokon-beta.yml
@@ -288,12 +291,11 @@ jobs:
           # Create a Flatpak bundle for the beta version
           flatpak build-bundle export io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon master --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
       - name: Test Flatpak
-        # if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           flatpak --branch=beta --user run io.github.brycensranch.Rokon --version
       - name: 🗃️ Upload Built RPMs 📦
         uses: actions/upload-artifact@v4
-        
         if: always()
         with:
           name: rokon-rpm-fedora-${{ runner.arch }}
@@ -303,7 +305,6 @@ jobs:
 
       - name: 🥙 Upload Built Flatpaks 📦
         uses: actions/upload-artifact@v4
-        
         if: always()
         with:
           name: rokon-flatpak-${{ matrix.arch }}
@@ -336,24 +337,26 @@ jobs:
           sudo apt update
           sudo add-apt-repository ppa:longsleep/golang-backports -y
           sudo apt install -y libgtk-4-dev libgirepository1.0-dev build-essential devscripts debhelper dh-make golang dput
-      - name: 👁️ Ensure Code is Linted
-        continue-on-error: true
-        run: make check
       - name: Install Snapcraft
+        if: ${{ github.event_name == 'pull_request' }}
         uses: samuelmeuli/action-snapcraft@v2
       - uses: chrisdickinson/setup-yq@latest
+        if: ${{ github.event_name == 'pull_request' }}
         with:
           yq-version: v4.44.3 # renovate: version from https://github.com/mikefarah/yq
       - name: Extract branch name
         shell: bash
+        if: ${{ github.event_name == 'pull_request' }}
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
       - name: Extract version
+        if: ${{ github.event_name == 'pull_request' }}
         id: extract_version
         run: |
           VERSION=$(cat VERSION)
           echo "version=$VERSION" >> $GITHUB_OUTPUT
       - name: Sanitize branch
+        if: ${{ github.event_name == 'pull_request' }}
         id: sanitize_branch
         run: |
           SANITIZED_BRANCH=$(echo "${{ steps.extract_branch.outputs.branch }}" | tr '/' '-' | tr -d '[:space:]' | cut -c 1-16)
@@ -361,16 +364,21 @@ jobs:
 
       - name: Set snapcraft version
         id: set_version
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           yq '.version = "${{ steps.extract_version.outputs.version }}-${{ steps.sanitize_branch.outputs.sanitized_branch }}.gha${{ github.run_number }}"' -i snapcraft.yaml
       - name: Switch snap branch
+        if: ${{ github.event_name == 'pull_request' }}
         run: yq '.parts.rokon.source-branch = "${{ steps.extract_branch.outputs.branch }}"' -i snapcraft.yaml
       - name: Switch snap git repository
+        if: ${{ github.event_name == 'pull_request' }}
         run: yq '.parts.rokon.source = "${{ github.server_url }}/${{ github.repository }}"' -i snapcraft.yaml
       - name: Force snap to be grade devel
+        if: ${{ github.event_name == 'pull_request' }}
         run: yq '.grade = "devel"' -i snapcraft.yaml
       - name: 🫰 Assemble the Snap
         uses: snapcore/action-build@v1
+        if: ${{ github.event_name == 'pull_request' }}
         id: snapcraft_build
       # - name: Test Installing Snap
       #   run: sudo snap install ${{ steps.snapcraft_build.outputs.snap }} --dangerous
@@ -384,7 +392,7 @@ jobs:
       #     release: edge/${{ steps.sanitized_branch.sanitized_branch }}
       - name: 🗃️ Upload Snap
         uses: actions/upload-artifact@v4
-        if: always()
+        if: always() && github.event_name == 'pull_request'
         with:
           name: rokon-snap-${{ matrix.arch }}
           path: ${{ steps.snapcraft_build.outputs.snap }}
