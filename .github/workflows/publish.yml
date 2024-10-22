@@ -86,7 +86,7 @@ jobs:
           for repo in "extra" "testing" "extra-testing"; do
               grep -qxF "[$repo]" /etc/pacman.conf || echo -e "[$repo]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
           done
-          sudo pacman -S --needed --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap fuse2 upx
+          sudo pacman -Syu --needed --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap fuse2 upx
       - name: 👁️ Ensure Code is Linted
         continue-on-error: true
         run: make check
@@ -135,7 +135,7 @@ jobs:
           chmod +x mkappimage-*.AppImage
           mv mkappimage-* mkappimage
           sudo mv mkappimage /usr/bin
-          sudo pacman -S --needed --noconfirm binutils coreutils desktop-file-utils fakeroot gdk-pixbuf2 patchelf python python-pip python-setuptools squashfs-tools strace util-linux zsync appstream
+          sudo pacman -Syu --needed --noconfirm binutils coreutils desktop-file-utils fakeroot gdk-pixbuf2 patchelf python python-pip python-setuptools squashfs-tools strace util-linux zsync appstream
           make fatimage
           ./*.AppImage --version
       - name: 🖼️ Assemble the Self updating Tarball
