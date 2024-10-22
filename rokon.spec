@@ -146,7 +146,7 @@ ls
 %license vendor/modules.txt LICENSE.md
 %endif
 
-# https://en.opensuse.org/openSUSE:Packaging_Conventions_RPM_Macros#%_docdir
+# https://en.opensuse.org/openSUSE:Packaging_Conventions_RPM_Macros
 %if 0%{?suse_version}
 %else
 %doc *.md
