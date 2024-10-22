@@ -400,7 +400,7 @@ jobs:
         if: always()
         with:
           name: rokon-snap-${{ matrix.arch }}
-          path: ${{ steps.snapcraft_build.outputs.snap }}
+          path: "*.snap"
           if-no-files-found: error
       - name: 🗑️ Remove Artifacts
         # This is important, artifacts and build directories being left will cause the checkout of the runner when it runs the next job to fail
