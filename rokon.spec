@@ -33,7 +33,7 @@ Version:        1.0.0
 %if 0%{?fedora}
 Release:        %autorelease -p
 %else
-Release:        16%{?dist}
+Release:        17%{?dist}
 %endif
 Summary:        Control your Roku device with your desktop!
 
@@ -105,8 +105,17 @@ ls
 %go_vendor_license_install -c go-vendor-tools.toml
 %endif
 
+# Why was this necessary, you ask?!?!  Because I kept getting
+# File not found: /builddir/build/BUILDROOT/rokon-1.0.0-16.suse.tw.x86_64/usr/share/doc/packages/rokon
+
+
+%if 0%{?suse_version}
+%make_install PREFIX=%{_prefix} \
+              DOCDIR="%buildroot/%_docdir/%name"
+%else
 %make_install PREFIX=%{_prefix} \
               DOCDIR=%{_docdir}
+%endif
 
 %check
 %if 0%{?fedora}
@@ -137,7 +146,11 @@ ls
 %license vendor/modules.txt LICENSE.md
 %endif
 
+# https://en.opensuse.org/openSUSE:Packaging_Conventions_RPM_Macros#%_docdir
+%if 0%{?suse_version}
+%else
 %doc *.md
+%endif
 
 
 %if 0%{?fedora}
