@@ -33,7 +33,7 @@ Version:        1.0.0
 %if 0%{?fedora}
 Release:        %autorelease -p
 %else
-Release:        17%{?dist}
+Release:        18%{?dist}
 %endif
 Summary:        Control your Roku device with your desktop!
 
@@ -111,7 +111,7 @@ ls
 
 %if 0%{?suse_version}
 %make_install PREFIX=%{_prefix} \
-              DOCDIR="%{_docdir}/%name"
+              NODOCUMENTATION=1
 %else
 %make_install PREFIX=%{_prefix} \
               DOCDIR=%{_docdir}
