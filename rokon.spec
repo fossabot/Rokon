@@ -131,9 +131,6 @@ ls
 %files
 %endif
 %{_bindir}/%{name}
-%if 0%{?suse_version}
-%{_docdir}/%name
-%endif
 %{_datadir}/applications/io.github.brycensranch.Rokon.desktop
 %{_datadir}/metainfo/io.github.brycensranch.Rokon.metainfo.xml
 %{_datadir}/dbus-1/services/io.github.brycensranch.Rokon.service
