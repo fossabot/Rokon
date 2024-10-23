@@ -17,7 +17,7 @@ on:
 jobs:
   docker:
     timeout-minutes: 125
-    runs-on: [self-hosted, docker]
+    runs-on: [self-hosted, archlinux]
     needs: [archlinux]
     steps:
       - name: Cleanup directory
