@@ -64,60 +64,6 @@ jobs:
           path: |
             *.AppImage
             *.AppImage.zsync
-  build_armv6:
-    timeout-minutes: 2000
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Check out current repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Check if /var/run/docker.sock is mounted
-        run: |
-          ls -la /var/run/docker.sock
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-
-      - name: Build armv6 on alpine_latest
-        uses: uraimo/run-on-arch-action@v2
-        with:
-          arch: armv6
-          distro: alpine_latest
-          setup: |
-            mkdir -p "${PWD}/artifacts"
-          shell: /bin/sh
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          install: |
-            apk add alpine-conf
-            setup-apkrepos -c -1
-            apk add --no-cache alpine-sdk gtk4.0-dev gobject-introspection-dev go desktop-file-utils fakeroot patchelf python3 py3-pip py3-setuptools strace squashfs-tools util-linux appstream
-          run: |
-            make fatimage
-            make tarball
-            abuild deps
-            abuild
-      - name: 🗃️ Upload Built Tarball 📦
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: rokon-${{runner.os}}-tarball-armv6
-          include-hidden-files: true
-          if-no-files-found: error
-          path: |
-            *.tar.gz
-            *tar*.zsync
-      - name: 🗃️ Upload Built AppImage 📦
-        uses: actions/upload-artifact@v4
-        if: always()
-        
-        with:
-          name: rokon-AppImage-armv6
-          if-no-files-found: error
-          path: |
-            *.AppImage
-            *.AppImage.zsync
   build_armv7:
     timeout-minutes: 2000
     runs-on: ubuntu-24.04
@@ -145,7 +91,8 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             apt update
-            apt install -y build-essential libgtk-4-dev libgirepository1.0-dev software-properties-common patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools
+            apt install -y build-essential git libgtk-4-dev libgirepository1.0-dev software-properties-common patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools
+            git config --global --add safe.directory '*'
             add-apt-repository -y ppa:longsleep/golang-backports
             apt update
             apt install -y golang-go
@@ -201,6 +148,7 @@ jobs:
           install: |
             apt update
             apt install -y build-essential libgtk-4-dev libgirepository1.0-dev golang-go patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools
+            git config --global --add safe.directory '*'
           run: |
             make fatimage
             make tarball
