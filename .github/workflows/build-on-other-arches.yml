@@ -12,7 +12,7 @@ env:
 
 jobs:
   build_aarch64:
-    timeout-minutes: 560
+    timeout-minutes: 2000
     runs-on: ubuntu-24.04
     steps:
       - name: Check out current repository
@@ -65,7 +65,7 @@ jobs:
             *.AppImage
             *.AppImage.zsync
   build_armv6:
-    timeout-minutes: 560
+    timeout-minutes: 2000
     runs-on: ubuntu-24.04
     steps:
       - name: Check out current repository
@@ -119,7 +119,7 @@ jobs:
             *.AppImage
             *.AppImage.zsync
   build_armv7:
-    timeout-minutes: 560
+    timeout-minutes: 2000
     runs-on: ubuntu-24.04
     steps:
       - name: Check out current repository
@@ -145,10 +145,62 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             apt update
-            apt install -y build-essential libgtk-4-dev libgirepository1.0-dev software-properties-common
+            apt install -y build-essential libgtk-4-dev libgirepository1.0-dev software-properties-common patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools
             add-apt-repository -y ppa:longsleep/golang-backports
             apt update
             apt install -y golang-go
+          run: |
+            make fatimage
+            make tarball
+      - name: 🗃️ Upload Built Tarball 📦
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rokon-${{runner.os}}-tarball-armv7
+          include-hidden-files: true
+          if-no-files-found: error
+          path: |
+            *.tar.gz
+            *tar*.zsync
+      - name: 🗃️ Upload Built AppImage 📦
+        uses: actions/upload-artifact@v4
+        if: always()
+        
+        with:
+          name: rokon-AppImage-armv7
+          if-no-files-found: error
+          path: |
+            *.AppImage
+            *.AppImage.zsync
+  build_i386:
+    timeout-minutes: 2000
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out current repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if /var/run/docker.sock is mounted
+        run: |
+          ls -la /var/run/docker.sock
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Build i386 (32 bit) on Debian Testing
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: none
+          distro: none
+          base_image: i386/debian:testing
+          setup: |
+            mkdir -p "${PWD}/artifacts"
+          shell: /bin/sh
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          install: |
+            apt update
+            apt install -y build-essential libgtk-4-dev libgirepository1.0-dev golang-go patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools
           run: |
             make fatimage
             make tarball
