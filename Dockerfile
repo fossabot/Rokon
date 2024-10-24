@@ -2,7 +2,7 @@
 # This container *can* work under NVIDIA.
 # For example, you could run the command `distrobox create --name rokon --image ghcr.io/brycensranch/rokon --nvidia`
 
-FROM fedora:rawhide AS builder
+FROM fedora:latest AS builder
 
 RUN dnf install -y \
     make \
@@ -23,7 +23,7 @@ COPY . .
 # NOTB = Prevents the creation of tar.gz files. It's not needed and the container won't use it.
 RUN make PACKAGED=true TBPKGFMT=docker NOTB=1 tarball
 
-FROM fedora:rawhide AS runner
+FROM fedora:latest AS runner
 
 WORKDIR /app
 
