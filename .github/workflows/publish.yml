@@ -17,7 +17,8 @@ on:
 jobs:
   docker:
     timeout-minutes: 125
-    runs-on: ubuntu-24.04
+    runs-on: [self-hosted, archlinux]
+    needs: [archlinux]
     steps:
       - name: Cleanup directory
         run: sudo rm -rf $GITHUB_WORKSPACE/* || true
