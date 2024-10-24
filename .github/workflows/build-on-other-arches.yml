@@ -87,6 +87,7 @@ jobs:
           shell: /bin/sh
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
+            apk add apk-tools
             setup-apkrepos -c -1
             apk add --no-cache alpine-sdk gtk4.0-dev gobject-introspection-dev go git desktop-file-utils fakeroot patchelf python3 py3-pip py3-setuptools strace squashfs-tools util-linux zsync appstream
           run: |
