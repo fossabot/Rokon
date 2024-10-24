@@ -6,6 +6,9 @@ concurrency:
 
 on:
   workflow_dispatch:
+  
+env:
+  EXTRAGOFLAGS: "-buildvcs=false"
 
 jobs:
   build_aarch64:
@@ -34,7 +37,7 @@ jobs:
           shell: /bin/sh
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
-            dnf install -y @development-tools git gtk4-devel gobject-introspection-devel go @development-libs @rpm-development-tools
+            dnf install -y @development-tools gtk4-devel gobject-introspection-devel go @development-libs @rpm-development-tools
           run: |
             make fatimage
             make tarball
@@ -89,7 +92,7 @@ jobs:
           install: |
             apk add apk-tools
             setup-apkrepos -c -1
-            apk add --no-cache alpine-sdk gtk4.0-dev gobject-introspection-dev go git desktop-file-utils fakeroot patchelf python3 py3-pip py3-setuptools strace squashfs-tools util-linux zsync appstream
+            apk add --no-cache alpine-sdk gtk4.0-dev gobject-introspection-dev go desktop-file-utils fakeroot patchelf python3 py3-pip py3-setuptools strace squashfs-tools util-linux zsync appstream
           run: |
             make fatimage
             make tarball
@@ -142,7 +145,7 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             apt update
-            apt install -y build-essential git libgtk-4-dev libgirepository1.0-dev software-properties-common
+            apt install -y build-essential libgtk-4-dev libgirepository1.0-dev software-properties-common
             add-apt-repository -y ppa:longsleep/golang-backports
             apt update
             apt install -y golang-go
