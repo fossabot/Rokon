@@ -42,11 +42,11 @@ jobs:
             wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-aarch64.AppImage" | head -n 1 | cut -d '"' -f 2)
             chmod +x appimagetool-*.AppImage
             mv appimagetool-* appimagetool
-            sudo mv appimagetool /usr/bin
+            mv appimagetool /usr/bin
             wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-aarch64.AppImage" | head -n 1 | cut -d '"' -f 2)
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
-            sudo mv mkappimage /usr/bin
+            mv mkappimage /usr/bin
             git config --global --add safe.directory '*'
           run: |
             make fatimage
@@ -109,11 +109,11 @@ jobs:
             wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-armhf.AppImage" | head -n 1 | cut -d '"' -f 2)
             chmod +x appimagetool-*.AppImage
             mv appimagetool-* appimagetool
-            sudo mv appimagetool /usr/bin
+            mv appimagetool /usr/bin
             wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-armhf.AppImage" | head -n 1 | cut -d '"' -f 2)
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
-            sudo mv mkappimage /usr/bin
+            mv mkappimage /usr/bin
             git config --global --add safe.directory '*'
           run: |
             make fatimage
@@ -171,11 +171,11 @@ jobs:
             wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-i686.AppImage" | head -n 1 | cut -d '"' -f 2)
             chmod +x appimagetool-*.AppImage
             mv appimagetool-* appimagetool
-            sudo mv appimagetool /usr/bin
+            mv appimagetool /usr/bin
             wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-i686.AppImage" | head -n 1 | cut -d '"' -f 2)
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
-            sudo mv mkappimage /usr/bin
+            mv mkappimage /usr/bin
           run: |
             make fatimage
             make tarball
