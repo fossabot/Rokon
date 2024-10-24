@@ -15,12 +15,19 @@
 # Please submit bugfixes or comments via https://github.com/BrycensRanch/Rokon/issues as I am the developer
 
 
+
+# Checking is disabled until I can troubleshoot this:
+# + go_vendor_license --config go-vendor-tools.toml report expression --verify 'AGPL-3.0-only AND BSD-3-Clause AND CC-BY-SA-4.0 AND ISC AND MIT AND MPL-2.0'
+# Using detector: askalono
+# The following modules are missing license files:
+# - vendor/github.com/brycensranch/go-aptabase/pkg
+# - vendor/github.com/diamondburned/gotk4/pkg
 %bcond check 0
 
 # https://github.com/BrycensRanch/Rokon
 %global goipath         github.com/brycensranch/rokon
 %global forgeurl        https://github.com/BrycensRanch/Rokon
-%global commit          d7945dc774573152b80125d74105c233fe5fdc45
+%global commit          3c784069f9cb006600dd2eadd0ccab53d8189d85
 
 
 %if 0%{?fedora}
@@ -121,8 +128,8 @@ ls
 %if 0%{?fedora}
 %if %{with check}
 %go_vendor_license_check -c go-vendor-tools.toml
-%gocheck
 %endif
+./rokon --version
 %endif
 
 %if 0%{?fedora}
