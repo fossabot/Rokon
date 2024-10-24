@@ -30,6 +30,11 @@ changelog() {
     git log --pretty=format:'%ad %h %s' --date=short
 }
 
+check() {
+    cd Rokon
+    ./rokon --version
+}
+
 build() {
     cd Rokon
     go mod download all
