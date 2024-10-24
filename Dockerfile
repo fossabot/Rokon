@@ -4,7 +4,7 @@
 
 FROM fedora:rawhide AS builder
 
-RUN sudo dnf install -y \
+RUN dnf install -y \
     make \
     go \
     gtk4-devel \
@@ -12,7 +12,7 @@ RUN sudo dnf install -y \
     which \
     patchelf \
     upx
-RUN sudo dnf clean all
+RUN dnf clean all
 
 
 
