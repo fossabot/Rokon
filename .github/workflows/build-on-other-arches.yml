@@ -92,7 +92,7 @@ jobs:
           install: |
             apk add alpine-conf
             setup-apkrepos -c -1
-            apk add --no-cache alpine-sdk gtk4.0-dev gobject-introspection-dev go desktop-file-utils fakeroot patchelf python3 py3-pip py3-setuptools strace squashfs-tools util-linux zsync appstream
+            apk add --no-cache alpine-sdk gtk4.0-dev gobject-introspection-dev go desktop-file-utils fakeroot patchelf python3 py3-pip py3-setuptools strace squashfs-tools util-linux appstream
           run: |
             make fatimage
             make tarball
