@@ -176,13 +176,13 @@ tarball: ## build self contained Tarball that auto updates
 	chmod +x $(TARBALLDIR)/rokon.sh
 	cd /usr && cp -r --parents -L --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita share/icons/AdwaitaLegacy $(ABS_TARBALLDIR)
 	sed -i 's/rokon/\.\/rokon.sh/g' $(TARBALLDIR)/io.github.brycensranch.Rokon.desktop
-	@cd $(TARBALLDIR) && ./rokon.sh --version > sanity_check.log 2>&1; \
-	if [ $$? -ne 0 ]; then \
-		echo "Sanity check failed. See sanity_check.log for details."; \
-		cat $(TARBALLDIR)/sanity_check.log ; \
-		exit $$? ; \
+	cd $(TARBALLDIR) && ./rokon.sh --version; \
+	status=$$?; \
+	if [ $$status -ne 0 ]; then \
+	    echo "Sanity check failed. See output above for details."; \
+	    exit $$status; \
 	else \
-		echo "Sanity check succeeded."; \
+	    echo "Sanity check succeeded."; \
 	fi
 
 ifeq ($(NOTB),1)
@@ -192,7 +192,7 @@ else
 		@if command -v zsyncmake >/dev/null 2>&1; then \
 			zsyncmake $(TAR_NAME) -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-$(shell uname)-*-$(shell uname -m).tar.gz.zsync"; \
 		else \
-			@echo "zsyncmake not found. Please install it to generate the zsync file."; \
+			echo "zsyncmake not found. Please install it to generate the zsync file."; \
 		fi
 		rm $(TARGET)
 		@echo "Tarball created: $(TAR_NAME)"
