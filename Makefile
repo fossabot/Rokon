@@ -117,7 +117,7 @@ appimage: ## build AppImage using appimage-builder
 	$(call print-target)
 	@echo "Building AppImage version: $(VERSION)"
 	rm -rf AppDir
-	$(MAKE) PACKAGED=true PACKAGEFORMAT=AppImage EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w" build
+	$(MAKE) PACKAGED=true PACKAGEFORMAT=AppImage EXTRAGOFLAGS="$(EXTRAGOFLAGS) -trimpath" EXTRALDFLAGS="$(EXTRALDFLAGS) -s -w" build
 	$(MAKE) PREFIX=AppDir/usr BINDIR=AppDir install
 	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 appimage-builder
 
@@ -137,7 +137,7 @@ fatimage: ## build self contained AppImage that can run on older Linux systems w
 	$(call print-target)
 	@echo "Building AppImage version: $(VERSION) (FAT)"
 	rm -rf AppDir
-	$(MAKE) PACKAGED=true PACKAGEFORMAT=AppImage EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w" build
+	$(MAKE) PACKAGED=true PACKAGEFORMAT=AppImage EXTRAGOFLAGS="$(EXTRAGOFLAGS) -trimpath" EXTRALDFLAGS="$(EXTRALDFLAGS) -s -w" build
 	$(MAKE) PREFIX=AppDir/usr install
 	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 appimagetool -s deploy ./AppDir/usr/share/applications/io.github.brycensranch.Rokon.desktop
 	rm AppDir/usr/lib64/libLLVM* || true
@@ -153,7 +153,7 @@ tarball: ## build self contained Tarball that auto updates
 	rm -rf $(TARBALLDIR) || sudo rm -v -rf $(TARBALLDIR)
 	mkdir -p $(TARBALLDIR)
 	mkdir -p $(LIBS_DIR)
-	$(MAKE) PACKAGED=true PACKAGEFORMAT=$(TBPKGFMT) EXTRAGOFLAGS="-trimpath" EXTRALDFLAGS="-s -w -linkmode=external" build
+	$(MAKE) PACKAGED=true PACKAGEFORMAT=$(TBPKGFMT) EXTRAGOFLAGS="$(EXTRAGOFLAGS) -trimpath" EXTRALDFLAGS="$(EXTRALDFLAGS) -s -w -linkmode=external" build
 	$(MAKE) PREFIX=$(TARBALLDIR) BINDIR=$(TARBALLDIR) APPLICATIONSDIR=$(TARBALLDIR) install
 	cp -v ./windows/portable.txt $(TARBALLDIR)
 	$(call resolve_deps,./tarball/rokon)
