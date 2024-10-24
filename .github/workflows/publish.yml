@@ -194,6 +194,11 @@ jobs:
             !.git/objects
           include-hidden-files: true
           if-no-files-found: error
+      - name: Start building on other arches
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: build-on-other-arches.yml
+          ref: ${{ github.ref }}
   fedora:
     timeout-minutes: 125
     runs-on: [self-hosted, fedora]
