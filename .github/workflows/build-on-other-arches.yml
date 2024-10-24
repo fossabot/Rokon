@@ -38,7 +38,7 @@ jobs:
           shell: /bin/sh
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
-            dnf install -y @development-tools gtk4-devel gobject-introspection-devel go @development-libs @rpm-development-tools
+            dnf install -y @development-tools gtk4-devel gobject-introspection-devel go @development-libs @rpm-development-tools wget fuse fuse-libs
             wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-aarch64.AppImage" | head -n 1 | cut -d '"' -f 2)
             chmod +x appimagetool-*.AppImage
             mv appimagetool-* appimagetool
@@ -104,8 +104,9 @@ jobs:
             apt install -y build-essential git wget libgtk-4-dev libgirepository1.0-dev software-properties-common patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools
             git config --global --add safe.directory '*'
             add-apt-repository -y ppa:longsleep/golang-backports
+            add-apt-repository -y universe
             apt update
-            apt install -y golang-go
+            apt install -y golang-go libfuse2t64
             wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-armhf.AppImage" | head -n 1 | cut -d '"' -f 2)
             chmod +x appimagetool-*.AppImage
             mv appimagetool-* appimagetool
@@ -166,7 +167,7 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             apt update
-            apt install -y build-essential libgtk-4-dev wget libgirepository1.0-dev git golang-go patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools
+            apt install -y build-essential libgtk-4-dev wget libgirepository1.0-dev git golang-go patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools libfuse2t64
             git config --global --add safe.directory '*'
             wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-i686.AppImage" | head -n 1 | cut -d '"' -f 2)
             chmod +x appimagetool-*.AppImage
