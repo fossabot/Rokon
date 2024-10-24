@@ -63,6 +63,10 @@ debian/.debhelper
 io.github.brycensranch.Rokon.desktop
 io.github.brycensranch.Rokon.metainfo.xml
 
+
+# Rokon does not use the src convention and never will.
+src
+
 *.rtf
 *.txt
 .ptmp*
