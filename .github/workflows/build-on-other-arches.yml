@@ -10,9 +10,6 @@ concurrency:
 
 on:
   workflow_dispatch:
-  
-env:
-  EXTRAGOFLAGS: "-buildvcs=false"
 
 jobs:
   build_aarch64:
@@ -50,6 +47,7 @@ jobs:
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
             sudo mv mkappimage /usr/bin
+            git config --global --add safe.directory '*'
           run: |
             make fatimage
             make tarball
@@ -116,6 +114,7 @@ jobs:
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
             sudo mv mkappimage /usr/bin
+            git config --global --add safe.directory '*'
           run: |
             make fatimage
             make tarball
@@ -167,7 +166,7 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             apt update
-            apt install -y build-essential libgtk-4-dev libgirepository1.0-dev golang-go patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools
+            apt install -y build-essential libgtk-4-dev libgirepository1.0-dev git golang-go patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools
             git config --global --add safe.directory '*'
             wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-i686.AppImage" | head -n 1 | cut -d '"' -f 2)
             chmod +x appimagetool-*.AppImage
