@@ -39,6 +39,7 @@ jobs:
             mkdir -p "${PWD}/artifacts"
           shell: /bin/sh
           githubToken: ${{ secrets.GITHUB_TOKEN }}
+          dockerRunArgs: "--device /dev/fuse --cap-add SYS_ADMIN"
           install: |
             dnf install -y @development-tools gtk4-devel gobject-introspection-devel go @development-libs @rpm-development-tools wget fuse fuse-libs
             wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-aarch64.AppImage" | head -n 1 | cut -d '"' -f 2)
@@ -101,6 +102,7 @@ jobs:
             mkdir -p "${PWD}/artifacts"
           shell: /bin/sh
           githubToken: ${{ secrets.GITHUB_TOKEN }}
+          dockerRunArgs: "--device /dev/fuse --cap-add SYS_ADMIN"
           install: |
             apt update
             apt install -y build-essential git wget libgtk-4-dev libgirepository1.0-dev software-properties-common patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools
@@ -163,6 +165,7 @@ jobs:
           arch: none
           distro: none
           base_image: i386/debian:testing
+          dockerRunArgs: "--device /dev/fuse --cap-add SYS_ADMIN"
           setup: |
             mkdir -p "${PWD}/artifacts"
           shell: /bin/sh
