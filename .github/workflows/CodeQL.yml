@@ -4,7 +4,7 @@ on:
   push:
     branches: [master, main]
   pull_request:
-    branches: [master, main]
+    branches: [master, main, alpha, rc, next]
   schedule:
     #        ┌───────────── minute (0 - 59)
     #        │  ┌───────────── hour (0 - 23)
@@ -38,8 +38,9 @@ jobs:
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         # Override language selection by uncommenting this and choosing your languages
-        # with:
-        #   languages: go, javascript, csharp, python, cpp, java, ruby
+        with:
+          # languages: go
+          queries: security-and-quality
       - name: Install needed dependencies
         run: sudo apt update && sudo apt install -y libgtk-4-dev libgirepository1.0-dev
       # Autobuild attempts to build any compiled languages (C/C++, C#, Go, or Java).

@@ -114,7 +114,6 @@ jobs:
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
             mv mkappimage /usr/bin
-            git config --global --add safe.directory '*'
           run: |
             make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" fatimage
             make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" tarball
