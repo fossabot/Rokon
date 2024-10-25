@@ -120,8 +120,8 @@ jobs:
             mv mkappimage /usr/bin
             git config --global --add safe.directory '*'
           run: |
-            make fatimage
-            make tarball
+            make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" fatimage
+            make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" tarball
       - name: 🗃️ Upload Built Tarball 📦
         uses: actions/upload-artifact@v4
         if: always()
