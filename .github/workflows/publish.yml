@@ -62,6 +62,9 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          load: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - name: Test Docker Container
         run: docker build -t rokon . && docker run --rm rokon /bin/bash -c "cd /app && ./rokon.sh --version"
   archlinux:
