@@ -2,7 +2,7 @@ name: COPR
 
 concurrency:
   cancel-in-progress: true
-  group: ${{ github.workflow }}-${{ github.event.pull_request.head.label || github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
 
 on:
   push:
