@@ -26,8 +26,6 @@ jobs:
         run: |
           ls -la /var/run/docker.sock
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Build aarch64 on fedora_latest
         uses: uraimo/run-on-arch-action@v2
@@ -89,8 +87,6 @@ jobs:
         run: |
           ls -la /var/run/docker.sock
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Build armv7 on ubuntu_latest
         uses: uraimo/run-on-arch-action@v2
@@ -155,8 +151,6 @@ jobs:
         run: |
           ls -la /var/run/docker.sock
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Build i386 (32 bit) on Debian Testing
         uses: uraimo/run-on-arch-action@v2
