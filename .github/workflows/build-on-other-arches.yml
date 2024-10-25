@@ -10,13 +10,12 @@ concurrency:
 
 on:
   workflow_dispatch:
-
+env:
+  EXTRAGOFLAGS: "-buildvcs=false"
 jobs:
   build_aarch64:
     timeout-minutes: 2000
     runs-on: ubuntu-24.04
-    env:
-      EXTRAGOFLAGS: "-buildvcs=false"
     steps:
       - name: Check out current repository
         uses: actions/checkout@v4
