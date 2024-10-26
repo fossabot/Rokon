@@ -141,6 +141,26 @@ fatimage: ## build self contained AppImage that can run on older Linux systems w
 	$(MAKE) PREFIX=AppDir/usr install
 	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 appimagetool -s deploy ./AppDir/usr/share/applications/io.github.brycensranch.Rokon.desktop
 	rm AppDir/usr/lib64/libLLVM* || true
+	@if command -v glibc-downgrade > /dev/null; then \
+		echo "glibc-downgrade found. Downgrading binaries and libraries to glibc 2.33..."; \
+		for lib in AppDir/usr/lib64/*.so*; do \
+			if [[ "$(basename "$$lib")" != *"libc.so"* && "$(basename "$$lib")" != *"libm.so"* && "$(basename "$$lib")" != *"libstdc++"* ]]; then \
+				echo "Applying glibc-downgrade to $$lib"; \
+				glibc-downgrade 2.33 "$$lib" > /dev/null 2>&1; \
+			else \
+				echo "Skipping $$lib"; \
+			fi; \
+		done; \
+		glibc-downgrade 2.33 AppDir/usr/bin/$(TARGET); \
+	else \
+		echo "glibc-downgrade not found. Skipping downgrade."; \
+	fi
+	@if command -v upx > /dev/null; then \
+		echo "UPX found. Compressing binaries..."; \
+		upx --best --lzma -v AppDir/usr/bin/$(TARGET) || echo "Failed to compress $(TARGET) binary."; \
+	else \
+		echo "UPX not found. Skipping compression."; \
+	fi
 	# My application follows the https://docs.fedoraproject.org/en-US/packaging-guidelines/AppData/ but this tool doesn't care lol
 	mv AppDir/usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml AppDir/usr/share/metainfo/io.github.brycensranch.Rokon.appdata.xml
 	cp ./AppDir/usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png ./AppDir
@@ -156,14 +176,28 @@ tarball: ## build self contained Tarball that auto updates
 	$(MAKE) PACKAGED=true PACKAGEFORMAT=$(TBPKGFMT) EXTRAGOFLAGS="$(EXTRAGOFLAGS) -trimpath" EXTRALDFLAGS="$(EXTRALDFLAGS) -s -w -linkmode=external" build
 	$(MAKE) PREFIX=$(TARBALLDIR) BINDIR=$(TARBALLDIR) APPLICATIONSDIR=$(TARBALLDIR) install
 	cp -v ./windows/portable.txt $(TARBALLDIR)
-	$(call resolve_deps,./tarball/$(TARGET))
-	cp -L --no-preserve=mode -v $$(ldd ./tarball/$(TARGET) | grep 'ld-linux' | awk '{print $$1}') $(TARBALLDIR)/libs/
+	$(call resolve_deps,$(TARBALLDIR)/$(TARGET))
+	cp -L --no-preserve=mode -v $$(ldd $(TARBALLDIR)/$(TARGET) | grep 'ld-linux' | awk '{print $$1}') $(LIBS_DIR)
 	chmod +x $(LIBS_DIR)/*.so*
 	strip --strip-all $(LIBS_DIR)/*.so*
 	patchelf --set-interpreter libs/ld-linux-$(subst _,-,$(shell uname -m)).so.2 --force-rpath --set-rpath libs $(TARBALLDIR)/$(TARGET)
+	@if command -v glibc-downgrade > /dev/null; then \
+		echo "glibc-downgrade found. Downgrading binaries and libraries to glibc 2.33..."; \
+		for lib in $(LIBS_DIR)/*.so*; do \
+			if [[ "$(basename "$$lib")" != *"libc.so"* && "$(basename "$$lib")" != *"libm.so"* && "$(basename "$$lib")" != *"libstdc++"* ]]; then \
+				echo "Applying glibc-downgrade to $$lib"; \
+				glibc-downgrade 2.33 "$$lib" > /dev/null 2>&1; \
+			else \
+				echo "Skipping $$lib"; \
+			fi; \
+		done; \
+		glibc-downgrade 2.33 $(TARBALLDIR)/$(TARGET); \
+	else \
+		echo "glibc-downgrade not found. Skipping downgrade."; \
+	fi
 	@if command -v upx > /dev/null; then \
 		echo "UPX found. Compressing binaries..."; \
-		upx --best --lzma -v $(TARBALLDIR)/$(TARGET) || echo "Failed to compress some files."; \
+		upx --best --lzma -v $(TARBALLDIR)/$(TARGET) || echo "Failed to compress $(TARGET) binary."; \
 	else \
 		echo "UPX not found. Skipping compression."; \
 	fi
@@ -176,7 +210,7 @@ tarball: ## build self contained Tarball that auto updates
 	chmod +x $(TARBALLDIR)/rokon.sh
 	cd /usr && cp -r --parents -L --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita share/icons/AdwaitaLegacy $(ABS_TARBALLDIR)
 	sed -i 's/rokon/\.\/rokon.sh/g' $(TARBALLDIR)/io.github.brycensranch.Rokon.desktop
-	cd $(TARBALLDIR) && ./rokon.sh --version; \
+	cd $(TARBALLDIR) && LD_DEBUG=libs ./rokon.sh --version; \
 	status=$$?; \
 	if [ $$status -ne 0 ]; then \
 	    echo "Sanity check failed. See output above for details."; \

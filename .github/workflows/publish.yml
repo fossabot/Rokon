@@ -89,6 +89,9 @@ jobs:
               grep -qxF "[$repo]" /etc/pacman.conf || echo -e "[$repo]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
           done
           sudo pacman -Syu --needed --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap fuse2 upx
+          wget https://raw.githubusercontent.com/droidian/glibc-downgrade/refs/heads/droidian/glibc-downgrade
+          chmod +x glibc-downgrade
+          sudo mv glibc-downgrade /usr/local/bin/
       - name: 👁️ Ensure Code is Linted
         continue-on-error: true
         run: make check
@@ -132,11 +135,11 @@ jobs:
           wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
           chmod +x appimagetool-*.AppImage
           mv appimagetool-* appimagetool
-          sudo mv appimagetool /usr/bin
+          sudo mv appimagetool /usr/local/bin
           wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
           chmod +x mkappimage-*.AppImage
           mv mkappimage-* mkappimage
-          sudo mv mkappimage /usr/bin
+          sudo mv mkappimage /usr/local/bin
           sudo pacman -Syu --needed --noconfirm binutils coreutils desktop-file-utils fakeroot gdk-pixbuf2 patchelf python python-pip python-setuptools squashfs-tools strace util-linux zsync appstream
           make fatimage
           ./*.AppImage --version
