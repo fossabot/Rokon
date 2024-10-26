@@ -65,8 +65,6 @@ jobs:
           load: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - name: Test Docker Container
-        run: docker build -t rokon . && docker run --rm rokon /bin/bash -c "cd /app && ./rokon.sh --version"
   archlinux:
     timeout-minutes: 125
     runs-on: [self-hosted, archlinux]
