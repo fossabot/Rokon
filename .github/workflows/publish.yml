@@ -86,10 +86,7 @@ jobs:
           for repo in "extra" "testing" "extra-testing"; do
               grep -qxF "[$repo]" /etc/pacman.conf || echo -e "[$repo]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
           done
-          sudo pacman -Syu --needed --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap fuse2 upx
-          wget https://raw.githubusercontent.com/droidian/glibc-downgrade/refs/heads/droidian/glibc-downgrade
-          chmod +x glibc-downgrade
-          sudo mv glibc-downgrade /usr/local/bin/
+          sudo pacman -Syu --needed --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap
       - name: 👁️ Ensure Code is Linted
         continue-on-error: true
         run: make check
@@ -116,31 +113,6 @@ jobs:
       - name: Remove the Package
         run: |
           sudo pacman -Rns --noconfirm rokon
-
-      - name: Import GPG key
-        id: import_gpg
-        if: github.event_name != 'pull_request'
-        uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.PASSPHRASE }}
-          git_user_signingkey: true
-          git_commit_gpgsign: true
-          git_tag_gpgsign: true
-          git_push_gpgsign: false
-      - name: 🖼️ Assemble the AppImage
-        run: |
-          wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
-          chmod +x appimagetool-*.AppImage
-          mv appimagetool-* appimagetool
-          sudo mv appimagetool /usr/local/bin
-          wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
-          chmod +x mkappimage-*.AppImage
-          mv mkappimage-* mkappimage
-          sudo mv mkappimage /usr/local/bin
-          sudo pacman -Syu --needed --noconfirm binutils coreutils desktop-file-utils fakeroot gdk-pixbuf2 patchelf python python-pip python-setuptools squashfs-tools strace util-linux zsync appstream
-          make fatimage
-          ./*.AppImage --version
       - name: 🖼️ Assemble the Self updating Tarball
         run: make tarball
       - name: 😭 Upload Failed Tarball For Debug
@@ -161,16 +133,6 @@ jobs:
           path: |
             *.tar.gz
             *tar*.zsync
-      - name: 🗃️ Upload Built AppImage 📦
-        uses: actions/upload-artifact@v4
-        if: always()
-        
-        with:
-          name: rokon-AppImage-${{ runner.arch }}
-          if-no-files-found: error
-          path: |
-            *.AppImage
-            *.AppImage.zsync
       - name: 🗃️ Upload Built ArchLinux Package 📦
         uses: actions/upload-artifact@v4
         if: always()
@@ -255,6 +217,44 @@ jobs:
       - name: Lint AppStream Metadata
         run: |
           flatpak run --command=flatpak-builder-lint --user org.flatpak.Builder appstream usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+      - name: Import GPG key
+        id: import_gpg
+        if: github.event_name != 'pull_request'
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
+          git_tag_gpgsign: true
+          git_push_gpgsign: false
+      - name: 🖼️ Assemble the AppImage
+        run: |
+          wget https://raw.githubusercontent.com/droidian/glibc-downgrade/refs/heads/droidian/glibc-downgrade
+          chmod +x glibc-downgrade
+          sudo mv glibc-downgrade /usr/local/bin/
+          wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+          chmod +x appimagetool-*.AppImage
+          mv appimagetool-* appimagetool
+          sudo mv appimagetool /usr/local/bin
+          wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+          chmod +x mkappimage-*.AppImage
+          mv mkappimage-* mkappimage
+          sudo mv mkappimage /usr/local/bin
+          sudo dnf copr enable elxreno/zsync -y
+          sudo dnf in -y binutils desktop-file-utils patchelf python3 python3-pip fakeroot python3-setuptools squashfs-tools util-linux zsync appstream fuse fuse-libs upx
+          make fatimage
+          ./*.AppImage --version
+      - name: 🗃️ Upload Built AppImage 📦
+        uses: actions/upload-artifact@v4
+        if: always()
+        
+        with:
+          name: rokon-AppImage-${{ runner.arch }}
+          if-no-files-found: error
+          path: |
+            *.AppImage
+            *.AppImage.zsync
       - uses: chrisdickinson/setup-yq@latest
         if: github.repository_owner != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
         with:
