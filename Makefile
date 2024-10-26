@@ -174,13 +174,13 @@ tarball: ## build self contained Tarball that auto updates
 	mkdir -p $(TARBALLDIR)
 	mkdir -p $(LIBS_DIR)
 	$(MAKE) PACKAGED=true PACKAGEFORMAT=$(TBPKGFMT) EXTRAGOFLAGS="$(EXTRAGOFLAGS) -trimpath" EXTRALDFLAGS="$(EXTRALDFLAGS) -s -w -linkmode=external" build
-	$(MAKE) PREFIX=$(TARBALLDIR) BINDIR=$(TARBALLDIR) APPLICATIONSDIR=$(TARBALLDIR) install
+	$(MAKE) PREFIX=$(TARBALLDIR) APPLICATIONSDIR=$(TARBALLDIR) install
 	cp -v ./windows/portable.txt $(TARBALLDIR)
-	$(call resolve_deps,$(TARBALLDIR)/$(TARGET))
-	cp -L --no-preserve=mode -v $$(ldd $(TARBALLDIR)/$(TARGET) | grep 'ld-linux' | awk '{print $$1}') $(LIBS_DIR)
+	$(call resolve_deps,$(TARBALLDIR)/bin/$(TARGET))
+	cp -L --no-preserve=mode -v $$(ldd $(TARBALLDIR)/bin/$(TARGET) | grep 'ld-linux' | awk '{print $$1}') $(LIBS_DIR)
 	chmod +x $(LIBS_DIR)/*.so*
 	strip --strip-all $(LIBS_DIR)/*.so*
-	patchelf --set-interpreter libs/ld-linux-$(subst _,-,$(shell uname -m)).so.2 --force-rpath --set-rpath libs $(TARBALLDIR)/$(TARGET)
+	patchelf --set-interpreter libs/ld-linux-$(subst _,-,$(shell uname -m)).so.2 --force-rpath --set-rpath libs $(TARBALLDIR)/bin/$(TARGET)
 	@if command -v glibc-downgrade > /dev/null; then \
 		echo "glibc-downgrade found. Downgrading binaries and libraries to glibc 2.33..."; \
 		for lib in $(LIBS_DIR)/*.so*; do \
@@ -191,26 +191,27 @@ tarball: ## build self contained Tarball that auto updates
 				echo "Skipping $$lib"; \
 			fi; \
 		done; \
-		glibc-downgrade 2.33 $(TARBALLDIR)/$(TARGET); \
+		glibc-downgrade 2.33 $(TARBALLDIR)/bin/$(TARGET); \
 	else \
 		echo "glibc-downgrade not found. Skipping downgrade."; \
 	fi
 	@if command -v upx > /dev/null; then \
 		echo "UPX found. Compressing binaries..."; \
-		upx --best --lzma -v $(TARBALLDIR)/$(TARGET) || echo "Failed to compress $(TARGET) binary."; \
+		upx --best --lzma -v $(TARBALLDIR)/bin/$(TARGET) || echo "Failed to compress $(TARGET) binary."; \
 	else \
 		echo "UPX not found. Skipping compression."; \
 	fi
-	echo '#!/bin/sh' > $(TARBALLDIR)/rokon.sh; \
-	echo 'export LD_LIBRARY_PATH="./libs:$${LD_LIBRARY_PATH}"' >> $(TARBALLDIR)/rokon.sh; \
-	echo 'export LD_PRELOAD="./libs/libc.so.6"' >> $(TARBALLDIR)/rokon.sh; \
-	echo 'export XKB_DEFAULT_INCLUDE_PATH=./share/X11/xkb' >> $(TARBALLDIR)/rokon.sh; \
-	echo 'export XKB_CONFIG_ROOT=./share/X11/xkb' >> $(TARBALLDIR)/rokon.sh; \
-	echo 'exec ./libs/ld-linux* ./$(TARGET) "$$@"' >> $(TARBALLDIR)/rokon.sh; \
-	chmod +x $(TARBALLDIR)/rokon.sh
-	cd /usr && cp -r --parents -L --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita share/icons/AdwaitaLegacy $(ABS_TARBALLDIR)
-	sed -i 's/rokon/\.\/rokon.sh/g' $(TARBALLDIR)/io.github.brycensranch.Rokon.desktop
-	cd $(TARBALLDIR) && LD_DEBUG=libs ./rokon.sh --version; \
+	echo '#!/bin/sh' > $(TARBALLDIR)/$(TARGET); \
+	echo 'export LD_LIBRARY_PATH="./libs:$${LD_LIBRARY_PATH}"' >> $(TARBALLDIR)/$(TARGET); \
+	echo 'export LD_PRELOAD="./libs/libc.so.6"' >> $(TARBALLDIR)/$(TARGET); \
+	echo 'export XKB_DEFAULT_INCLUDE_PATH=./share/X11/xkb' >> $(TARBALLDIR)/$(TARGET); \
+	echo 'export XKB_CONFIG_ROOT=./share/X11/xkb' >> $(TARBALLDIR)/$(TARGET); \
+	echo 'exec ./libs/ld-linux* ./bin/$(TARGET) "$$@"' >> $(TARBALLDIR)/$(TARGET); \
+	chmod +x $(TARBALLDIR)/$(TARGET)
+	cd /usr && cp -r --parents -L --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita $(ABS_TARBALLDIR)
+	rm -rf $(TARBALLDIR)/share/gtk-4.0/emoji|| true
+	sed -i 's/rokon/\.\/$(TARGET)/g' $(TARBALLDIR)/io.github.brycensranch.Rokon.desktop
+	cd $(TARBALLDIR) && LD_DEBUG=libs ./$(TARGET) --version; \
 	status=$$?; \
 	if [ $$status -ne 0 ]; then \
 	    echo "Sanity check failed. See output above for details."; \
