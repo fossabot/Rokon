@@ -76,13 +76,7 @@
     ],
     "terminal.integrated.profiles.windows": {
         "CLANG64": {
-            "path": "C:\\msys64\\msys2_shell.cmd",
-            "args": [
-                "-defterm",
-                "-clang64",
-                "-no-start",
-                "-here"
-            ],
+            "path": "C:\\msys64\\usr\\bin\\bash.exe",
             "go.gopath": "C:\\msys64\\clang64\\lib\\go",
             "overrideName": true,
             "env": {

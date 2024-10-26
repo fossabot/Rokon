@@ -156,8 +156,8 @@ tarball: ## build self contained Tarball that auto updates
 	$(MAKE) PACKAGED=true PACKAGEFORMAT=$(TBPKGFMT) EXTRAGOFLAGS="$(EXTRAGOFLAGS) -trimpath" EXTRALDFLAGS="$(EXTRALDFLAGS) -s -w -linkmode=external" build
 	$(MAKE) PREFIX=$(TARBALLDIR) BINDIR=$(TARBALLDIR) APPLICATIONSDIR=$(TARBALLDIR) install
 	cp -v ./windows/portable.txt $(TARBALLDIR)
-	$(call resolve_deps,./tarball/rokon)
-	cp -L --no-preserve=mode -v $$(ldd ./tarball/rokon | grep 'ld-linux' | awk '{print $$1}') $(TARBALLDIR)/libs/
+	$(call resolve_deps,./tarball/$(TARGET))
+	cp -L --no-preserve=mode -v $$(ldd ./tarball/$(TARGET) | grep 'ld-linux' | awk '{print $$1}') $(TARBALLDIR)/libs/
 	chmod +x $(LIBS_DIR)/*.so*
 	strip --strip-all $(LIBS_DIR)/*.so*
 	patchelf --set-interpreter libs/ld-linux-$(subst _,-,$(shell uname -m)).so.2 --force-rpath --set-rpath libs $(TARBALLDIR)/$(TARGET)
