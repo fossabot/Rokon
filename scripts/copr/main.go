@@ -138,7 +138,13 @@ func cancelBuild(coprUsername string, coprToken string, coprLogin string, buildI
 	}
 
 	// Encode login:token for basic auth (username:password)
-	auth := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", coprLogin, coprToken)))
+	// Sanitize coprLogin and coprToken to remove newline characters
+	sanitizedCoprLogin := strings.ReplaceAll(coprLogin, "\n", "")
+	sanitizedCoprLogin = strings.ReplaceAll(sanitizedCoprLogin, "\r", "")
+	sanitizedCoprToken := strings.ReplaceAll(coprToken, "\n", "")
+	sanitizedCoprToken = strings.ReplaceAll(sanitizedCoprToken, "\r", "")
+
+	auth := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", sanitizedCoprLogin, sanitizedCoprToken)))
 	req.Header.Set("Authorization", fmt.Sprintf("Basic %s", auth))
 
 	client := &http.Client{}
