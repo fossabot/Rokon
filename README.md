@@ -119,7 +119,7 @@ To install the app, simply download the appropriate installer for your platform 
 
 ## Building
 
-To build Rokon, view [BUILDING.md](.github/BUILDING).
+To build Rokon, view [BUILDING.md](.github/BUILDING.md).
 
 ## Roku ECP API Integration
 
