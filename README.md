@@ -117,9 +117,9 @@ Below is an example screenshot of the application:
 
 To install the app, simply download the appropriate installer for your platform from the [releases page](https://github.com/BrycensRanch/Rokon/releases) and follow the installation instructions.
 
-## Usage
+## Building
 
-Once installed, launch the application, and you'll be greeted with a remote control interface. Use the buttons to control your Roku device.
+To build Rokon, view [BUILDING.md](.github/BUILDING).
 
 ## Roku ECP API Integration
 
