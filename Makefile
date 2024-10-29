@@ -69,10 +69,11 @@ TARBALLDIR ?= ./tarball
 RUNDIR ?= ./run
 RUNLIBS ?= $(RUNDIR)/libs
 ABS_RUNDIR := $(shell realpath $(RUNDIR))
-MAKESELF := $(shell if [ -f ./makeself*.run ]; then echo "./makeself*.run && makeself*/makeself.sh"; \
+MAKESELF := $(shell if [ -f ./makeself*.run ]; then ./makeself*.run && echo "makeself*/makeself.sh"; \
                            elif [ -f ./makeself*/makeself.sh ]; then echo "./makeself*/makeself.sh"; \
                            elif command -v makeself > /dev/null; then echo "makeself"; \
                            elif command -v makeself.sh > /dev/null; then echo "makeself.sh"; \
+						   elif command -v makeself*.run > /dev/null; then makeself*.run && echo "makeself*/makeself.sh"; \
                            else echo ""; fi)
 TBPKGFMT ?= portable
 ABS_TARBALLDIR := $(shell realpath $(TARBALLDIR))
