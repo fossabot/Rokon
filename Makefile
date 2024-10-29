@@ -109,6 +109,8 @@ RUNFILE_NAME ?= Rokon-$(VERSION)-$(ARCH).run
 
 make_wrapper_script = \
 	echo '\#!/bin/sh' > $1/$(TARGET); \
+	echo 'dir="$$(cd -P -- "$$(dirname -- "$$0")" && pwd -P)"' >> $1/$(TARGET); \
+	echo 'cd "$$dir"' >> $1/$(TARGET); \
 	echo 'export LD_LIBRARY_PATH="./libs:$$LD_LIBRARY_PATH"' >> $1/$(TARGET); \
 	echo 'export LD_PRELOAD="./libs/libc.so.6"' >> $1/$(TARGET); \
 	echo 'export XKB_DEFAULT_INCLUDE_PATH="./share/X11/xkb"' >> $1/$(TARGET); \
@@ -116,6 +118,8 @@ make_wrapper_script = \
 	echo 'exec ./libs/ld-linux* "./bin/$(TARGET)" "$$@"' >> $1/$(TARGET); \
 	chmod +x $1/$(TARGET); \
 	sed -i 's/rokon/\.\/$(TARGET)/g' $1/io.github.brycensranch.Rokon.desktop
+
+
 
 
 
