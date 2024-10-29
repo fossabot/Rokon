@@ -1,5 +1,5 @@
 #!/usr/bin/make -f
-SHELL := $(shell which bash)
+SHELL := $(shell which sh)
 # Define the default install directory
 PREFIX ?= /usr/local
 VERSION ?= $(shell cat VERSION)
@@ -49,22 +49,48 @@ APPLICATIONSDIR = $(DESTDIR)$(PREFIX)/share/applications
 ICONDIR = $(DESTDIR)$(PREFIX)/share/icons/hicolor
 METAINFODIR = $(DESTDIR)$(PREFIX)/share/metainfo
 TARBALLDIR ?= ./tarball
+RUNDIR ?= ./run
+RUNLIBS ?= $(RUNDIR)/libs
+ABS_RUNDIR := $(shell realpath $(RUNDIR))
+MAKESELF := $(shell if [ -f ./makeself*.run ]; then echo "./makeself*.run && makeself*/makeself.sh"; \
+                           elif [ -f ./makeself*/makeself.sh ]; then echo "./makeself*/makeself.sh"; \
+                           elif command -v makeself > /dev/null; then echo "makeself"; \
+                           elif command -v makeself.sh > /dev/null; then echo "makeself.sh"; \
+                           else echo ""; fi)
 TBPKGFMT ?= portable
 ABS_TARBALLDIR := $(shell realpath $(TARBALLDIR))
 
-LIBS_DIR ?= $(TARBALLDIR)/libs
-TAR_NAME ?= rokon-$(shell uname)-$(VERSION)-$(shell uname -m).tar.gz
+TBLIBSDIR ?= $(TARBALLDIR)/libs
+TAR_NAME ?= Rokon-$(shell uname)-$(VERSION)-$(shell uname -m).tar.gz
+# Unix* users know .run is for them. DO NOT include it in the filename!
+RUNFILE_NAME ?= Rokon-$(VERSION)-$(shell uname -m).run
 
-resolve_deps = \
+
+make_wrapper_script = \
+	echo '\#!/bin/sh' > $1/$(TARGET); \
+	echo 'export LD_LIBRARY_PATH="./libs:$$LD_LIBRARY_PATH"' >> $1/$(TARGET); \
+	echo 'export LD_PRELOAD="./libs/libc.so.6"' >> $1/$(TARGET); \
+	echo 'export XKB_DEFAULT_INCLUDE_PATH="./share/X11/xkb"' >> $1/$(TARGET); \
+	echo 'export XKB_CONFIG_ROOT="./share/X11/xkb"' >> $1/$(TARGET); \
+	echo 'exec ./libs/ld-linux* "./bin/$(TARGET)" "$$@"' >> $1/$(TARGET); \
+	chmod +x $1/$(TARGET); \
+	sed -i 's/rokon/\.\/$(TARGET)/g' $1/io.github.brycensranch.Rokon.desktop
+
+
+
+copy_deps = \
+	cp -L --no-preserve=mode -v $$(ldd $1 | grep 'ld-linux' | awk '{print $$1}') $2; \
+	chmod +x $2/*.so*; \
+	strip --strip-all $2/*.so* || echo "Stripping libraries failed! Tarball *may* be larger than expected."; \
 	ldd -d -r $1 | awk '{print $$3}' | grep -v 'not found' | while read -r dep; do \
 		if [ -n "$$dep" ]; then \
 			echo "Copying dependency: $$dep"; \
-			cp -L --no-preserve=mode -v "$$dep" $(LIBS_DIR) || { echo "Failed to copy $$dep"; exit 1; }; \
+			cp -L --no-preserve=mode -v "$$dep" $2 || { echo "Failed to copy $$dep"; exit 1; }; \
 		fi; \
 		ldd -d -r "$$dep" | awk '{print $$3}' | grep -v 'not found' | while read -r subdep; do \
 			if [ -n "$$subdep" ]; then \
 				echo "Copying sub-dependency: $$subdep"; \
-				cp -L --no-preserve=mode -v "$$subdep" $(LIBS_DIR) || { echo "Failed to copy $$subdep"; exit 1; }; \
+				cp -L --no-preserve=mode -v "$$subdep" $2 || { echo "Failed to copy $$subdep"; exit 1; }; \
 			fi; \
 		done; \
 	done
@@ -72,7 +98,7 @@ resolve_deps = \
 
 # Target to resolve dependencies
 resolve:
-	$(call resolve_deps, $(TARGET))
+	$(call copy_deps, $(TARGET))
 
 
 .DEFAULT_GOAL := build
@@ -99,7 +125,7 @@ help:
 .PHONY: clean
 clean: ## remove files created during build pipeline
 	$(call print-target)
-	rm -rf dist .flatpak io.github.brycensranch.Rokon.desktop tarball io.github.brycensranch.Rokon.metainfo.xml macos/rokon .flatpak-builder flathub/.flatpak-builder flathub/repo *.log *.zip modules.txt flathub/export macos/share flathub/*.flatpak AppDir src squashfs-root *.AppImage *.rpm *.pdf *.rtf windows/*.rtf *.deb *.msi *.exe pkg/ *.pkg.tar.zst .ptmp* *.tar* *.snap *.zsync rokon Rokon debian/tmp debian/rokon* *.changes *.buildinfo debian/.debhelper coverage.* '"$(shell go env GOCACHE)/../golangci-lint"'
+	rm -rf dist .flatpak io.github.brycensranch.Rokon.desktop tarball io.github.brycensranch.Rokon.metainfo.xml macos/rokon .flatpak-builder flathub/.flatpak-builder flathub/repo *.log *.zip modules.txt flathub/export macos/share flathub/*.flatpak AppDir src squashfs-root *.AppImage makeself* *.run *.rpm *.pdf *.rtf windows/*.rtf *.deb *.msi *.exe pkg/ *.pkg.tar.zst .ptmp* *.tar* *.snap *.zsync rokon Rokon debian/tmp debian/rokon* *.changes *.buildinfo debian/.debhelper coverage.* '"$(shell go env GOCACHE)/../golangci-lint"'
 	# go clean -i -cache -testcache -modcache -fuzzcache -x
 
 .PHONY: nuke
@@ -172,18 +198,16 @@ tarball: ## build self contained Tarball that auto updates
 	@echo "Building Rokon Tarball version: $(VERSION)"
 	rm -rf $(TARBALLDIR) || sudo rm -v -rf $(TARBALLDIR)
 	mkdir -p $(TARBALLDIR)
-	mkdir -p $(LIBS_DIR)
+	mkdir -p $(TBLIBSDIR)
 	$(MAKE) PACKAGED=true PACKAGEFORMAT=$(TBPKGFMT) EXTRAGOFLAGS="$(EXTRAGOFLAGS) -trimpath" EXTRALDFLAGS="$(EXTRALDFLAGS) -s -w -linkmode=external" build
 	$(MAKE) PREFIX=$(TARBALLDIR) APPLICATIONSDIR=$(TARBALLDIR) install
 	cp -v ./windows/portable.txt $(TARBALLDIR)
-	$(call resolve_deps,$(TARBALLDIR)/bin/$(TARGET))
-	cp -L --no-preserve=mode -v $$(ldd $(TARBALLDIR)/bin/$(TARGET) | grep 'ld-linux' | awk '{print $$1}') $(LIBS_DIR)
-	chmod +x $(LIBS_DIR)/*.so*
-	strip --strip-all $(LIBS_DIR)/*.so*
-	patchelf --set-interpreter libs/ld-linux-$(subst _,-,$(shell uname -m)).so.2 --force-rpath --set-rpath libs $(TARBALLDIR)/bin/$(TARGET)
+	$(call copy_deps,$(TARBALLDIR)/bin/$(TARGET),$(TBLIBSDIR))
+	# patchelf --set-interpreter libs/ld-linux-$(subst _,-,$(shell uname -m)).so.2 --force-rpath --set-rpath libs $(TARBALLDIR)/bin/$(TARGET)
+	$(call make_wrapper_script,$(TARBALLDIR))
 	@if command -v glibc-downgrade > /dev/null; then \
 		echo "glibc-downgrade found. Downgrading binaries and libraries to glibc 2.33..."; \
-		for lib in $(LIBS_DIR)/*.so*; do \
+		for lib in $(TBLIBSDIR)/*.so*; do \
 			if [[ "$(basename "$$lib")" != *"libc.so"* && "$(basename "$$lib")" != *"libm.so"* && "$(basename "$$lib")" != *"libstdc++"* ]]; then \
 				echo "Applying glibc-downgrade to $$lib"; \
 				glibc-downgrade 2.33 "$$lib" > /dev/null 2>&1; \
@@ -201,16 +225,9 @@ tarball: ## build self contained Tarball that auto updates
 	else \
 		echo "UPX not found. Skipping compression."; \
 	fi
-	echo '#!/bin/sh' > $(TARBALLDIR)/$(TARGET); \
-	echo 'export LD_LIBRARY_PATH="./libs:$${LD_LIBRARY_PATH}"' >> $(TARBALLDIR)/$(TARGET); \
-	echo 'export LD_PRELOAD="./libs/libc.so.6"' >> $(TARBALLDIR)/$(TARGET); \
-	echo 'export XKB_DEFAULT_INCLUDE_PATH=./share/X11/xkb' >> $(TARBALLDIR)/$(TARGET); \
-	echo 'export XKB_CONFIG_ROOT=./share/X11/xkb' >> $(TARBALLDIR)/$(TARGET); \
-	echo 'exec ./libs/ld-linux* ./bin/$(TARGET) "$$@"' >> $(TARBALLDIR)/$(TARGET); \
-	chmod +x $(TARBALLDIR)/$(TARGET)
+	$(call make_wrapper_script,$(TARBALLDIR))
 	cd /usr && cp -r --parents -L --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita $(ABS_TARBALLDIR)
-	rm -rf $(TARBALLDIR)/share/gtk-4.0/emoji|| true
-	sed -i 's/rokon/\.\/$(TARGET)/g' $(TARBALLDIR)/io.github.brycensranch.Rokon.desktop
+	rm -rf $(TARBALLDIR)/share/gtk-4.0/emoji || true
 	cd $(TARBALLDIR) && LD_DEBUG=libs ./$(TARGET) --version; \
 	status=$$?; \
 	if [ $$status -ne 0 ]; then \
@@ -233,15 +250,25 @@ else
 		@echo "Tarball created: $(TAR_NAME)"
 endif
 
+.PHONY: run
+run: ## create run "package"
+	$(call print-target)
+	$(MAKE) PACKAGED=true PACKAGEFORMAT="run" TBPKGFMT="run" TARBALLDIR=$(RUNDIR) NOTB=1 tarball
+	$(MAKESELF) --sha256 $(RUNDIR) Rokon-$(VERSION)-$(uname -m).run Rokon ./$(TARGET)
+	LD_DEBUG=libs ./Rokon-$(VERSION)-$(uname -m).run -- "--version"; \
+	status=$$?; \
+	if [ $$status -ne 0 ]; then \
+	    echo "Sanity check failed. See output above for details."; \
+	    exit $$status; \
+	else \
+	    echo "Sanity check succeeded."; \
+	fi
+
 .PHONY: dev
 dev: ## go run -v .
 	$(call print-target)
 	@echo "Starting development server for Rokon: $(VERSION)"
 	go run -v .
-
-.PHONY: run
-run: ## go run -v .
-run: dev
 
 .PHONY: mod
 mod: ## go mod tidy

@@ -87,6 +87,8 @@ jobs:
               grep -qxF "[$repo]" /etc/pacman.conf || echo -e "[$repo]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
           done
           sudo pacman -Syu --needed --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap
+          wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
+          chmod +x *.run
       - name: 👁️ Ensure Code is Linted
         continue-on-error: true
         run: make check
@@ -115,12 +117,16 @@ jobs:
           sudo pacman -Rns --noconfirm rokon
       - name: 🖼️ Assemble the Self updating Tarball
         run: make tarball
-      - name: 😭 Upload Failed Tarball For Debug
+      - name: 🖼️ Assemble the Self updating Runfile
+        run: make run
+      - name: 😭 Upload Failed Directories For Debug
         uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: rokon-${{runner.os}}-failed-tarball-${{ runner.arch }}
-          path: tarball
+          path: |
+            tarball
+            run
           include-hidden-files: true
           if-no-files-found: error
       - name: 🗃️ Upload Built Tarball 📦
@@ -133,10 +139,19 @@ jobs:
           path: |
             *.tar.gz
             *tar*.zsync
+      - name: 🗃️ Upload Built Runfile 📦
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rokon-${{runner.os}}-runfile-${{ runner.arch }}
+          include-hidden-files: true
+          if-no-files-found: error
+          path: |
+            *.run
       - name: 🗃️ Upload Built ArchLinux Package 📦
         uses: actions/upload-artifact@v4
         if: always()
-        
+
         with:
           name: rokon-archlinux-pkg-${{ runner.arch }}
           if-no-files-found: error
@@ -201,7 +216,7 @@ jobs:
               rpmbuild -ba "$spec" | tee rpmbuild_output.log | grep 'Wrote:' | awk '{print $2}' | while read -r rpm; do
                   if [[ "$rpm" != *.src.rpm ]]; then
                       echo "Installing $rpm..."
-                      sudo dnf install -y "$rpm" --allowerasing 
+                      sudo dnf install -y "$rpm" --allowerasing
                   else
                       echo "Skipping source RPM: $rpm"
                   fi
@@ -250,7 +265,7 @@ jobs:
       - name: 🗃️ Upload Built AppImage 📦
         uses: actions/upload-artifact@v4
         if: always()
-        
+
         with:
           name: rokon-AppImage-${{ runner.arch }}
           if-no-files-found: error
@@ -444,7 +459,7 @@ jobs:
           cp ../*.{deb,buildinfo,changes} ./ || true
       - name: 🗃️ Upload Deb packages
         uses: actions/upload-artifact@v4
-        
+
         if: always()
         with:
           name: rokon-deb-${{ matrix.arch }}

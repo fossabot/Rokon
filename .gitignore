@@ -32,6 +32,7 @@ dmg/
 *.tar**
 *.tgz
 *.7z
+*.run
 *.log
 *.zip
 *.msi
@@ -58,6 +59,9 @@ flathub/export
 flathub/builddir
 squashfs-root
 tarball
+run
+makeself*
+latest
 rpm
 debian/.debhelper
 io.github.brycensranch.Rokon.desktop

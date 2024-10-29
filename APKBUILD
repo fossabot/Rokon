@@ -12,7 +12,6 @@ makedepends="
     gobject-introspection-dev
     go
     build-base
-    bash
     unzip
 	"
 subpackages="
@@ -31,7 +30,7 @@ check() {
 
 package() {
     cd src
-    make DESTDIR="$pkgdir" PREFIX="/usr" install 
+    make DESTDIR="$pkgdir" PREFIX="/usr" install
 }
 
 sha512sums="

@@ -47,12 +47,39 @@ jobs:
             mv mkappimage-* mkappimage
             mv mkappimage /usr/bin
             git config --global --add safe.directory '*'
+            wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
+            chmod +x *.run
           run: |
+            make run
             make tarball
             make fatimage
             spectool -g -R ./rokon.spec
             dnf builddep -y ./rokon.spec
             rpmbuild -ba ./rokon.spec
+      - name: 😭 Upload Failed Directories For Debug
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: rokon-${{runner.os}}-failed-i386
+          path: |
+            tarball
+            AppDir
+            run
+            *.AppImage
+            *.tar*
+            ~/rpmbuild
+            *.rpm
+          include-hidden-files: true
+          if-no-files-found: error
+      - name: 🗃️ Upload Built Runfile 📦
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rokon-${{runner.os}}-runfile-aarch64
+          include-hidden-files: true
+          if-no-files-found: error
+          path: |
+            *.run
       - name: 🗃️ Upload Built Tarball 📦
         uses: actions/upload-artifact@v4
         if: always()
@@ -112,9 +139,34 @@ jobs:
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
             mv mkappimage /usr/bin
+            wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
+            chmod +x *.run
           run: |
+            make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" run
             make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" tarball
             make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" fatimage
+      - name: 😭 Upload Failed Directories For Debug
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: rokon-${{runner.os}}-failed-i386
+          path: |
+            tarball
+            AppDir
+            run
+            *.AppImage
+            *.tar*
+          include-hidden-files: true
+          if-no-files-found: error
+      - name: 🗃️ Upload Built Runfile 📦
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rokon-${{runner.os}}-runfile-armv7
+          include-hidden-files: true
+          if-no-files-found: error
+          path: |
+            *.run
       - name: 🗃️ Upload Built Tarball 📦
         uses: actions/upload-artifact@v4
         if: always()
@@ -171,14 +223,39 @@ jobs:
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
             mv mkappimage /usr/bin
+            wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
+            chmod +x *.run
           run: |
+            make run
             make tarball
             make fatimage
+      - name: 😭 Upload Failed Directories For Debug
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: rokon-${{runner.os}}-failed-i386
+          path: |
+            tarball
+            AppDir
+            run
+            *.AppImage
+            *.tar*
+          include-hidden-files: true
+          if-no-files-found: error
+      - name: 🗃️ Upload Built Runfile 📦
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rokon-${{runner.os}}-runfile-i386
+          include-hidden-files: true
+          if-no-files-found: error
+          path: |
+            *.run
       - name: 🗃️ Upload Built Tarball 📦
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rokon-${{runner.os}}-tarball-armv7
+          name: rokon-${{runner.os}}-tarball-i386
           include-hidden-files: true
           if-no-files-found: error
           path: |
@@ -189,7 +266,7 @@ jobs:
         if: always()
 
         with:
-          name: rokon-AppImage-armv7
+          name: rokon-AppImage-i386
           if-no-files-found: error
           path: |
             *.AppImage
