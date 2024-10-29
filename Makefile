@@ -69,12 +69,35 @@ TARBALLDIR ?= ./tarball
 RUNDIR ?= ./run
 RUNLIBS ?= $(RUNDIR)/libs
 ABS_RUNDIR := $(shell realpath $(RUNDIR))
-MAKESELF := $(shell if [ -f ./makeself*.run ]; then ./makeself*.run && echo "makeself*/makeself.sh"; \
-                           elif [ -f ./makeself*/makeself.sh ]; then echo "./makeself*/makeself.sh"; \
-                           elif command -v makeself > /dev/null; then echo "makeself"; \
-                           elif command -v makeself.sh > /dev/null; then echo "makeself.sh"; \
-						   elif command -v makeself*.run > /dev/null; then makeself*.run && echo "makeself*/makeself.sh"; \
-                           else echo ""; fi)
+MAKESELF := $(shell \
+    if ls ./makeself*.run > /dev/null 2>&1; then \
+        ./makeself*.run --quiet --noexec; \
+        echo "makeself*/makeself.sh"; \
+    elif [ -f ./makeself*/makeself.sh ]; then \
+        echo "./makeself*/makeself.sh"; \
+    elif command -v makeself > /dev/null; then \
+        echo "makeself"; \
+    elif command -v makeself.sh > /dev/null; then \
+        echo "makeself.sh"; \
+    else \
+        found=false; \
+        for cmd in $$(echo $$PATH | tr ':' ' '); do \
+            for file in "$$cmd/makeself"*.run; do \
+                if [ -f "$$file" ]; then \
+                    $$file --quiet --noexec; \
+                    echo "makeself*/makeself.sh"; \
+                    found=true; \
+                    break 2; \
+                fi; \
+            done; \
+        done; \
+        if [ "$$found" = false ]; then \
+            echo ""; \
+        fi; \
+    fi)
+
+
+
 TBPKGFMT ?= portable
 ABS_TARBALLDIR := $(shell realpath $(TARBALLDIR))
 
@@ -271,6 +294,8 @@ endif
 .PHONY: run
 run: ## create run "package"
 	$(call print-target)
+	$(if $(MAKESELF),,$(error MAKESELF was NOT detected in $$PATH OR right next to the Makefile))
+	rm ./Rokon-$(VERSION)-$(ARCH).run || true
 	$(MAKE) PACKAGED=true PACKAGEFORMAT="run" TBPKGFMT="run" TARBALLDIR=$(RUNDIR) NOTB=1 tarball
 	$(MAKESELF) --sha256 $(RUNDIR) Rokon-$(VERSION)-$(ARCH).run Rokon ./$(TARGET)
 	./Rokon-$(VERSION)-$(ARCH).run -- "--version"; \
