@@ -14,6 +14,23 @@ EXTRALDFLAGS :=
 EXTRAGOFLAGS :=
 BUILDTAGS :=
 UNAME_S := $(shell uname -s)
+# Determine the system architecture using various methods
+ARCH := $(shell \
+    if command -v rpm > /dev/null 2>&1; then \
+        rpm -E '%{_arch}'; \
+    elif command -v dpkg > /dev/null 2>&1; then \
+        dpkg --print-architecture; \
+    elif command -v apk > /dev/null 2>&1; then \
+        apk --print-arch; \
+    elif command -v uname > /dev/null 2>&1; then \
+        uname -m; \
+    elif command -v arch > /dev/null 2>&1; then \
+        arch; \
+    elif command -v lscpu > /dev/null 2>&1; then \
+        lscpu | grep Architecture | awk '{print $$2}'; \
+    else \
+        echo "unknown"; \
+    fi)
 
 
 
@@ -61,9 +78,9 @@ TBPKGFMT ?= portable
 ABS_TARBALLDIR := $(shell realpath $(TARBALLDIR))
 
 TBLIBSDIR ?= $(TARBALLDIR)/libs
-TAR_NAME ?= Rokon-$(shell uname)-$(VERSION)-$(shell uname -m).tar.gz
+TAR_NAME ?= Rokon-$(UNAME_S)-$(VERSION)-$(ARCH).tar.gz
 # Unix* users know .run is for them. DO NOT include it in the filename!
-RUNFILE_NAME ?= Rokon-$(VERSION)-$(shell uname -m).run
+RUNFILE_NAME ?= Rokon-$(VERSION)-$(ARCH).run
 
 
 make_wrapper_script = \
@@ -190,7 +207,7 @@ fatimage: ## build self contained AppImage that can run on older Linux systems w
 	# My application follows the https://docs.fedoraproject.org/en-US/packaging-guidelines/AppData/ but this tool doesn't care lol
 	mv AppDir/usr/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml AppDir/usr/share/metainfo/io.github.brycensranch.Rokon.appdata.xml
 	cp ./AppDir/usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png ./AppDir
-	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 mkappimage --comp zstd --ll -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-*$(shell uname -m).AppImage.zsync" ./AppDir
+	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 mkappimage --comp zstd --ll -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-*$(ARCH).AppImage.zsync" ./AppDir
 
 .PHONY: tarball
 tarball: ## build self contained Tarball that auto updates
@@ -203,7 +220,7 @@ tarball: ## build self contained Tarball that auto updates
 	$(MAKE) PREFIX=$(TARBALLDIR) APPLICATIONSDIR=$(TARBALLDIR) install
 	cp -v ./windows/portable.txt $(TARBALLDIR)
 	$(call copy_deps,$(TARBALLDIR)/bin/$(TARGET),$(TBLIBSDIR))
-	# patchelf --set-interpreter libs/ld-linux-$(subst _,-,$(shell uname -m)).so.2 --force-rpath --set-rpath libs $(TARBALLDIR)/bin/$(TARGET)
+	# patchelf --set-interpreter libs/ld-linux-$(subst _,-,$(ARCH)).so.2 --force-rpath --set-rpath libs $(TARBALLDIR)/bin/$(TARGET)
 	$(call make_wrapper_script,$(TARBALLDIR))
 	@if command -v glibc-downgrade > /dev/null; then \
 		echo "glibc-downgrade found. Downgrading binaries and libraries to glibc 2.33..."; \
@@ -242,7 +259,7 @@ ifeq ($(NOTB),1)
 else
 		tar -czf $(TAR_NAME) $(TARBALLDIR)
 		@if command -v zsyncmake >/dev/null 2>&1; then \
-			zsyncmake $(TAR_NAME) -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-$(shell uname)-*-$(shell uname -m).tar.gz.zsync"; \
+			zsyncmake $(TAR_NAME) -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-$(UNAME_S)-*-$(ARCH).tar.gz.zsync"; \
 		else \
 			echo "zsyncmake not found. Please install it to generate the zsync file."; \
 		fi
@@ -254,15 +271,16 @@ endif
 run: ## create run "package"
 	$(call print-target)
 	$(MAKE) PACKAGED=true PACKAGEFORMAT="run" TBPKGFMT="run" TARBALLDIR=$(RUNDIR) NOTB=1 tarball
-	$(MAKESELF) --sha256 $(RUNDIR) Rokon-$(VERSION)-$(uname -m).run Rokon ./$(TARGET)
-	LD_DEBUG=libs ./Rokon-$(VERSION)-$(uname -m).run -- "--version"; \
+	$(MAKESELF) --sha256 $(RUNDIR) Rokon-$(VERSION)-$(ARCH).run Rokon ./$(TARGET)
+	./Rokon-$(VERSION)-$(ARCH).run -- "--version"; \
 	status=$$?; \
 	if [ $$status -ne 0 ]; then \
-	    echo "Sanity check failed. See output above for details."; \
+	    echo "Seconary sanity check failed. See output above for details."; \
 	    exit $$status; \
 	else \
-	    echo "Sanity check succeeded."; \
+	    echo "Seconary sanity check succeeded."; \
 	fi
+	@echo "Cheers, the run file was successfully created. It is the file ./Rokon-$(VERSION)-$(ARCH).run 🚀"
 
 .PHONY: dev
 dev: ## go run -v .
