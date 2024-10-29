@@ -3,11 +3,12 @@ module github.com/brycensranch/rokon
 go 1.22.0
 
 require (
-	github.com/adrg/xdg v0.5.0
+	github.com/adrg/xdg v0.5.2
+	github.com/benesch/cgosymbolizer v0.0.0-20190515212042-bec6fe6e597b
 	github.com/brycensranch/go-aptabase/pkg v0.0.0-20241004152612-e20856549654
 	github.com/diamondburned/gotk4/pkg v0.3.1
 	github.com/go-resty/resty/v2 v2.15.3
-	github.com/ianlancetaylor/cgosymbolizer v0.0.0-20240805235558-330cf6901bf7
+	github.com/ianlancetaylor/cgosymbolizer v0.0.0-20241025222116-6b205f073fdd
 	github.com/koron/go-ssdp v0.0.4
 )
 
@@ -19,7 +20,7 @@ require (
 require (
 	github.com/KarpelesLab/weak v0.1.1 // indirect
 	go4.org/unsafe/assume-no-moving-gc v0.0.0-20231121144256-b99613f794b6 // indirect
-	golang.org/x/exp v0.0.0-20241004190924-225e2abe05e6 // indirect
+	golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c // indirect
 	golang.org/x/net v0.30.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/sys v0.26.0 // indirect

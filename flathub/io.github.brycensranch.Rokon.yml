@@ -30,11 +30,11 @@ modules:
         GOROOT: /usr/lib/sdk/golang
     build-commands:
       - make PACKAGED=true PACKAGEFORMAT=flatpak EXTRAGOFLAGS="-mod=vendor -trimpath" build
-      - desktop-file-edit --set-icon=$FLATPAK_ID --set-key=Exec --set-value=$GOBIN/rokon --remove-key=DBusActivatable usr/share/applications/$FLATPAK_ID.desktop
+      - desktop-file-edit --set-key=Exec --set-value=$GOBIN/rokon usr/share/applications/$FLATPAK_ID.desktop
       - make PREFIX=/app BINDIR=$GOBIN install
     sources:
       - type: archive
-        url: https://github.com/BrycensRanch/Rokon/archive/8c1f9d3.tar.gz
-        sha256: a3773dc0434681b858b92015a37968db52ead1a0f6b73e811896e3f77946ddcb
+        url: https://github.com/BrycensRanch/Rokon/archive/8a788fe.tar.gz
+        sha256: 0e1e13750d8a39321a40a58eedac6f226bb46b5ed4e4c47ef1cb7a3c831685f6
 
       - go.mod.yml

@@ -17,40 +17,40 @@ linters-settings:
     confidence: 0
 
 linters:
-  disable-all: true
-  enable:
-    - asasalint
-    - bodyclose
-    - dogsled
-    - dupl
-    - dupword
-    - errcheck
-    - exportloopref
-    - funlen
-    - gocritic
-    - goconst
-    - gocyclo
-    - gofumpt
-    - goimports
-    - revive
-    - rowserrcheck
-    - godot
-    - goprintffuncname
-    - gosec
-    - gosimple
-    - govet
-    - ineffassign
-    - misspell
-    - mnd
-    - nakedret
-    - noctx
-    - nolintlint
-    - perfsprint
-    - staticcheck
-    - stylecheck
-    - sqlclosecheck
-    - typecheck
-    - unconvert
-    - unparam
-    - unused
-    - whitespace
+  disable-all: false
+  # enable:
+  #   - asasalint
+  #   - bodyclose
+  #   - dogsled
+  #   - dupl
+  #   - dupword
+  #   - errcheck
+  #   - exportloopref
+  #   - funlen
+  #   - gocritic
+  #   - goconst
+  #   - gocyclo
+  #   - gofumpt
+  #   - goimports
+  #   - revive
+  #   - rowserrcheck
+  #   - godot
+  #   - goprintffuncname
+  #   - gosec
+  #   - gosimple
+  #   - govet
+  #   - ineffassign
+  #   - misspell
+  #   - mnd
+  #   - nakedret
+  #   - noctx
+  #   - nolintlint
+  #   - perfsprint
+  #   - staticcheck
+  #   - stylecheck
+  #   - sqlclosecheck
+  #   - typecheck
+  #   - unconvert
+  #   - unparam
+  #   - unused
+  #   - whitespace

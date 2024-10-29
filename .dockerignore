@@ -7,6 +7,12 @@
 
 # Ignore local dependencies
 /vendor/
+tarball
+rokon
+rokon-Linux*
+Rokon*
+squashfs-root
+
 
 # Ignore configuration, environment, and log files
 *.log
@@ -32,9 +38,17 @@
 *.rpm     # Red Hat/Fedora packages
 *.zip     # Compressed files
 *.rar
-*.tar     # Generic tar files, including Arch Linux tarballs
-*.tar.gz  # Tarballs (common across Linux)
+*.tar*     # Generic tar files, including Arch Linux tarballs
+*.zsync
 *.tgz
+debian
+flathub
+AppDir
+.git
+.github
+.vscode
+zig*
+macos
 
 # Ignore AppImage files
 *.AppImage

@@ -1,11 +1,14 @@
 # github.com/KarpelesLab/weak v0.1.1
 ## explicit; go 1.18
 github.com/KarpelesLab/weak
-# github.com/adrg/xdg v0.5.0
+# github.com/adrg/xdg v0.5.2
 ## explicit; go 1.19
 github.com/adrg/xdg
 github.com/adrg/xdg/internal/pathutil
 github.com/adrg/xdg/internal/userdirs
+# github.com/benesch/cgosymbolizer v0.0.0-20190515212042-bec6fe6e597b
+## explicit
+github.com/benesch/cgosymbolizer
 # github.com/brycensranch/go-aptabase/pkg v0.0.0-20241004152612-e20856549654
 ## explicit; go 1.22.0
 github.com/brycensranch/go-aptabase/pkg/aptabase/v1
@@ -39,7 +42,7 @@ github.com/diamondburned/gotk4/pkg/pango
 ## explicit; go 1.20
 github.com/go-resty/resty/v2
 github.com/go-resty/resty/v2/shellescape
-# github.com/ianlancetaylor/cgosymbolizer v0.0.0-20240805235558-330cf6901bf7
+# github.com/ianlancetaylor/cgosymbolizer v0.0.0-20241025222116-6b205f073fdd
 ## explicit; go 1.12
 github.com/ianlancetaylor/cgosymbolizer
 # github.com/koron/go-ssdp v0.0.4
@@ -52,7 +55,7 @@ github.com/koron/go-ssdp/internal/ssdplog
 # go4.org/unsafe/assume-no-moving-gc v0.0.0-20231121144256-b99613f794b6
 ## explicit; go 1.11
 go4.org/unsafe/assume-no-moving-gc
-# golang.org/x/exp v0.0.0-20241004190924-225e2abe05e6
+# golang.org/x/exp v0.0.0-20241009180824-f66d83c29e7c
 ## explicit; go 1.22.0
 golang.org/x/exp/rand
 # golang.org/x/net v0.30.0

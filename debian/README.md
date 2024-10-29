@@ -11,5 +11,5 @@ the nightly version will be created once Rokon is stable (it isn't)
 to build a debian package do
 
 ```bash
-debuild -S -i -I
+debuild -us -uc -b -i -I
 ```

@@ -14,70 +14,67 @@
 
 # Please submit bugfixes or comments via https://github.com/BrycensRanch/Rokon/issues as I am the developer
 
-%global goipath github.com/brycensranch/rokon
 
-%global forgeurl https://github.com/BrycensRanch/Rokon
+
+# Checking is disabled until I can troubleshoot this:
+# + go_vendor_license --config go-vendor-tools.toml report expression --verify 'AGPL-3.0-only AND BSD-3-Clause AND CC-BY-SA-4.0 AND ISC AND MIT AND MPL-2.0'
+# Using detector: askalono
+# The following modules are missing license files:
+# - vendor/github.com/brycensranch/go-aptabase/pkg
+# - vendor/github.com/diamondburned/gotk4/pkg
+%bcond check 0
+
+# https://github.com/BrycensRanch/Rokon
+%global goipath         github.com/brycensranch/rokon
+%global forgeurl        https://github.com/BrycensRanch/Rokon
+%global commit          3c784069f9cb006600dd2eadd0ccab53d8189d85
+
+
+%if 0%{?fedora}
+%gometa -L -f
+%endif
+
 
 Name:           rokon
 Version:        1.0.0
 %if 0%{?fedora}
 Release:        %autorelease -p
 %else
-Release:        13%{?dist}
+Release:        18%{?dist}
 %endif
 Summary:        Control your Roku device with your desktop!
-License:        AGPL-3.0-or-later
+
+
+License:        AGPL-3.0-only AND BSD-3-Clause AND CC-BY-SA-4.0 AND ISC AND MIT AND MPL-2.0
 URL:            https://github.com/BrycensRanch/Rokon
-%if 0%{?opensuse_bs}
-Source:         Rokon.tar.xz
-%else
-Source:         https://nightly.link/BrycensRanch/Rokon/workflows/publish/master/rokon-source.zip
-%endif
+Source:         https://nightly.link/BrycensRanch/Rokon/workflows/publish/master/rokon-vendored-source.zip
 
-%if 0%{?fedora}
-%gometa -f
-Source1:        %{archivename}-vendor.tar.bz2
-Source2:        go-vendor-tools.toml
-%endif
 
-BuildRequires:  git
 BuildRequires:  go
+%if 0%{?fedora}
+BuildRequires:  go-vendor-tools
+%endif
+
 BuildRequires:  gcc
+BuildRequires:  unzip
 BuildRequires:  gcc-c++
 BuildRequires:  gtk4-devel
 BuildRequires:  gobject-introspection-devel
 Requires:       gtk4
-%if 0%{?opensuse_bs}
-# Logic specific to openSUSE Build Service. I imagine this will make it extremely difficult to build the spec locally on OBS.
-Source1:        vendor.tar.zst
-BuildRequires:  golang-packaging
-BuildRequires:  zstd
-%endif
-
-# %gopkg
-
-
-%generate_buildrequires
-%if 0%{?fedora}
-#%go_generate_buildrequires
-%go_vendor_license_buildrequires -c %{S:2}
-%endif
 
 %description
 Rokon is a GTK4 application that control your Roku.
 Whether that be with your keyboard, mouse, or controller.
 
-%if 0%{?fedora}
-%goprep -A
-%setup -q -T -D -a1 %{forgesetupargs}
-%autopatch -p1
-%else
 %prep
-%endif
-%if 0%{?opensuse_bs}
-%autosetup -n Rokon
-%else
-%autosetup -n Rokon-master
+ls
+
+%setup -c
+ls
+
+%generate_buildrequires
+%if 0%{?fedora}
+%go_vendor_license_buildrequires -c go-vendor-tools.toml
 %endif
 
 %build
@@ -89,8 +86,6 @@ Whether that be with your keyboard, mouse, or controller.
 %else
     %set_build_flags
 %endif
-
-ls
 # Rokon's Makefile still respects any CFLAGS LDFLAGS CXXFLAGS passed to it. It is compliant.
 # https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/PK5PEKWE65UC5XQ6LTLSMATVPIISQKQS/
 # Do not compress the DWARF debug information, it causes the build to fail!
@@ -107,39 +102,75 @@ ls
 
 %make_build \
     PACKAGED=true \
+    BUILDTAGS="rpm_crashtraceback" \
     PACKAGEFORMAT=rpm \
     EXTRALDFLAGS="-compressdwarf=false -X main.rpmRelease=%{rpmRelease}" \
-    EXTRAGOFLAGS="-mod=vendor -buildmode=pie -trimpath"
+    EXTRAGOFLAGS="-x -mod=vendor -buildmode=pie -trimpath"
 
 %install
-%if 0%{?suse_version}
-    %make_install NODOCUMENTATION="1" PREFIX=%{buildroot}/usr
-%else
-    %make_install NODOCUMENTATION="0" PREFIX=%{buildroot}/usr
+%if 0%{?fedora}
+%go_vendor_license_install -c go-vendor-tools.toml
 %endif
 
-%files
-%{_bindir}/%{name}
-%{_datadir}/applications/io.github.brycensranch.Rokon.desktop
-%{_datadir}/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
-%{_datadir}/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
-%{_datadir}/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
-%{_datadir}/metainfo/io.github.brycensranch.Rokon.metainfo.xml
-%license LICENSE.md
-%doc *.md
+# Why was this necessary, you ask?!?!  Because I kept getting
+# File not found: /builddir/build/BUILDROOT/rokon-1.0.0-16.suse.tw.x86_64/usr/share/doc/packages/rokon
+
+
+%if 0%{?suse_version}
+%make_install PREFIX=%{_prefix} \
+              NODOCUMENTATION=1
+%else
+%make_install PREFIX=%{_prefix} \
+              DOCDIR=%{_docdir}
+%endif
+
+%check
+%if 0%{?fedora}
+%if %{with check}
+%go_vendor_license_check -c go-vendor-tools.toml
+%endif
+./rokon --version
+%endif
 
 %if 0%{?fedora}
-	%autochangelog
+%files -f %{go_vendor_license_filelist}
+%else
+%files
+%endif
+%{_bindir}/%{name}
+%{_datadir}/applications/io.github.brycensranch.Rokon.desktop
+%{_datadir}/metainfo/io.github.brycensranch.Rokon.metainfo.xml
+%{_datadir}/dbus-1/services/io.github.brycensranch.Rokon.service
+%{_datadir}/icons/hicolor/48x48/apps/io.github.brycensranch.Rokon.png
+%{_datadir}/icons/hicolor/128x128/apps/io.github.brycensranch.Rokon.png
+%{_datadir}/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png
+%{_datadir}/icons/hicolor/scalable/apps/io.github.brycensranch.Rokon.svg
+%if 0%{?fedora}
+%else
+%license vendor/modules.txt LICENSE.md
+%endif
+
+# https://en.opensuse.org/openSUSE:Packaging_Conventions_RPM_Macros
+%if 0%{?suse_version}
+%else
+%doc *.md
+%endif
+
+
+%if 0%{?fedora}
+%changelog
+%autochangelog
 %else
 
-	%changelog
-	* Tue Sep 3 2024 Brycen <brycengranville@outlook.com> 1.0.0-6
-	- Removed sysinfo package decreasing binary size and portability and startup time
-	- Added metainfo file for appstream
-	- Added icons to package
-	- Added desktop entry
-	- Added license file to package
-	- Added documentation to package
-	* Mon Sep 2 2024 Brycen <brycengranville@outlook.com> 1.0.0-3
-	- Initial package
+%changelog
+* Tue Sep 3 2024 Brycen <brycengranville@outlook.com> 1.0.0-6
+- Removed sysinfo package decreasing binary size and portability and startup time
+- Added metainfo file for appstream
+-Added icons to package
+- Added desktop entry
+- Added license file to package
+- Added documentation to package
+* Mon Sep 2 2024 Brycen <brycengranville@outlook.com> 1.0.0-3
+- Initial package
 %endif
+

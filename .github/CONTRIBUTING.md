@@ -1,10 +1,10 @@
 # Contributing Guidelines
 
-First off, thank you for considering contributing to this project. It's people like you that make this such a great plugin.
+First off, thank you for considering contributing to this project.
 
 Following these guidelines helps to communicate that you respect the time of the developers managing and developing this open source project. In return, they should reciprocate that respect in addressing your issue, assessing changes, and helping you finalize your pull requests.
 
-This is an open source project, and we love to receive contributions from our community — you! There are many ways to contribute, from writing tutorials or blog posts, improving the documentation, submitting bug reports and feature requests or writing code which can be incorporated into the plugin itself.
+This is an open source project, and we love to receive contributions from our community — you! There are many ways to contribute, from writing tutorials or blog posts, improving the documentation, submitting bug reports and feature requests or writing code which can be incorporated into the Rokon itself.
 
 ## Ground Rules
 
@@ -26,17 +26,17 @@ Pull requests are the best way to propose changes to the codebase (we use [GitHu
 - **Commit using the [conventional-commit](https://www.conventionalcommits.org/en/v1.0.0/) format!**
 - Create issues for any major changes and enhancements that you wish to make. Discuss things transparently and get community feedback.
 - Keep feature versions as small as possible, preferably one new feature per version.
-- Be welcoming to newcomers and encourage diverse new contributors from all backgrounds.
+- [Be welcoming to newcomers and encourage diverse new contributors from all backgrounds](./CODE_OF_CONDUCT.md).
 
 # Your First Contribution
 
 Unsure where to begin contributing to this project? You can start by looking through these beginner and help-wanted issues: Good first issues - issues which should only require a few lines of code, and a test or two. Help wanted issues - issues which should be a bit more involved than beginner issues.
 
-Working on your first Pull Request? You can learn how from this _free_ series, [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github) .
+Working on your first Pull Request? You can learn how from this article, [How to Contribute to an Open Source Project on GitHub](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project).
 
 At this point, you're ready to make your changes! Feel free to ask for help; everyone is a beginner at first :smile_cat:
 
-If a maintainer asks you to "rebase" your PR, they're saying that a lot of code has changed, and that you need to update your branch, so it's easier to merge.
+If a maintainer asks you to "rebase" your PR, they're saying that a lot of code has changed in the `master` or `alpha` branch, and that you need to update your branch, so it's easier to merge.
 
 # Getting started
 
@@ -44,8 +44,9 @@ If a maintainer asks you to "rebase" your PR, they're saying that a lot of code 
 2. If you've added code that should be tested, add tests.
 3. If you've changed APIs or added new features, update the documentation.
 4. Ensure the test suite passes.
-5. Test your changes on a server running the latest supported Minecraft version.
-6. Issue that pull request!
+5. Test your changes.
+6. Commit & Push.
+7. Send the dang pull request to the `alpha` branch or `master` branch if the `alpha` branch does not exist yet.
 
 ## Code review process
 
@@ -53,7 +54,7 @@ The core team will look at your change as soon as possible and review it. Howeve
 
 ### Code, commit message and labeling conventions
 
-We have very precise rules over how our git commit messages can be formatted. This leads to **more readable messages** that are easy to follow when looking through the **project history**.
+We have very precise rules over how our git commit messages can be formatted. This leads to **more readable messages** that are easy to follow when looking through the **commit history**.
 
 It is important to note that we use the git commit messages to **generate** the [CHANGELOG](./CHANGELOG.md) document. Improperly formatted commit messages may result in your change not appearing in the CHANGELOG of the next release.
 
@@ -93,10 +94,10 @@ The scope could be anything that helps to specify the scope (or feature) that is
 
 Examples
 
-- command
-- event
-- permission
-- featureX
+- ui
+- detect
+- cli
+- rpc
 
 ##### Subject
 
@@ -119,7 +120,7 @@ The footer should contain any information about **Breaking Changes** and is also
 ##### Sample Commit messages
 
 ```text
-fix(electron): avoid loading tray icon when show is set to false
+fix(ui): avoid loading tray icon when show is set to false
 
 * for some reason, setting show: false in the window options makes it render
 
@@ -135,26 +136,20 @@ Fixes #3857
 ```
 
 ````text
-refactor(respawn): bed respawn event renamed
+refactor(detect): rename interfaces to if
 
-    BREAKING CHANGE: PlayerBedRespawn renamed to PlayerRespawnInBed
+    BREAKING CHANGE: interface subcommand renamed to if
 
-    Change your code from this:
+    Change your usage of the command line interface from this:
 
-    ```java
-    @EventHandler
-    public void onRespawn(PlayerBedRespawn event) {
-      ...
-    }
+    ```bash
+		rokon interface blacklist eth0
     ```
 
     To this:
 
-    ```java
-    @EventHandler
-    public void onRespawn(PlayerRespawnInBed event) {
-      ...
-    }
+    ```bash
+		rokon interface blacklist eth0
     ```
 ````
 
@@ -162,8 +157,12 @@ refactor(respawn): bed respawn event renamed
 
 ## Releasing a new version of Rokon
 
-One of the major benefits of this approach is the fact that it will **automatically release a new version** on every successful push to either `master` or `alpha` based on your commit messages. This makes sure your plugin is released following the [semantic versioning](https://semver.org/) guidelines. For this to work you have to follow a few simple rules:
+One of the major benefits of this approach is the fact that it will **automatically release a new version** on every successful push to either `master` or `alpha` based on the commit messages. This makes sure Rokon is released following the [semantic versioning](https://semver.org/) guidelines. For this to work you have to follow a few simple rules:
 
-- Commit only working and tested code to the master branch. _Use Pull Requests to work on bigger features or bug fixes and merge them when you are ready._
+- THe master branch should always have working code that is tested. _Use Pull Requests to work on bigger features or bug fixes and merge them when you are ready._
 - Every bugfix, feature and change should have one commit associated with it. _Do not mix multiple bugs, features, etc. into one huge commit message. Keep your commit size small and commit often._
-- Your commit messages must follow the [conventional commit rules](https://www.conventionalcommits.org/).
+- Your commit messages must follow the [conventional commit rules](https://www.conventionalcommits.org/) additionally, the Angular flavor is accepted as well.
+
+## One More Thing
+
+All commits on the master branch from humans ie (NOT GitHub Actions) should be signed. Please take some time to learn how to [sign your commits if you haven't already](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits).

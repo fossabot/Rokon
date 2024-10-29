@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"path"
 	"path/filepath"
 	"runtime"
 	"strconv"
@@ -146,6 +147,7 @@ func main() {
 			"desktop":        desktop,
 			"desktopVersion": kdeSessionVersion,
 			"sessionType":    sessionType,
+			"packageFormat":  packageFormat,
 		})
 
 		container := os.Getenv("container")
@@ -182,8 +184,7 @@ func main() {
 			log.Println("Running from a native package")
 			createEvent("native_run", map[string]interface{}{
 				"nativeVersion": version, // Replace with your app version logic
-				// The PATH can sometimes reveal PII
-				// "path":          os.Args[0],
+				"path":          path.Base(os.Args[0]),
 				"packageFormat": packageFormat,
 			})
 		}
@@ -209,19 +210,21 @@ func main() {
 			release, arch)
 
 		createEvent("macos_run", map[string]interface{}{
-			"arch":    arch,
-			"mas":     os.Getenv("MAS"),
-			"version": version, // Replace with your app version logic
-			"path":    os.Args[0],
+			"arch":          arch,
+			"mas":           os.Getenv("MAS"),
+			"version":       version, // Replace with your app version logic
+			"path":          path.Base(os.Args[0]),
+			"packageFormat": packageFormat,
 		})
 	default:
 		log.Printf("Unsupported telemetry platform: %s %s %s. However, the application will continue.\n",
 			runtime.GOOS, getOSRelease(), runtime.GOARCH)
 		createEvent("unsupported_platform", map[string]interface{}{
-			"platform": runtime.GOOS,
-			"arch":     runtime.GOARCH,
-			"version":  version, // Replace with your app version logic
-			"path":     os.Args[0],
+			"platform":      runtime.GOOS,
+			"arch":          runtime.GOARCH,
+			"version":       version, // Replace with your app version logic
+			"path":          path.Base(os.Args[0]),
+			"packageFormat": packageFormat,
 		})
 	}
 	app.ConnectActivate(func() { activate(app) })
@@ -256,7 +259,7 @@ func applicationInfo() string {
 		switch {
 		case os.Getenv("SNAP") != "":
 			return " (Snap)"
-		case os.Getenv("FLATPAK") != "":
+		case os.Getenv("container") == "flatpak":
 			return " (Flatpak)"
 		case os.Getenv("APPIMAGE") != "":
 			return " (AppImage)"
@@ -322,8 +325,9 @@ func searchForRokus() chan []ssdp.Service {
 }
 
 // Show the "About" window.
-func showAboutWindow(_ *gtk.ApplicationWindow, app *gtk.Application) {
+func showAboutWindow(mainWindow *gtk.ApplicationWindow, app *gtk.Application) {
 	aboutWindow := gtk.NewAboutDialog()
+	aboutWindow.SetApplication(app)
 	aboutWindow.SetProgramName(applicationInfo())
 	aboutWindow.SetVersion(app.Version())
 	aboutWindow.SetComments("Control your Roku TV from your desktop")
