@@ -3,10 +3,15 @@
   path: modules.txt
   type: file
 - dest: vendor/github.com/adrg/xdg
-  sha256: 53d5cfc44ba00ff0df46c3988383f362feb1ad42d63af3e1b8243346bd65d4ee
+  sha256: acdbe9c6386de47fec0dda18af1d08e319bab8a9fd134625edaa28f9e745f5c2
   strip-components: 3
   type: archive
-  url: https://proxy.golang.org/github.com/adrg/xdg/@v/v0.5.0.zip
+  url: https://proxy.golang.org/github.com/adrg/xdg/@v/v0.5.2.zip
+- dest: vendor/github.com/benesch/cgosymbolizer
+  sha256: 77732751af3b44429790b41f2db2b8a7f4a19fdd10ccbf5069730a48cf5e419c
+  strip-components: 3
+  type: archive
+  url: https://proxy.golang.org/github.com/benesch/cgosymbolizer/@v/v0.0.0-20190515212042-bec6fe6e597b.zip
 - dest: vendor/github.com/brycensranch/go-aptabase/pkg
   sha256: d30dd331b92fd16b89214b3988075f49f0e93becca5aa6f53609296b1960a4d8
   strip-components: 4

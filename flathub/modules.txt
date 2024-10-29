@@ -1,11 +1,14 @@
 # github.com/KarpelesLab/weak v0.1.1
 ## explicit; go 1.18
 github.com/KarpelesLab/weak
-# github.com/adrg/xdg v0.5.0
+# github.com/adrg/xdg v0.5.2
 ## explicit; go 1.19
 github.com/adrg/xdg
 github.com/adrg/xdg/internal/pathutil
 github.com/adrg/xdg/internal/userdirs
+# github.com/benesch/cgosymbolizer v0.0.0-20190515212042-bec6fe6e597b
+## explicit
+github.com/benesch/cgosymbolizer
 # github.com/brycensranch/go-aptabase/pkg v0.0.0-20241004152612-e20856549654
 ## explicit; go 1.22.0
 github.com/brycensranch/go-aptabase/pkg/aptabase/v1
