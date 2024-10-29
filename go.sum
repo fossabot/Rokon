@@ -10,8 +10,8 @@ github.com/diamondburned/gotk4/pkg v0.3.1 h1:uhkXSUPUsCyz3yujdvl7DSN8jiLS2BgNTQE
 github.com/diamondburned/gotk4/pkg v0.3.1/go.mod h1:DqeOW+MxSZFg9OO+esk4JgQk0TiUJJUBfMltKhG+ub4=
 github.com/go-resty/resty/v2 v2.15.3 h1:bqff+hcqAflpiF591hhJzNdkRsFhlB96CYfBwSFvql8=
 github.com/go-resty/resty/v2 v2.15.3/go.mod h1:0fHAoK7JoBy/Ch36N8VFeMsK7xQOHhvWaC3iOktwmIU=
-github.com/ianlancetaylor/cgosymbolizer v0.0.0-20240805235558-330cf6901bf7 h1:I3PSf1is5RoJti28Ao1CIVMriDERSEv7YtpMSqo1MdA=
-github.com/ianlancetaylor/cgosymbolizer v0.0.0-20240805235558-330cf6901bf7/go.mod h1:DvXTE/K/RtHehxU8/GtDs4vFtfw64jJ3PaCnFri8CRg=
+github.com/ianlancetaylor/cgosymbolizer v0.0.0-20241025222116-6b205f073fdd h1:ZQWb/5KPclX4ztaKJaC0Esm6qLmjKjl0C3cYsg9Qi0s=
+github.com/ianlancetaylor/cgosymbolizer v0.0.0-20241025222116-6b205f073fdd/go.mod h1:DvXTE/K/RtHehxU8/GtDs4vFtfw64jJ3PaCnFri8CRg=
 github.com/koron/go-ssdp v0.0.4 h1:1IDwrghSKYM7yLf7XCzbByg2sJ/JcNOZRXS2jczTwz0=
 github.com/koron/go-ssdp v0.0.4/go.mod h1:oDXq+E5IL5q0U8uSBcoAXzTzInwy5lEgC91HoKtbmZk=
 github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 h1:Jamvg5psRIccs7FGNTlIRMkT8wgtp5eCXdBlqhYGL6U=

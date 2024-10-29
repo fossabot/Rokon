@@ -23,10 +23,10 @@
   type: archive
   url: https://proxy.golang.org/github.com/go-resty/resty/v2/@v/v2.15.3.zip
 - dest: vendor/github.com/ianlancetaylor/cgosymbolizer
-  sha256: 6977d887cb83eafdcfd8fcd877b3ce96381fd0441742806f485ed017e0b3cd65
+  sha256: 75f17cd2577f75be47c7f7c4fd6e168b7b02e454ef2e5071a7430d17998ec559
   strip-components: 3
   type: archive
-  url: https://proxy.golang.org/github.com/ianlancetaylor/cgosymbolizer/@v/v0.0.0-20240805235558-330cf6901bf7.zip
+  url: https://proxy.golang.org/github.com/ianlancetaylor/cgosymbolizer/@v/v0.0.0-20241025222116-6b205f073fdd.zip
 - dest: vendor/github.com/koron/go-ssdp
   sha256: 4a4c4a048c0ac4632d8e9f0be4fd64804a2cb872e660be4b79d83a29bc347ad4
   strip-components: 3

@@ -7,7 +7,7 @@ require (
 	github.com/brycensranch/go-aptabase/pkg v0.0.0-20241004152612-e20856549654
 	github.com/diamondburned/gotk4/pkg v0.3.1
 	github.com/go-resty/resty/v2 v2.15.3
-	github.com/ianlancetaylor/cgosymbolizer v0.0.0-20240805235558-330cf6901bf7
+	github.com/ianlancetaylor/cgosymbolizer v0.0.0-20241025222116-6b205f073fdd
 	github.com/koron/go-ssdp v0.0.4
 )
 

@@ -39,7 +39,7 @@ github.com/diamondburned/gotk4/pkg/pango
 ## explicit; go 1.20
 github.com/go-resty/resty/v2
 github.com/go-resty/resty/v2/shellescape
-# github.com/ianlancetaylor/cgosymbolizer v0.0.0-20240805235558-330cf6901bf7
+# github.com/ianlancetaylor/cgosymbolizer v0.0.0-20241025222116-6b205f073fdd
 ## explicit; go 1.12
 github.com/ianlancetaylor/cgosymbolizer
 # github.com/koron/go-ssdp v0.0.4
