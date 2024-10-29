@@ -49,6 +49,7 @@ jobs:
             git config --global --add safe.directory '*'
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
+            mv *.run /usr/bin
           run: |
             make run
             make tarball
@@ -141,6 +142,7 @@ jobs:
             mv mkappimage /usr/bin
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
+            mv *.run /usr/bin
           run: |
             make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" run
             make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" tarball
@@ -225,6 +227,7 @@ jobs:
             mv mkappimage /usr/bin
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
+            mv *.run /usr/bin
           run: |
             make run
             make tarball
