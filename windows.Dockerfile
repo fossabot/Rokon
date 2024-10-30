@@ -1,3 +1,7 @@
+# Maintainer: Brycen G <brycengranville@outlook.com>
+
+# This is the 'windows' flavor of Rokon. It is more specifically for Windows Pro Edition+. If you're running Windows 10 Home, you should use the normal Rokon container (Linux, runs on Windows Home via WSL2)
+
 ARG WINDOWS_VERSION=latest
 
 FROM amitie10g/msys2:latest AS builder
@@ -21,7 +25,7 @@ RUN ls -R
 
 RUN make TARGET="Rokon.exe" PACKAGED=true EXTRALDFLAGS="-s -w -H windowsgui" EXTRAGOFLAGS="-trimpath" PACKAGEFORMAT=docker build
 RUN make TARGET="Rokon.exe" PREFIX="./Rokon" BINDIR="./Rokon" install
-RUN ldd "Rokon.exe" | { grep "=> /clang64/bin/" || true; }             | cut -d ' ' -f1             | xargs -I{} cp /clang64/bin/{} ./Rokon 
+RUN ldd "Rokon.exe" | { grep "=> /clang64/bin/" || true; }             | cut -d ' ' -f1             | xargs -I{} cp /clang64/bin/{} ./Rokon
 
 WORKDIR C:\\app\\Rokon
 

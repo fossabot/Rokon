@@ -1,3 +1,4 @@
+# Maintainer: Brycen G <brycengranville@outlook.com>
 
 # This container *can* work under NVIDIA.
 # For example, you could run the command `distrobox create --name rokon --image ghcr.io/brycensranch/rokon --nvidia`
