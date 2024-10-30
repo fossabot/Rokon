@@ -12,6 +12,8 @@ on:
   workflow_dispatch:
 env:
   EXTRAGOFLAGS: "-buildvcs=false"
+  # AppImages in Docker Containers suck.
+  APPIMAGE_EXTRACT_AND_RUN: 1
 jobs:
   build_aarch64:
     timeout-minutes: 2000
