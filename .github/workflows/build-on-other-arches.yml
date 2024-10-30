@@ -38,14 +38,16 @@ jobs:
           dockerRunArgs: "--device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor:unconfined"
           install: |
             dnf install -y @development-tools gtk4-devel gobject-introspection-devel go @development-libs @rpm-development-tools wget fuse fuse-libs
-            wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-aarch64.AppImage" | head -n 1 | cut -d '"' -f 2)
-            chmod +x appimagetool-*.AppImage
-            mv appimagetool-* appimagetool
-            mv appimagetool /usr/bin
-            wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-aarch64.AppImage" | head -n 1 | cut -d '"' -f 2)
-            chmod +x mkappimage-*.AppImage
-            mv mkappimage-* mkappimage
-            mv mkappimage /usr/bin
+            git clone https://github.com/probonopd/go-appimage
+            cd go-appimage
+            scripts/build.sh
+            for file in build/*.AppImage; do
+                mv "$file" "${file%%-*}.AppImage"
+            done
+            for file in build/*.AppImage; do
+                mv "$file" "/usr/local/bin/$(basename "$file" .AppImage)"
+            done
+            cd ..
             git config --global --add safe.directory '*'
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
@@ -132,14 +134,15 @@ jobs:
             add-apt-repository -y universe
             apt update
             apt install -y golang-go libfuse2t64
-            wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-armhf.AppImage" | head -n 1 | cut -d '"' -f 2)
-            chmod +x appimagetool-*.AppImage
-            mv appimagetool-* appimagetool
-            mv appimagetool /usr/bin
-            wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-armhf.AppImage" | head -n 1 | cut -d '"' -f 2)
-            chmod +x mkappimage-*.AppImage
-            mv mkappimage-* mkappimage
-            mv mkappimage /usr/bin
+            git clone https://github.com/probonopd/go-appimage
+            cd go-appimage
+            scripts/build.sh
+            for file in build/*.AppImage; do
+                mv "$file" "${file%%-*}.AppImage"
+            done
+            for file in build/*.AppImage; do
+                mv "$file" "/usr/local/bin/$(basename "$file" .AppImage)"
+            done
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
             mv *.run /usr/bin
@@ -217,14 +220,15 @@ jobs:
             apt update
             apt install -y build-essential libgtk-4-dev wget libgirepository1.0-dev git golang-go patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools libfuse2t64
             git config --global --add safe.directory '*'
-            wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-i686.AppImage" | head -n 1 | cut -d '"' -f 2)
-            chmod +x appimagetool-*.AppImage
-            mv appimagetool-* appimagetool
-            mv appimagetool /usr/bin
-            wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-i686.AppImage" | head -n 1 | cut -d '"' -f 2)
-            chmod +x mkappimage-*.AppImage
-            mv mkappimage-* mkappimage
-            mv mkappimage /usr/bin
+            git clone https://github.com/probonopd/go-appimage
+            cd go-appimage
+            scripts/build.sh
+            for file in build/*.AppImage; do
+                mv "$file" "${file%%-*}.AppImage"
+            done
+            for file in build/*.AppImage; do
+                mv "$file" "/usr/local/bin/$(basename "$file" .AppImage)"
+            done
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
             mv *.run /usr/bin
