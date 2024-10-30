@@ -27,6 +27,8 @@ jobs:
       - name: Check if /var/run/docker.sock is mounted
         run: |
           ls -la /var/run/docker.sock
+      - name: Load FUSE.
+        run: modprobe fuse
 
       - name: Build aarch64 on fedora_latest
         uses: uraimo/run-on-arch-action@v2
@@ -117,6 +119,8 @@ jobs:
       - name: Check if /var/run/docker.sock is mounted
         run: |
           ls -la /var/run/docker.sock
+      - name: Load FUSE.
+        run: modprobe fuse
 
       - name: Build armv7 on ubuntu_latest
         uses: uraimo/run-on-arch-action@v2
@@ -206,7 +210,9 @@ jobs:
       - name: Check if /var/run/docker.sock is mounted
         run: |
           ls -la /var/run/docker.sock
-
+      - name: Load FUSE.
+        run: modprobe fuse
+        
       - name: Build i386 (32 bit) on Debian Testing
         uses: uraimo/run-on-arch-action@v2
         with:
