@@ -37,7 +37,7 @@ jobs:
             mkdir -p "${PWD}/artifacts"
           shell: /bin/sh
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          dockerRunArgs: "--device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor:unconfined"
+          dockerRunArgs: "--device /dev/fuse:mrw --cap-add SYS_ADMIN --security-opt apparmor:unconfined --cap-add MKNOD"
           install: |
             dnf install -y @development-tools gtk4-devel gobject-introspection-devel go @development-libs @rpm-development-tools wget fuse fuse-libs
             git clone https://github.com/probonopd/go-appimage
@@ -127,7 +127,7 @@ jobs:
             mkdir -p "${PWD}/artifacts"
           shell: /bin/sh
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-          dockerRunArgs: "--device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor:unconfined"
+          dockerRunArgs: "--device /dev/fuse:mrw --cap-add SYS_ADMIN --security-opt apparmor:unconfined --cap-add MKNOD"
           install: |
             apt update
             apt install -y build-essential git wget libgtk-4-dev libgirepository1.0-dev software-properties-common patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools
@@ -213,7 +213,7 @@ jobs:
           arch: none
           distro: none
           base_image: i386/debian:testing
-          dockerRunArgs: "--device /dev/fuse --cap-add SYS_ADMIN --security-opt apparmor:unconfined"
+          dockerRunArgs: "--device /dev/fuse:mrw --cap-add SYS_ADMIN --security-opt apparmor:unconfined --cap-add MKNOD"
           setup: |
             mkdir -p "${PWD}/artifacts"
           shell: /bin/sh
