@@ -72,6 +72,7 @@ ABS_RUNDIR := $(shell realpath $(RUNDIR))
 MAKESELF := $(shell \
     if ls ./makeself*.run > /dev/null 2>&1; then \
         ./makeself*.run --quiet --noexec; \
+		rm ./makeself*.run; \
         echo "makeself*/makeself.sh"; \
     elif [ -f ./makeself*/makeself.sh ]; then \
         echo "./makeself*/makeself.sh"; \
@@ -85,6 +86,7 @@ MAKESELF := $(shell \
             for file in "$$cmd/makeself"*.run; do \
                 if [ -f "$$file" ]; then \
                     $$file --quiet --noexec; \
+					rm $$file; \
                     echo "makeself*/makeself.sh"; \
                     found=true; \
                     break 2; \
@@ -248,7 +250,7 @@ tarball: ## build self contained Tarball that auto updates
 	$(MAKE) PREFIX=$(TARBALLDIR) APPLICATIONSDIR=$(TARBALLDIR) install
 	cp -v ./windows/portable.txt $(TARBALLDIR)
 	$(call copy_deps,$(TARBALLDIR)/bin/$(TARGET),$(TBLIBSDIR))
-	# patchelf --set-interpreter libs/ld-linux-$(subst _,-,$(ARCH)).so.2 --force-rpath --set-rpath libs $(TARBALLDIR)/bin/$(TARGET)
+	patchelf --set-interpreter "$(ls libs/ld-linux*)" --force-rpath --set-rpath libs $(TARBALLDIR)/bin/$(TARGET)
 	$(call make_wrapper_script,$(TARBALLDIR))
 	@if command -v glibc-downgrade > /dev/null; then \
 		echo "glibc-downgrade found. Downgrading binaries and libraries to glibc 2.33..."; \
