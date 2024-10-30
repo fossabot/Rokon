@@ -29,4 +29,4 @@ WORKDIR /app
 
 COPY --from=builder /app/tarball .
 
-CMD "./rokon"
+CMD ["./rokon"]
