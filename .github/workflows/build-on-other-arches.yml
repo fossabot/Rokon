@@ -218,11 +218,11 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             apt update
-            apt install -y build-essential libgtk-4-dev wget libgirepository1.0-dev git golang-go patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools libfuse2t64
+            apt install -y build-essential libgtk-4-dev wget libgirepository1.0-dev git golang-go patchelf fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools libfuse2t64 file
             git config --global --add safe.directory '*'
             git clone https://github.com/probonopd/go-appimage
             cd go-appimage
-            scripts/build.sh
+            ARCH=386 AIARCH=i386 GOARCH=386 BUILDARCH=386 scripts/build.sh
             for file in build/*.AppImage; do
                 mv "$file" "${file%%-*}.AppImage"
             done
