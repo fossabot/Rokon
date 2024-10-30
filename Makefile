@@ -250,27 +250,7 @@ tarball: ## build self contained Tarball that auto updates
 	$(MAKE) PREFIX=$(TARBALLDIR) APPLICATIONSDIR=$(TARBALLDIR) install
 	cp -v ./windows/portable.txt $(TARBALLDIR)
 	$(call copy_deps,$(TARBALLDIR)/bin/$(TARGET),$(TBLIBSDIR))
-	@if command -v patchelf > /dev/null; then \
-		echo "patchelf found. Patching binary ($(TARGET)) to use dependecies from tarball"; \
-		patchelf --set-interprenter "$(ls libs/ld-linux*)" --force-rpath --set-rpath libs $(TARBALLDIR)/bin/$(TARGET); \
-	else \
-		echo "patchelf not found. Skipping binary patching."; \
-	fi
 	$(call make_wrapper_script,$(TARBALLDIR))
-	@if command -v glibc-downgrade > /dev/null; then \
-		echo "glibc-downgrade found. Downgrading binaries and libraries to glibc 2.33..."; \
-		for lib in $(TBLIBSDIR)/*.so*; do \
-			if [[ "$(basename "$$lib")" != *"libc.so"* && "$(basename "$$lib")" != *"libm.so"* && "$(basename "$$lib")" != *"libstdc++"* ]]; then \
-				echo "Applying glibc-downgrade to $$lib"; \
-				glibc-downgrade 2.33 "$$lib" > /dev/null 2>&1; \
-			else \
-				echo "Skipping $$lib"; \
-			fi; \
-		done; \
-		glibc-downgrade 2.33 $(TARBALLDIR)/bin/$(TARGET); \
-	else \
-		echo "glibc-downgrade not found. Skipping downgrade."; \
-	fi
 	@if command -v upx > /dev/null; then \
 		echo "UPX found. Compressing binaries..."; \
 		upx --best --lzma -v $(TARBALLDIR)/bin/$(TARGET) || echo "Failed to compress $(TARGET) binary."; \
