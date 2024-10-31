@@ -127,6 +127,7 @@ jobs:
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
             sudo mv mkappimage /usr/local/bin
+            sudo chown -R $(whoami) ./AppDir
             make TARBALLDIR=./AppDir ARCH=aarch64 basedimage
       - name: 😭 Upload Failed Directories For Debug
         uses: actions/upload-artifact@v4
@@ -193,7 +194,6 @@ jobs:
           setup: |
             mkdir -p "${PWD}/artifacts"
             git config --global --add safe.directory '*'
-          shell: /bin/sh
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             apt update
@@ -215,6 +215,7 @@ jobs:
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
             sudo mv mkappimage /usr/local/bin
+            sudo chown -R $(whoami) ./AppDir
             make TARBALLDIR=./AppDir ARCH=armhf basedimage
       - name: 😭 Upload Failed Directories For Debug
         uses: actions/upload-artifact@v4
@@ -282,7 +283,6 @@ jobs:
           setup: |
             mkdir -p "${PWD}/artifacts"
             git config --global --add safe.directory /home/runner/work/Rokon/Rokon
-          shell: /bin/sh
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             apt update
@@ -303,6 +303,7 @@ jobs:
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
             sudo mv mkappimage /usr/local/bin
+            sudo chown -R $(whoami) ./AppDir
             make TARBALLDIR=./AppDir ARCH=i686 basedimage
       - name: 😭 Upload Failed Directories For Debug
         uses: actions/upload-artifact@v4
