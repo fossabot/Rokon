@@ -234,7 +234,7 @@ basedimage: ## create AppImage from existing tarball directory
 	mkdir -p $(TARBALLDIR)/usr/share/applications
 	cp $(TARBALLDIR)/io.github.brycensranch.Rokon.desktop $(TARBALLDIR)/usr/share/applications
 	cp $(TARBALLDIR)/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(TARBALLDIR)/usr/share/metainfo/io.github.brycensranch.Rokon.appdata.xml
-	cp /usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(TARBALLDIR)
+	cp usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(TARBALLDIR)
 	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 mkappimage --comp zstd --ll -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-*$(ARCH).AppImage.zsync" $(TARBALLDIR)
 
 .PHONY: tarball
