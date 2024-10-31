@@ -119,6 +119,7 @@ jobs:
             git config --global --add safe.directory '*'
             make SANITYCHECK=0 run
             make SANITYCHECK=0 tarball
+            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
       - name: Create Bootleg AppImage
         run: |
             sudo apt -y install zsync desktop-file-utils python3 python3-pip fakeroot python3-setuptools squashfs-tools util-linux appstream software-properties-common && sudo add-apt-repository universe && sudo apt install -y libfuse2t64
@@ -126,7 +127,6 @@ jobs:
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
             sudo mv mkappimage /usr/local/bin
-            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
             make TARBALLDIR=./AppDir ARCH=aarch64 basedimage
       - name: 😭 Upload Failed Directories For Debug
         uses: actions/upload-artifact@v4
@@ -207,6 +207,7 @@ jobs:
             git config --global --add safe.directory '*'
             make EXTRAGOFLAGS=${{env.EXTRAGOFLAGS}} SANITYCHECK=0 run
             make EXTRAGOFLAGS=${{env.EXTRAGOFLAGS}} SANITYCHECK=0 tarball
+            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
       - name: Create Bootleg AppImage
         run: |
             sudo apt -y install zsync desktop-file-utils python3 python3-pip fakeroot python3-setuptools squashfs-tools util-linux appstream software-properties-common && sudo add-apt-repository universe && sudo apt install -y libfuse2t64
@@ -214,7 +215,6 @@ jobs:
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
             sudo mv mkappimage /usr/local/bin
-            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
             make TARBALLDIR=./AppDir ARCH=armhf basedimage
       - name: 😭 Upload Failed Directories For Debug
         uses: actions/upload-artifact@v4
@@ -295,6 +295,7 @@ jobs:
             git config --global --add safe.directory '*'
             make SANITYCHECK=0 run
             make SANITYCHECK=0 tarball
+            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
       - name: Create Bootleg AppImage
         run: |
             sudo apt -y install zsync desktop-file-utils python3 python3-pip fakeroot python3-setuptools squashfs-tools util-linux appstream software-properties-common && sudo add-apt-repository universe && sudo apt install -y libfuse2t64
@@ -302,7 +303,6 @@ jobs:
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
             sudo mv mkappimage /usr/local/bin
-            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
             make TARBALLDIR=./AppDir ARCH=i686 basedimage
       - name: 😭 Upload Failed Directories For Debug
         uses: actions/upload-artifact@v4
