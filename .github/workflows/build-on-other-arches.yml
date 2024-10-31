@@ -189,32 +189,20 @@ jobs:
           distro: ubuntu_latest
           setup: |
             mkdir -p "${PWD}/artifacts"
+            git config --global --add safe.directory /home/runner/work/Rokon/Rokon
           shell: /bin/sh
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           dockerRunArgs: "--device /dev/fuse:mrw --cap-add SYS_ADMIN --security-opt apparmor:unconfined --cap-add MKNOD"
           install: |
             apt update
-            apt install -y build-essential git wget libgtk-4-dev libgirepository1.0-dev software-properties-common fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools
-            git config --global --add safe.directory '*'
+            apt install -y build-essential git wget libgtk-4-dev libgirepository1.0-dev software-properties-common
             add-apt-repository -y ppa:longsleep/golang-backports
-            add-apt-repository -y universe
-            apt update
-            apt install -y golang-go libfuse2t64
-            git clone https://github.com/probonopd/go-appimage
-            cd go-appimage
-            scripts/build.sh
-            for file in build/*.AppImage; do
-                mv "$file" "${file%%-*}.AppImage"
-            done
-            for file in build/*.AppImage; do
-                mv "$file" "/usr/local/bin/$(basename "$file" .AppImage)"
-            done
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
             mv *.run /usr/bin
           run: |
-            make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" SANITYCHECK=0 run
-            make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" SANITYCHECK=0 tarball
+            make SANITYCHECK=0 run
+            make SANITYCHECK=0 tarball
       - name: Create Bootleg AppImage
         run: |
             sudo apt -y install zsync desktop-file-utils python3 python3-pip fakeroot python3-setuptools squashfs-tools util-linux appstream software-properties-common && sudo add-apt-repository universe && sudo apt install -y libfuse2t64
@@ -290,6 +278,7 @@ jobs:
           dockerRunArgs: "--device /dev/fuse:mrw --cap-add SYS_ADMIN --security-opt apparmor:unconfined --cap-add MKNOD"
           setup: |
             mkdir -p "${PWD}/artifacts"
+            git config --global --add safe.directory /home/runner/work/Rokon/Rokon
           shell: /bin/sh
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
