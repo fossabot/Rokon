@@ -11,9 +11,14 @@ RUN dnf install -y \
     gtk4-devel \
     gobject-introspection-devel \
     which \
+    clang \
     upx
 RUN dnf clean all
 
+# DO WHATEVER IT TAKES TO BUILD AS FAST AS POSSIBLE!!! TO INFINITY... AND BEYOND
+ENV CC clang
+ENV CXX clang++
+ENV CFLAGS="-O0 -w -fno-strict-aliasing -gline-tables-only"
 
 
 WORKDIR /app

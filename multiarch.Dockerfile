@@ -10,11 +10,12 @@ COPY . .
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
-
-
+ENV CC clang
+ENV CXX clang++
+ENV CFLAGS="-O0 -w -fno-strict-aliasing -gline-tables-only"
 
 RUN apt update
-RUN apt install -y build-essential git libgtk-4-dev libgirepository1.0-dev make golang-go
+RUN apt install -y git libgtk-4-dev libgirepository1.0-dev make golang-go clang
 RUN apt clean && apt autoremove
 
 
