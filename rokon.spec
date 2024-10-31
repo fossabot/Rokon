@@ -23,6 +23,7 @@
 # - vendor/github.com/brycensranch/go-aptabase/pkg
 # - vendor/github.com/diamondburned/gotk4/pkg
 %bcond check 0
+%global toolchain clang
 
 # https://github.com/BrycensRanch/Rokon
 %global goipath         github.com/brycensranch/rokon
@@ -31,7 +32,7 @@
 
 
 %if 0%{?fedora}
-%gometa -L -f
+%gometa -L
 %endif
 
 
@@ -40,7 +41,7 @@ Version:        1.0.0
 %if 0%{?fedora}
 Release:        %autorelease -p
 %else
-Release:        18%{?dist}
+Release:        19%{?dist}
 %endif
 Summary:        Control your Roku device with your desktop!
 
@@ -55,9 +56,8 @@ BuildRequires:  go
 BuildRequires:  go-vendor-tools
 %endif
 
-BuildRequires:  gcc
+BuildRequires:  clang
 BuildRequires:  unzip
-BuildRequires:  gcc-c++
 BuildRequires:  gtk4-devel
 BuildRequires:  gobject-introspection-devel
 Requires:       gtk4
@@ -81,22 +81,22 @@ ls
 # Setup the correct compilation flags for the environment
 # Not all distributions do this automatically
 %if 0%{?fedora}
-    # Fedora specific behavior (no-op or something else)
     # Do nothing, since Fedora 33 the build flags are already set
 %else
     %set_build_flags
 %endif
+
 # Rokon's Makefile still respects any CFLAGS LDFLAGS CXXFLAGS passed to it. It is compliant.
 # https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/PK5PEKWE65UC5XQ6LTLSMATVPIISQKQS/
 # Do not compress the DWARF debug information, it causes the build to fail!
 # As of Go 1.11, debug information is compressed by default. We're disabling that.
 
-%if 0%{?mageia}
-    # Fixes RPM build errors:
-    # error: Empty %files file /builddir/build/BUILD/Rokon-master/debugsourcefiles.list
-    # Empty %files file /builddir/build/BUILD/Rokon-master/debugsourcefiles.list
-    %define _debugsource_template %{nil}
-%endif
+# Fixes RPM build errors:
+# Empty %files file /builddir/build/BUILD/Rokon-master/debugsourcefiles.list
+# Previously, this failed on Mageia only. However, after moving to Clang for faster compilation across the board, it has failed on
+# Fedora Linux as well. Since Fedora Linux is the main target and my development machine, I have decided to disable this due to lack of being able to test it.
+# Although this is disappointing, this is in line to what the Go macros already do on Fedora Linux.
+%define _debugsource_template %{nil}
 
 %define rpmRelease %{?dist}
 
