@@ -38,11 +38,7 @@
 
 Name:           rokon
 Version:        1.0.0
-%if 0%{?fedora}
-Release:        %autorelease -p
-%else
-Release:        19%{?dist}
-%endif
+Release:        20%{?dist}
 Summary:        Control your Roku device with your desktop!
 
 
@@ -163,10 +159,13 @@ ls
 %else
 
 %changelog
+* Mon Oct 31 2024 Brycen <brycengranville@outlook.com> 1.0.0-20
+- Build with clang
+- Include GNOME service file for configuring notifications for Rokon via settings
 * Tue Sep 3 2024 Brycen <brycengranville@outlook.com> 1.0.0-6
 - Removed sysinfo package decreasing binary size and portability and startup time
 - Added metainfo file for appstream
--Added icons to package
+- Added icons to package
 - Added desktop entry
 - Added license file to package
 - Added documentation to package
