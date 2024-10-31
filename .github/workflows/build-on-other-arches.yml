@@ -106,12 +106,15 @@ jobs:
         with:
           arch: aarch64
           distro: fedora_latest
+          env: |
+            CC: "clang"
+            CXX: "clang++"
           setup: |
             mkdir -p "${PWD}/artifacts"
             git config --global --add safe.directory '*'
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
-            dnf install -y gcc git gtk4-devel gobject-introspection-devel go wget which
+            dnf install -y clang git gtk4-devel gobject-introspection-devel go wget which
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
             mv *.run /usr/local/bin
@@ -191,13 +194,16 @@ jobs:
         with:
           arch: armv7
           distro: ubuntu_latest
+          env: |
+            CC: "clang"
+            CXX: "clang++"
           setup: |
             mkdir -p "${PWD}/artifacts"
             git config --global --add safe.directory '*'
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             apt update
-            apt install -y build-essential git wget libgtk-4-dev libgirepository1.0-dev software-properties-common
+            apt install -y clang make git wget libgtk-4-dev libgirepository1.0-dev software-properties-common
             add-apt-repository -y ppa:longsleep/golang-backports
             apt install -y golang-go
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
@@ -280,13 +286,16 @@ jobs:
           arch: none
           distro: none
           base_image: i386/debian:testing
+          env: |
+            CC: "clang"
+            CXX: "clang++"
           setup: |
             mkdir -p "${PWD}/artifacts"
             git config --global --add safe.directory /home/runner/work/Rokon/Rokon
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             apt update
-            apt install -y build-essential libgtk-4-dev wget libgirepository1.0-dev git golang-go fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools libfuse2t64 file
+            apt install -y clang make libgtk-4-dev wget libgirepository1.0-dev git golang-go file
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
             mv *.run /usr/local/bin
