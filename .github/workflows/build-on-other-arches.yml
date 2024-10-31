@@ -111,11 +111,12 @@ jobs:
             git config --global --add safe.directory '*'
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
-            dnf install -y gcc gtk4-devel gobject-introspection-devel go wget
+            dnf install -y gcc git gtk4-devel gobject-introspection-devel go wget which
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
             mv *.run /usr/bin
           run: |
+            git config --global --add safe.directory '*'
             make SANITYCHECK=0 run
             make SANITYCHECK=0 tarball
       - name: Create Bootleg AppImage
@@ -191,7 +192,7 @@ jobs:
           distro: ubuntu_latest
           setup: |
             mkdir -p "${PWD}/artifacts"
-            git config --global --add safe.directory /home/runner/work/Rokon/Rokon
+            git config --global --add safe.directory '*'
           shell: /bin/sh
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           dockerRunArgs: "--device /dev/fuse:mrw --cap-add SYS_ADMIN --security-opt apparmor:unconfined --cap-add MKNOD"
@@ -199,10 +200,12 @@ jobs:
             apt update
             apt install -y build-essential git wget libgtk-4-dev libgirepository1.0-dev software-properties-common
             add-apt-repository -y ppa:longsleep/golang-backports
+            apt install -y golang-go
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
             mv *.run /usr/bin
           run: |
+            git config --global --add safe.directory '*'
             make SANITYCHECK=0 run
             make SANITYCHECK=0 tarball
       - name: Create Bootleg AppImage
@@ -290,6 +293,8 @@ jobs:
             chmod +x *.run
             mv *.run /usr/bin
           run: |
+            git config --global --add safe.directory /home/runner/work/Rokon/Rokon
+            git config --global --add safe.directory '*'
             make SANITYCHECK=0 run
             make SANITYCHECK=0 tarball
       - name: Create Bootleg AppImage
