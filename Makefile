@@ -214,20 +214,6 @@ fatimage: ## build self contained AppImage that can run on older Linux systems w
 	$(MAKE) PREFIX=AppDir/usr install
 	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 appimagetool -s deploy ./AppDir/usr/share/applications/io.github.brycensranch.Rokon.desktop
 	rm AppDir/usr/lib64/libLLVM* || true
-	@if command -v glibc-downgrade > /dev/null; then \
-		echo "glibc-downgrade found. Downgrading binaries and libraries to glibc 2.33..."; \
-		for lib in AppDir/usr/lib64/*.so*; do \
-			if [[ "$(basename "$$lib")" != *"libc.so"* && "$(basename "$$lib")" != *"libm.so"* && "$(basename "$$lib")" != *"libstdc++"* ]]; then \
-				echo "Applying glibc-downgrade to $$lib"; \
-				glibc-downgrade 2.33 "$$lib" > /dev/null 2>&1; \
-			else \
-				echo "Skipping $$lib"; \
-			fi; \
-		done; \
-		glibc-downgrade 2.33 AppDir/usr/bin/$(TARGET); \
-	else \
-		echo "glibc-downgrade not found. Skipping downgrade."; \
-	fi
 	@if command -v upx > /dev/null; then \
 		echo "UPX found. Compressing binaries..."; \
 		upx --best --lzma -v AppDir/usr/bin/$(TARGET) || echo "Failed to compress $(TARGET) binary."; \
