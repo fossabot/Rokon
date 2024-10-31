@@ -11,7 +11,6 @@ RUN dnf install -y \
     gtk4-devel \
     gobject-introspection-devel \
     which \
-    patchelf \
     upx
 RUN dnf clean all
 
