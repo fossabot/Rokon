@@ -127,8 +127,6 @@ make_wrapper_script = \
 
 copy_deps = \
 	cp -L --no-preserve=mode -v $$(ldd $1 | grep 'ld-linux' | awk '{print $$1}') $2; \
-	chmod +x $2/*.so*; \
-	strip --strip-all $2/*.so* || echo "Stripping libraries failed! Tarball *may* be larger than expected."; \
 	ldd -d -r $1 | awk '{print $$3}' | grep -v 'not found' | while read -r dep; do \
 		if [ -n "$$dep" ]; then \
 			echo "Copying dependency: $$dep"; \
@@ -140,7 +138,9 @@ copy_deps = \
 				cp -L --no-preserve=mode -v "$$subdep" $2 || { echo "Failed to copy $$subdep"; exit 1; }; \
 			fi; \
 		done; \
-	done
+	done; \
+	chmod +x $2/*.so*; \
+	strip --strip-all $2/*.so* || echo "Stripping libraries failed! Tarball *may* be larger than expected."
 
 
 # Target to resolve dependencies
