@@ -106,7 +106,6 @@ jobs:
           distro: fedora_latest
           setup: |
             mkdir -p "${PWD}/artifacts"
-          shell: /bin/sh
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           dockerRunArgs: "--device /dev/fuse:mrw --cap-add SYS_ADMIN --security-opt apparmor:unconfined --cap-add MKNOD"
           install: |
