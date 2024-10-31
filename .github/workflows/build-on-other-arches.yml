@@ -73,7 +73,9 @@ jobs:
         id: meta
         uses: ./.github/actions/setup-docker-build-env
         with:
-          flavor: multiarch-
+          flavor: |
+            latest=auto
+            prefix=multiarch-
       - name: Build Docker Container and push
         uses: docker/build-push-action@v6
         with:
