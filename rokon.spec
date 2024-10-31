@@ -16,19 +16,19 @@
 
 
 
-# Checking is disabled until I can troubleshoot this:
+# License Checking is disabled until I can troubleshoot this:
 # + go_vendor_license --config go-vendor-tools.toml report expression --verify 'AGPL-3.0-only AND BSD-3-Clause AND CC-BY-SA-4.0 AND ISC AND MIT AND MPL-2.0'
 # Using detector: askalono
 # The following modules are missing license files:
 # - vendor/github.com/brycensranch/go-aptabase/pkg
 # - vendor/github.com/diamondburned/gotk4/pkg
 %bcond check 0
+# Does not seem to work on OpenSUSE Tumbleweed. Still builds with gcc??
 %global toolchain clang
 
 # https://github.com/BrycensRanch/Rokon
 %global goipath         github.com/brycensranch/rokon
 %global forgeurl        https://github.com/BrycensRanch/Rokon
-%global commit          3c784069f9cb006600dd2eadd0ccab53d8189d85
 
 
 %if 0%{?fedora}
@@ -37,8 +37,10 @@
 
 
 Name:           rokon
+# Note for Rokon Contributors: Do not touch the version or release. GitHub Actions handles these and bump as necessary.
+# On OpenSUSE Build Service, the Release is overwritten which is out of my control.
 Version:        1.0.0
-Release:        20%{?dist}
+Release:        21%{?dist}
 Summary:        Control your Roku device with your desktop!
 
 
@@ -120,12 +122,13 @@ ls
               DOCDIR=%{_docdir}
 %endif
 
+
 %check
+./rokon --version
 %if 0%{?fedora}
 %if %{with check}
 %go_vendor_license_check -c go-vendor-tools.toml
 %endif
-./rokon --version
 %endif
 
 %if 0%{?fedora}
@@ -159,7 +162,7 @@ ls
 %else
 
 %changelog
-* Mon Oct 31 2024 Brycen <brycengranville@outlook.com> 1.0.0-20
+* Thu Oct 31 2024 Brycen <brycengranville@outlook.com> 1.0.0-20
 - Build with clang
 - Include GNOME service file for configuring notifications for Rokon via settings
 * Tue Sep 3 2024 Brycen <brycengranville@outlook.com> 1.0.0-6
