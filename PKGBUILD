@@ -10,7 +10,7 @@ arch=('x86_64' 'aarch64' 'armv7h')
 url="https://github.com/BrycensRanch/Rokon"
 license=('AGPL-3.0-or-later')
 depends=('gtk4')
-makedepends=('gtk4' 'git' 'gcc' 'go' 'make')
+makedepends=('gtk4' 'git' 'go' 'make')
 source=("git+https://github.com/BrycensRanch/Rokon.git#branch=master")
 sha256sums=('SKIP')
 
