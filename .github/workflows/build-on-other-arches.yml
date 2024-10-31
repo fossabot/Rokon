@@ -125,7 +125,7 @@ jobs:
             wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
-            mv mkappimage /usr/bin
+            sudo mv mkappimage /usr/local/bin
             make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
             make TARBALLDIR=./AppDir ARCH=aarch64 basedimage
       - name: 😭 Upload Failed Directories For Debug
@@ -214,7 +214,7 @@ jobs:
             wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
-            mv mkappimage /usr/bin
+            sudo mv mkappimage /usr/local/bin
             make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
             make TARBALLDIR=./AppDir ARCH=armhf basedimage
       - name: 😭 Upload Failed Directories For Debug
@@ -303,7 +303,7 @@ jobs:
             wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
             chmod +x mkappimage-*.AppImage
             mv mkappimage-* mkappimage
-            mv mkappimage /usr/bin
+            sudo mv mkappimage /usr/local/bin
             make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
             make TARBALLDIR=./AppDir ARCH=i686 basedimage
       - name: 😭 Upload Failed Directories For Debug
