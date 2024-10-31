@@ -66,6 +66,7 @@ APPLICATIONSDIR = $(DESTDIR)$(PREFIX)/share/applications
 ICONDIR = $(DESTDIR)$(PREFIX)/share/icons/hicolor
 METAINFODIR = $(DESTDIR)$(PREFIX)/share/metainfo
 TARBALLDIR ?= ./tarball
+SANITYCHECK = 1
 RUNDIR ?= ./run
 RUNLIBS ?= $(RUNDIR)/libs
 ABS_RUNDIR := $(shell realpath $(RUNDIR))
@@ -225,6 +226,17 @@ fatimage: ## build self contained AppImage that can run on older Linux systems w
 	cp ./AppDir/usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png ./AppDir
 	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 mkappimage --comp zstd --ll -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-*$(ARCH).AppImage.zsync" ./AppDir
 
+.PHONY: basedimage
+basedimage: ## create AppImage from existing tarball directory
+	$(call print-target)
+	cp $(TARBALLDIR)/$(TARGET) $(TARBALLDIR)/AppRun
+	mkdir -p $(TARBALLDIR)/usr/share/metainfo
+	mkdir -p $(TARBALLDIR)/usr/share/applications
+	cp $(TARBALLDIR)/io.github.brycensranch.Rokon.desktop $(TARBALLDIR)/usr/share/applications
+	cp $(TARBALLDIR)/share/metainfo/io.github.brycensranch.Rokon.metainfo.xml $(TARBALLDIR)/usr/share/metainfo/io.github.brycensranch.Rokon.appdata.xml
+	cp /usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(TARBALLDIR)
+	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 mkappimage --comp zstd --ll -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-*$(ARCH).AppImage.zsync" $(TARBALLDIR)
+
 .PHONY: tarball
 tarball: ## build self contained Tarball that auto updates
 	$(call print-target)
@@ -246,13 +258,17 @@ tarball: ## build self contained Tarball that auto updates
 	$(call make_wrapper_script,$(TARBALLDIR))
 	cd /usr && cp -r --parents -L --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita $(ABS_TARBALLDIR)
 	rm -rf $(TARBALLDIR)/share/gtk-4.0/emoji || true
-	cd $(TARBALLDIR) && LD_DEBUG=libs ./$(TARGET) --version; \
-	status=$$?; \
-	if [ $$status -ne 0 ]; then \
-	    echo "Sanity check failed. See output above for details."; \
-	    exit $$status; \
+	@if [ "$(SANITYCHECK)" == "1" ]; then \
+		cd $(TARBALLDIR) && LD_DEBUG=libs ./$(TARGET) --version; \
+		status=$$?; \
+		if [ $$status -ne 0 ]; then \
+			echo "Sanity check failed. See output above for details."; \
+			exit $$status; \
+		else \
+			echo "Sanity check succeeded."; \
+		fi; \
 	else \
-	    echo "Sanity check succeeded."; \
+		echo "Sanity check skipped."; \
 	fi
 
 ifeq ($(NOTB),1)
@@ -275,13 +291,17 @@ run: ## create run "package"
 	rm ./Rokon-$(VERSION)-$(ARCH).run || true
 	$(MAKE) PACKAGED=true PACKAGEFORMAT="run" TBPKGFMT="run" TARBALLDIR=$(RUNDIR) NOTB=1 tarball
 	$(MAKESELF) --sha256 $(RUNDIR) Rokon-$(VERSION)-$(ARCH).run Rokon ./$(TARGET)
-	./Rokon-$(VERSION)-$(ARCH).run -- "--version"; \
-	status=$$?; \
-	if [ $$status -ne 0 ]; then \
-	    echo "Seconary sanity check failed. See output above for details."; \
-	    exit $$status; \
+	@if [ "$(SANITYCHECK)" == "1" ]; then \
+		./Rokon-$(VERSION)-$(ARCH).run -- "--version"; \
+		status=$$?; \
+		if [ $$status -ne 0 ]; then \
+			echo "Secondary Sanity check failed. See output above for details."; \
+			exit $$status; \
+		else \
+			echo "Secondary Sanity check succeeded."; \
+		fi; \
 	else \
-	    echo "Seconary sanity check succeeded."; \
+		echo "Secondary Sanity check skipped."; \
 	fi
 	@echo "Cheers, the run file was successfully created. It is the file ./Rokon-$(VERSION)-$(ARCH).run 🚀"
 

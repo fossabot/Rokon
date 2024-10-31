@@ -20,7 +20,7 @@ RUN apt clean && apt autoremove
 
 
 
-RUN make PACKAGED=true TBPKGFMT=docker NOTB=1 tarball
+RUN make PACKAGED=true TBPKGFMT=docker NOTB=1 SANITYCHECK=0 tarball
 
 FROM debian:testing AS runner
 

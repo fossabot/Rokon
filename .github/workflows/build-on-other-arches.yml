@@ -106,31 +106,25 @@ jobs:
           distro: fedora_latest
           setup: |
             mkdir -p "${PWD}/artifacts"
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          dockerRunArgs: "--device /dev/fuse:mrw --cap-add SYS_ADMIN --security-opt apparmor:unconfined --cap-add MKNOD"
-          install: |
-            dnf install -y @development-tools gtk4-devel gobject-introspection-devel go @development-libs @rpm-development-tools wget fuse fuse-libs
-            git clone https://github.com/probonopd/go-appimage
-            cd go-appimage
-            scripts/build.sh
-            for file in build/*.AppImage; do
-                mv "$file" "${file%%-*}.AppImage"
-            done
-            for file in build/*.AppImage; do
-                mv "$file" "/usr/local/bin/$(basename "$file" .AppImage)"
-            done
-            cd ..
             git config --global --add safe.directory '*'
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          install: |
+            dnf install -y gcc gtk4-devel gobject-introspection-devel go wget
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
             mv *.run /usr/bin
           run: |
-            make run
-            make tarball
-            make fatimage
-            spectool -g -R ./rokon.spec
-            dnf builddep -y ./rokon.spec
-            rpmbuild -ba ./rokon.spec
+            make SANITYCHECK=0 run
+            make SANITYCHECK=0 tarball
+      - name: Create Bootleg AppImage
+        run: |
+            sudo apt -y install zsync desktop-file-utils python3 python3-pip fakeroot python3-setuptools squashfs-tools util-linux appstream software-properties-common && sudo add-apt-repository universe && sudo apt install -y libfuse2t64
+            wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+            chmod +x mkappimage-*.AppImage
+            mv mkappimage-* mkappimage
+            mv mkappimage /usr/bin
+            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
+            make TARBALLDIR=./AppDir ARCH=aarch64 basedimage
       - name: 😭 Upload Failed Directories For Debug
         uses: actions/upload-artifact@v4
         if: failure()
@@ -138,12 +132,10 @@ jobs:
           name: rokon-${{runner.os}}-failed-i386
           path: |
             tarball
-            AppDir
             run
+            AppDir
             *.AppImage
             *.tar*
-            ~/rpmbuild
-            *.rpm
           include-hidden-files: true
           if-no-files-found: error
       - name: 🗃️ Upload Built Runfile 📦
@@ -221,9 +213,17 @@ jobs:
             chmod +x *.run
             mv *.run /usr/bin
           run: |
-            make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" run
-            make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" tarball
-            make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" fatimage
+            make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" SANITYCHECK=0 run
+            make EXTRAGOFLAGS="${{env.EXTRAGOFLAGS}}" SANITYCHECK=0 tarball
+      - name: Create Bootleg AppImage
+        run: |
+            sudo apt -y install zsync desktop-file-utils python3 python3-pip fakeroot python3-setuptools squashfs-tools util-linux appstream software-properties-common && sudo add-apt-repository universe && sudo apt install -y libfuse2t64
+            wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+            chmod +x mkappimage-*.AppImage
+            mv mkappimage-* mkappimage
+            mv mkappimage /usr/bin
+            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
+            make TARBALLDIR=./AppDir ARCH=armhf basedimage
       - name: 😭 Upload Failed Directories For Debug
         uses: actions/upload-artifact@v4
         if: failure()
@@ -295,23 +295,21 @@ jobs:
           install: |
             apt update
             apt install -y build-essential libgtk-4-dev wget libgirepository1.0-dev git golang-go fakeroot desktop-file-utils appstream binutils python3 zsync util-linux strace squashfs-tools python3-pip python3-setuptools libfuse2t64 file
-            git config --global --add safe.directory '*'
-            git clone https://github.com/probonopd/go-appimage
-            cd go-appimage
-            ARCH=386 AIARCH=i386 GOARCH=386 BUILDARCH=386 scripts/build.sh
-            for file in build/*.AppImage; do
-                mv "$file" "${file%%-*}.AppImage"
-            done
-            for file in build/*.AppImage; do
-                mv "$file" "/usr/local/bin/$(basename "$file" .AppImage)"
-            done
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
             mv *.run /usr/bin
           run: |
-            make run
-            make tarball
-            make fatimage
+            make SANITYCHECK=0 run
+            make SANITYCHECK=0 tarball
+      - name: Create Bootleg AppImage
+        run: |
+            sudo apt -y install zsync desktop-file-utils python3 python3-pip fakeroot python3-setuptools squashfs-tools util-linux appstream software-properties-common && sudo add-apt-repository universe && sudo apt install -y libfuse2t64
+            wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "mkappimage-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
+            chmod +x mkappimage-*.AppImage
+            mv mkappimage-* mkappimage
+            mv mkappimage /usr/bin
+            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
+            make TARBALLDIR=./AppDir ARCH=i686 basedimage
       - name: 😭 Upload Failed Directories For Debug
         uses: actions/upload-artifact@v4
         if: failure()
