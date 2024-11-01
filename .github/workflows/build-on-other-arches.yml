@@ -114,7 +114,7 @@ jobs:
             git config --global --add safe.directory '*'
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
-            dnf install -y clang git gtk4-devel gobject-introspection-devel go wget which
+            dnf install -y clang git gtk4-devel gobject-introspection-devel go wget
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
             mv *.run /usr/local/bin
@@ -193,7 +193,7 @@ jobs:
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: armv7
-          distro: ubuntu_latest
+          distro: fedora_latest
           env: |
             CC: "clang"
             CXX: "clang++"
@@ -202,17 +202,14 @@ jobs:
             git config --global --add safe.directory '*'
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
-            apt update
-            apt install -y clang make git wget libgtk-4-dev libgirepository1.0-dev software-properties-common
-            add-apt-repository -y ppa:longsleep/golang-backports
-            apt install -y golang-go
+            dnf install -y clang git gtk4-devel gobject-introspection-devel go wget
             wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
             chmod +x *.run
             mv *.run /usr/local/bin
           run: |
             git config --global --add safe.directory '*'
-            make EXTRAGOFLAGS=${{env.EXTRAGOFLAGS}} SANITYCHECK=0 run
-            make EXTRAGOFLAGS=${{env.EXTRAGOFLAGS}} SANITYCHECK=0 tarball
+            make SANITYCHECK=0 run
+            make SANITYCHECK=0 tarball
             make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
       - name: Create Bootleg AppImage
         run: |
