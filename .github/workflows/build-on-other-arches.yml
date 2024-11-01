@@ -275,12 +275,12 @@ jobs:
       - name: Load FUSE.
         run: modprobe fuse
 
-      - name: Build i686 (32 bit Intel) on Debian Testing
+      - name: Build i686 (32 bit Intel) on Debian Sid
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: none
           distro: none
-          base_image: i386/debian:testing
+          base_image: i386/debian:sid
           env: |
             CC: "clang"
             CXX: "clang++"
