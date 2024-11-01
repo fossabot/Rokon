@@ -119,11 +119,11 @@ make_wrapper_script = \
 
 copy_deps = \
 	cp -L --no-preserve=mode -v $$(ldd $1 | grep 'ld-linux' | awk '{print $$1}') $2; \
-	ldd -d -r $1 | awk '{print $$3}' | grep -v 'not found' | while read -r dep; do \
+	ldd $1 | awk '{print $$3}' | grep -v 'not found' | while read -r dep; do \
 		if [ -n "$$dep" ]; then \
 			cp -L --no-preserve=mode "$$dep" $2 || { echo "Failed to copy $$dep"; exit 1; }; \
 		fi; \
-		ldd -d -r "$$dep" | awk '{print $$3}' | grep -v 'not found' | while read -r subdep; do \
+		ldd "$$dep" | awk '{print $$3}' | grep -v 'not found' | while read -r subdep; do \
 			if [ -n "$$subdep" ]; then \
 				cp -L --no-preserve=mode "$$subdep" $2 || { echo "Failed to copy $$subdep"; exit 1; }; \
 			fi; \
