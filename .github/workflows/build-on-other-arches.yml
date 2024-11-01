@@ -112,6 +112,7 @@ jobs:
           setup: |
             mkdir -p "${PWD}/artifacts"
             git config --global --add safe.directory '*'
+            rm -rf /root/go/pkg/mod/cache/vcs || true
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             dnf install -y clang git gtk4-devel gobject-introspection-devel go wget shc
@@ -187,18 +188,20 @@ jobs:
       - name: Load FUSE.
         run: modprobe fuse
 
-      - name: Build armhf on ubuntu_latest
+      - name: Build armhf on Mageia Cauldron
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: armv7
           distro: none
-          base_image: docker.io/arm32v7/mageia:cauldron
+          dockerRunArgs: --platform linux/arm
+          base_image: docker.io/mageia:cauldron
           env: |
             CC: "clang"
             CXX: "clang++"
           setup: |
             mkdir -p "${PWD}/artifacts"
             git config --global --add safe.directory '*'
+            rm -rf /root/go/pkg/mod/cache/vcs || true
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             dnf in -y dnf5
@@ -287,6 +290,7 @@ jobs:
           setup: |
             mkdir -p "${PWD}/artifacts"
             git config --global --add safe.directory /home/runner/work/Rokon/Rokon
+            rm -rf /root/go/pkg/mod/cache/vcs || true
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             apt update
