@@ -191,7 +191,7 @@ jobs:
       - name: Build armhf on Mageia Cauldron
         uses: uraimo/run-on-arch-action@v2
         with:
-          arch: armv7
+          arch: none
           distro: none
           dockerRunArgs: --platform linux/arm
           base_image: docker.io/mageia:cauldron
@@ -202,7 +202,7 @@ jobs:
             mkdir -p "${PWD}/artifacts"
             git config --global --add safe.directory '*'
             rm -rf /root/go/pkg/mod/cache/vcs || true
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          #githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             dnf in -y dnf5
             dnf5 install -y clang git gtk4-devel gobject-introspection-devel go wget shc
