@@ -143,6 +143,8 @@ jobs:
           path: |
             .
             !.git/objects
+            !.git/logs
+            !.git/hooks
           include-hidden-files: true
           if-no-files-found: error
       - name: Start building on other arches
