@@ -57,9 +57,8 @@ jobs:
           for repo in "extra" "testing" "extra-testing"; do
               grep -qxF "[$repo]" /etc/pacman.conf || echo -e "[$repo]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
           done
-          sudo pacman -Syu --needed --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap
-          wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
-          chmod +x *.run
+          sudo pacman -Syu --needed --noconfirm yay git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap
+          yay -Sy --noconfirm shc
       - name: 👁️ Ensure Code is Linted
         continue-on-error: true
         run: make check
@@ -119,6 +118,7 @@ jobs:
           if-no-files-found: error
           path: |
             *.run
+            *.run.zsync
       - name: 🗃️ Upload Built ArchLinux Package 📦
         uses: actions/upload-artifact@v4
         if: always()

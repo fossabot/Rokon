@@ -114,10 +114,7 @@ jobs:
             git config --global --add safe.directory '*'
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
-            dnf install -y clang git gtk4-devel gobject-introspection-devel go wget
-            wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
-            chmod +x *.run
-            mv *.run /usr/local/bin
+            dnf install -y clang git gtk4-devel gobject-introspection-devel go wget shc
           run: |
             git config --global --add safe.directory '*'
             make run
@@ -204,10 +201,7 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             dnf in -y dnf5
-            dnf5 install -y clang git gtk4-devel gobject-introspection-devel go wget
-            wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
-            chmod +x *.run
-            mv *.run /usr/local/bin
+            dnf5 install -y clang git gtk4-devel gobject-introspection-devel go wget shc
           run: |
             git config --global --add safe.directory '*'
             make run
@@ -294,10 +288,7 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           install: |
             apt update
-            apt install -y clang make libgtk-4-dev wget libgirepository1.0-dev git golang-go file
-            wget https://github.com/megastep/makeself/releases/download/release-2.5.0/makeself-2.5.0.run
-            chmod +x *.run
-            mv *.run /usr/local/bin
+            apt install -y clang make libgtk-4-dev wget libgirepository1.0-dev git golang-go file shc
           run: |
             git config --global --add safe.directory /home/runner/work/Rokon/Rokon
             git config --global --add safe.directory '*'
