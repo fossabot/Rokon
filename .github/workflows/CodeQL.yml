@@ -21,6 +21,9 @@ jobs:
   CodeQL-Build:
     # CodeQL runs on ubuntu-latest, windows-latest, and macos-latest
     runs-on: ubuntu-24.04
+    env:
+      CC: clang
+      CXX: clang++
 
     permissions:
       # required for all workflows
@@ -42,7 +45,7 @@ jobs:
           # languages: go
           queries: security-and-quality
       - name: Install needed dependencies
-        run: sudo apt update && sudo apt install -y libgtk-4-dev libgirepository1.0-dev
+        run: sudo apt update && sudo apt install -y libgtk-4-dev libgirepository1.0-dev clang
       # Autobuild attempts to build any compiled languages (C/C++, C#, Go, or Java).
       # If this step fails, then you should remove it and run the build manually (see below).
       - name: Autobuild
