@@ -134,7 +134,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: rokon-${{runner.os}}-failed-armhf
+          name: rokon-${{runner.os}}-failed-aarch64
           path: |
             tarball
             run
@@ -327,7 +327,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rokon-${{runner.os}}-runfile-armhf
+          name: rokon-${{runner.os}}-runfile-i686
           include-hidden-files: true
           if-no-files-found: error
           path: |
@@ -337,7 +337,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rokon-${{runner.os}}-tarball-armhf
+          name: rokon-${{runner.os}}-tarball-i686
           include-hidden-files: true
           if-no-files-found: error
           path: |
@@ -348,7 +348,7 @@ jobs:
         if: always()
 
         with:
-          name: rokon-AppImage-armhf
+          name: rokon-AppImage-i686
           if-no-files-found: error
           path: |
             *.AppImage
