@@ -324,7 +324,7 @@ inst: ## go install tools
 	$(call print-target)
 	cd tools && go get $(shell cd tools && go list -e -f '{{ join .Imports " " }}' -tags=tools)
 
-
+.ONESHELL:
 .PHONY: install
 install: ## installs Rokon into $PATH and places desktop files
 	$(call print-target)
