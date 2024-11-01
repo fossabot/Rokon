@@ -247,10 +247,10 @@ tarball: ## build self contained Tarball that auto updates
 	$(call make_wrapper_script,$(TARBALLDIR))
 	@if command -v shc > /dev/null; then \
 		echo "shc found. Turning wrapper script into binary"; \
-		shc -r -S -f $(TARBALLDIR)/$(TARGET) -o $(TARBALLDIR)/$(TARGET)
-		rm $(TARBALLDIR)/*.x.c # Clean residue files
+		CFLAGS="-static" shc -r -S -f $(TARBALLDIR)/$(TARGET) -o $(TARBALLDIR)/$(TARGET) || echo "There's no point in running shc if it's not statically compiled, thus requiring dependencies install glibc-devel or equivalent!!!"; \
+		rm $(TARBALLDIR)/*.x.c ./*.x.c || true; \
 	else \
-		echo "UPX not found. Skipping compression."; \
+		echo "shc not found. Skipping making a blessed wrapper binary."; \
 	fi
 	@if command -v upx > /dev/null; then \
 		echo "UPX found. Compressing binaries..."; \

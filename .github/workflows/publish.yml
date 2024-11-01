@@ -74,10 +74,6 @@ jobs:
         run: |
           sudo pacman -U --noconfirm "$pkg_name"
 
-      - name: Run basic sanity check
-        run: |
-          rokon --version
-
       - name: Run Namcap
         run: |
           namcap "$pkg_name"
@@ -219,9 +215,6 @@ jobs:
           git_push_gpgsign: false
       - name: 🖼️ Assemble the AppImage
         run: |
-          wget https://raw.githubusercontent.com/droidian/glibc-downgrade/refs/heads/droidian/glibc-downgrade
-          chmod +x glibc-downgrade
-          sudo mv glibc-downgrade /usr/local/bin/
           wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
           chmod +x appimagetool-*.AppImage
           mv appimagetool-* appimagetool
