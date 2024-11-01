@@ -29,17 +29,17 @@
 # https://github.com/BrycensRanch/Rokon
 %global goipath         github.com/brycensranch/rokon
 %global forgeurl        https://github.com/BrycensRanch/Rokon
+%global version         1.0.0
 
 
 %if 0%{?fedora}
 %gometa -L
 %endif
 
-
 Name:           rokon
 # Note for Rokon Contributors: Do not touch the version or release. GitHub Actions handles these and bump as necessary.
 # On OpenSUSE Build Service, the Release is overwritten which is out of my control.
-Version:        1.0.0
+Version:        %{version}
 Release:        21%{?dist}
 Summary:        Control your Roku device with your desktop!
 
@@ -162,17 +162,17 @@ ls
 %else
 
 %changelog
-* Thu Oct 31 2024 Brycen <brycengranville@outlook.com> 1.0.0-20
+* Thu Oct 31 2024 Brycen G <brycengranville@outlook.com> 1.0.0-20
 - Build with clang
 - Include GNOME service file for configuring notifications for Rokon via settings
-* Tue Sep 3 2024 Brycen <brycengranville@outlook.com> 1.0.0-6
+* Tue Sep 3 2024 Brycen G <brycengranville@outlook.com> 1.0.0-6
 - Removed sysinfo package decreasing binary size and portability and startup time
 - Added metainfo file for appstream
 - Added icons to package
 - Added desktop entry
 - Added license file to package
 - Added documentation to package
-* Mon Sep 2 2024 Brycen <brycengranville@outlook.com> 1.0.0-3
+* Mon Sep 2 2024 Brycen G <brycengranville@outlook.com> 1.0.0-3
 - Initial package
 %endif
 
