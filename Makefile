@@ -118,7 +118,7 @@ make_wrapper_script = \
 
 
 copy_deps = \
-	cp -L --no-preserve=mode -v $$(ldd $1 | grep 'ld-linux' | awk '{print $$1}') $2; \
+	cp -L --no-preserve=mode -v $$(ldd $1 | grep -E '(^|[^a-zA-Z0-9])ld' | awk '{print $$1}') $2; \
 	ldd $1 | awk '{print $$3}' | grep -v 'not found' | while read -r dep; do \
 		if [ -n "$$dep" ]; then \
 			cp -L --no-preserve=mode "$$dep" $2 || { echo "Failed to copy $$dep"; exit 1; }; \
