@@ -23,7 +23,7 @@ rokon_puregotk4
 *.flatpak
 *.dmg
 dmg/
-*.pkg
+*.pkg*
 *.nupkg
 *.tar.gz
 *.tar.xz
@@ -32,7 +32,8 @@ dmg/
 *.tar**
 *.tgz
 *.7z
-*.run
+*.run*
+./shellc*
 *.log
 *.zip
 *.msi
@@ -73,8 +74,8 @@ glibc-downgrade
 
 # Rokon does not use the src convention and never will.
 src
-
-*.rtf
+*.x.c
+*.rtf*
 *.txt
 .ptmp*
 

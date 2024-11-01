@@ -66,38 +66,29 @@ APPLICATIONSDIR = $(DESTDIR)$(PREFIX)/share/applications
 ICONDIR = $(DESTDIR)$(PREFIX)/share/icons/hicolor
 METAINFODIR = $(DESTDIR)$(PREFIX)/share/metainfo
 TARBALLDIR ?= ./tarball
-SANITYCHECK = 1
+SANITYCHECK ?= 1
 RUNDIR ?= ./run
 RUNLIBS ?= $(RUNDIR)/libs
 ABS_RUNDIR := $(shell realpath $(RUNDIR))
-MAKESELF := $(shell \
-    if ls ./makeself*.run > /dev/null 2>&1; then \
-        ./makeself*.run --quiet --noexec; \
-		rm ./makeself*.run; \
-        echo "makeself*/makeself.sh"; \
-    elif [ -f ./makeself*/makeself.sh ]; then \
-        echo "./makeself*/makeself.sh"; \
-    elif command -v makeself > /dev/null; then \
-        echo "makeself"; \
-    elif command -v makeself.sh > /dev/null; then \
-        echo "makeself.sh"; \
-    else \
-        found=false; \
-        for cmd in $$(echo $$PATH | tr ':' ' '); do \
-            for file in "$$cmd/makeself"*.run; do \
-                if [ -f "$$file" ]; then \
-                    $$file --quiet --noexec; \
-					rm $$file; \
-                    echo "makeself*/makeself.sh"; \
-                    found=true; \
-                    break 2; \
-                fi; \
-            done; \
-        done; \
-        if [ "$$found" = false ]; then \
-            echo ""; \
-        fi; \
-    fi)
+# Check if selfextract exists in the PATH
+SELFEXTRACT := $(shell command -v selfextract 2> /dev/null)
+
+# Determine the selfextract path based on environment variables
+ifneq ($(GOBIN),)
+    SELFEXTRACT_PATH := $(GOBIN)/selfextract
+else ifneq ($(GOPATH),)
+    SELFEXTRACT_PATH := $(GOPATH)/bin/selfextract
+else
+    # Fallback to the safe default
+    SELFEXTRACT_PATH := $(HOME)/go/bin/selfextract  # Safe default path
+endif
+
+# If selfextract command is found in the specified path
+ifeq ($(wildcard $(SELFEXTRACT_PATH)),)
+	SELFEXTRACT := $(SELFEXTRACT_PATH)
+else
+    SELFEXTRACT := $(SELFEXTRACT_PATH)
+endif
 
 
 
@@ -130,13 +121,11 @@ copy_deps = \
 	cp -L --no-preserve=mode -v $$(ldd $1 | grep 'ld-linux' | awk '{print $$1}') $2; \
 	ldd -d -r $1 | awk '{print $$3}' | grep -v 'not found' | while read -r dep; do \
 		if [ -n "$$dep" ]; then \
-			echo "Copying dependency: $$dep"; \
-			cp -L --no-preserve=mode -v "$$dep" $2 || { echo "Failed to copy $$dep"; exit 1; }; \
+			cp -L --no-preserve=mode "$$dep" $2 || { echo "Failed to copy $$dep"; exit 1; }; \
 		fi; \
 		ldd -d -r "$$dep" | awk '{print $$3}' | grep -v 'not found' | while read -r subdep; do \
 			if [ -n "$$subdep" ]; then \
-				echo "Copying sub-dependency: $$subdep"; \
-				cp -L --no-preserve=mode -v "$$subdep" $2 || { echo "Failed to copy $$subdep"; exit 1; }; \
+				cp -L --no-preserve=mode "$$subdep" $2 || { echo "Failed to copy $$subdep"; exit 1; }; \
 			fi; \
 		done; \
 	done; \
@@ -242,21 +231,29 @@ basedimage: ## create AppImage from existing tarball directory
 tarball: ## build self contained Tarball that auto updates
 	$(call print-target)
 	@echo "Building Rokon Tarball version: $(VERSION)"
+	@echo "This process requires the following command line utils to work properly: awk, ldd, tar"
+	@echo "SHELL: $(SHELL) ARCH: $(ARCH)"
 	rm -rf $(TARBALLDIR) || sudo rm -v -rf $(TARBALLDIR)
 	mkdir -p $(TARBALLDIR)
 	mkdir -p $(TBLIBSDIR)
 	$(MAKE) PACKAGED=true PACKAGEFORMAT=$(TBPKGFMT) EXTRAGOFLAGS="$(EXTRAGOFLAGS) -trimpath" EXTRALDFLAGS="$(EXTRALDFLAGS) -s -w -linkmode=external" build
 	$(MAKE) PREFIX=$(TARBALLDIR) APPLICATIONSDIR=$(TARBALLDIR) install
-	cp -v ./windows/portable.txt $(TARBALLDIR)
+	cp ./windows/portable.txt $(TARBALLDIR)
 	$(call copy_deps,$(TARBALLDIR)/bin/$(TARGET),$(TBLIBSDIR))
 	$(call make_wrapper_script,$(TARBALLDIR))
+	@if command -v shc > /dev/null; then \
+		echo "shc found. Turning wrapper script into binary"; \
+		shc -r -S -f $(TARBALLDIR)/$(TARGET) -o $(TARBALLDIR)/$(TARGET)
+		rm $(TARBALLDIR)/*.x.c # Clean residue files
+	else \
+		echo "UPX not found. Skipping compression."; \
+	fi
 	@if command -v upx > /dev/null; then \
 		echo "UPX found. Compressing binaries..."; \
 		upx --best --lzma -v $(TARBALLDIR)/bin/$(TARGET) || echo "Failed to compress $(TARGET) binary."; \
 	else \
 		echo "UPX not found. Skipping compression."; \
 	fi
-	$(call make_wrapper_script,$(TARBALLDIR))
 	cd /usr && cp -r --parents -L --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita $(ABS_TARBALLDIR)
 	cd -
 	rm -rf $(TARBALLDIR)/share/gtk-4.0/emoji || true
@@ -278,7 +275,7 @@ ifeq ($(NOTB),1)
 else
 		tar -czf $(TAR_NAME) $(TARBALLDIR)
 		@if command -v zsyncmake >/dev/null 2>&1; then \
-			zsyncmake $(TAR_NAME) -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-$(UNAME_S)-*-$(ARCH).tar.gz.zsync"; \
+			zsyncmake $(TAR_NAME) -u "gh-releases-zsync|BrycensRanch|Rokon|latest|$(TAR_NAME).zsync"; \
 		else \
 			echo "zsyncmake not found. Please install it to generate the zsync file."; \
 		fi
@@ -286,15 +283,29 @@ else
 		@echo "Tarball created: $(TAR_NAME)"
 endif
 
+.ONESHELL:
+.PHONY: check_selfextract
+check_selfextract:
+	@if [ ! -x "$(SELFEXTRACT_PATH)" ]; then \
+		echo "selfextract command not found in $(SELFEXTRACT_PATH), installing..."; \
+		cd tools && go get github.com/synthesio/selfextract && go install -v github.com/synthesio/selfextract; \
+		cd -; \
+		echo "selfextract installed..."; \
+	else \
+		echo "Using selfextract located at: $(SELFEXTRACT_PATH)"; \
+	fi
+
+.ONESHELL:
 .PHONY: run
 run: ## create run "package"
 	$(call print-target)
-	$(if $(MAKESELF),,$(error MAKESELF was NOT detected in $$PATH OR right next to the Makefile))
-	rm ./Rokon-$(VERSION)-$(ARCH).run || true
+	$(MAKE) check_selfextract
+	rm $(RUNFILE_NAME) || true
 	$(MAKE) PACKAGED=true PACKAGEFORMAT="run" TBPKGFMT="run" TARBALLDIR=$(RUNDIR) NOTB=1 tarball
-	$(MAKESELF) --sha256 $(RUNDIR) Rokon-$(VERSION)-$(ARCH).run Rokon ./$(TARGET)
+	cp $(RUNDIR)/$(TARGET) $(RUNDIR)/selfextract_startup
+	$(SELFEXTRACT) -f $(RUNFILE_NAME) -C $(RUNDIR) .
 	@if [ "$(SANITYCHECK)" == "1" ]; then \
-		./Rokon-$(VERSION)-$(ARCH).run -- "--version"; \
+		./$(RUNFILE_NAME) --version; \
 		status=$$?; \
 		if [ $$status -ne 0 ]; then \
 			echo "Secondary Sanity check failed. See output above for details."; \
@@ -305,7 +316,12 @@ run: ## create run "package"
 	else \
 		echo "Secondary Sanity check skipped."; \
 	fi
-	@echo "Cheers, the run file was successfully created. It is the file ./Rokon-$(VERSION)-$(ARCH).run 🚀"
+	@if command -v zsyncmake >/dev/null 2>&1; then \
+		zsyncmake $(RUNFILE_NAME) -u "gh-releases-zsync|BrycensRanch|Rokon|latest|$(RUNFILE_NAME).zsync"; \
+	else \
+		echo "zsyncmake not found. Please install it to generate the zsync file."; \
+	fi
+	@echo "Cheers, the run file was successfully created. It is the file ./$(RUNFILE_NAME) 🚀"
 
 .PHONY: dev
 dev: ## go run -v .
@@ -403,7 +419,8 @@ gen: ## go generate
 .PHONY: build
 build: ## go build -v -o rokon
 	$(call print-target)
-	@echo "Building version $(VERSION)"
+	@rm *.c
+	@echo "Building version $(VERSION) commit $(COMMIT) on branch $(BRANCH)"
 	go build -v -ldflags="-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.packaged=$(PACKAGED) -X main.packageFormat=$(PACKAGEFORMAT) -X main.branch=$(BRANCH) $(EXTRALDFLAGS)" $(EXTRAGOFLAGS) -o $(TARGET) -tags "$(BUILDTAGS)" .
 
 .PHONY: spell
