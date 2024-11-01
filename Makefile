@@ -109,7 +109,7 @@ make_wrapper_script = \
 	echo 'export LD_PRELOAD="./libs/libc.so.6"' >> $1/$(TARGET); \
 	echo 'export XKB_DEFAULT_INCLUDE_PATH="./share/X11/xkb"' >> $1/$(TARGET); \
 	echo 'export XKB_CONFIG_ROOT="./share/X11/xkb"' >> $1/$(TARGET); \
-	echo 'exec ./libs/ld-linux* "./bin/$(TARGET)" "$$@"' >> $1/$(TARGET); \
+	echo 'if [ -e ./libs/ld*.so* ]; then exec ./libs/ld*.so* "./bin/$(TARGET)" "$$@"; else exec ./bin/$(TARGET) "$$@"; fi' >> $1/$(TARGET); \
 	chmod +x $1/$(TARGET); \
 	sed -i 's/rokon/\.\/$(TARGET)/g' $1/io.github.brycensranch.Rokon.desktop
 
@@ -129,7 +129,7 @@ copy_deps = \
 			fi; \
 		done; \
 	done; \
-	chmod +x $2/*.so*; \
+	chmod +x $2/*.so* || echo "Failed to set libraries executable! Oh well"; \
 	strip --strip-all $2/*.so* || echo "Stripping libraries failed! Tarball *may* be larger than expected."
 
 
