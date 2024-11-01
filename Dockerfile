@@ -16,8 +16,8 @@ RUN dnf install -y \
 RUN dnf clean all
 
 # DO WHATEVER IT TAKES TO BUILD AS FAST AS POSSIBLE!!! TO INFINITY... AND BEYOND
-ENV CC clang
-ENV CXX clang++
+ENV CC=clang
+ENV CXX=clang++
 ENV CFLAGS="-O0 -w -fno-strict-aliasing -gline-tables-only"
 
 

@@ -9,8 +9,8 @@ COPY . .
 
 ENV LANG=C.UTF-8
 ENV LC_ALL=C.UTF-8
-ENV CC clang
-ENV CXX clang++
+ENV CC=clang
+ENV CXX=clang++
 ENV CFLAGS="-O0 -w -fno-strict-aliasing -gline-tables-only"
 
 RUN zypper in -y git go gtk4-devel gobject-introspection-devel make clang awk
