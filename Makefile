@@ -1,5 +1,5 @@
 #!/usr/bin/make -f
-SHELL := $(shell which sh)
+SHELL := $(shell command -v which >/dev/null 2>&1 && which sh || echo /bin/sh)
 # Define the default install directory
 PREFIX ?= /usr/local
 VERSION ?= $(shell cat VERSION)
@@ -237,6 +237,7 @@ basedimage: ## create AppImage from existing tarball directory
 	cp usr/share/icons/hicolor/256x256/apps/io.github.brycensranch.Rokon.png $(TARBALLDIR)
 	VERSION=$(VERSION) APPIMAGELAUNCHER_DISABLE=1 mkappimage --comp zstd --ll -u "gh-releases-zsync|BrycensRanch|Rokon|latest|Rokon-*$(ARCH).AppImage.zsync" $(TARBALLDIR)
 
+.ONESHELL:
 .PHONY: tarball
 tarball: ## build self contained Tarball that auto updates
 	$(call print-target)
@@ -257,9 +258,10 @@ tarball: ## build self contained Tarball that auto updates
 	fi
 	$(call make_wrapper_script,$(TARBALLDIR))
 	cd /usr && cp -r --parents -L --no-preserve=mode -r share/glib-2.0/schemas/gschemas.compiled share/X11 share/gtk-4.0 share/icons/Adwaita $(ABS_TARBALLDIR)
+	cd -
 	rm -rf $(TARBALLDIR)/share/gtk-4.0/emoji || true
 	@if [ "$(SANITYCHECK)" == "1" ]; then \
-		cd $(TARBALLDIR) && LD_DEBUG=libs ./$(TARGET) --version; \
+		LD_DEBUG=libs $(TARBALLDIR)/$(TARGET) --version; \
 		status=$$?; \
 		if [ $$status -ne 0 ]; then \
 			echo "Sanity check failed. See output above for details."; \
