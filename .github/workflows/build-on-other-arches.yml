@@ -136,7 +136,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: rokon-${{runner.os}}-failed-i386
+          name: rokon-${{runner.os}}-failed-armhf
           path: |
             tarball
             run
@@ -174,7 +174,7 @@ jobs:
           path: |
             *.AppImage
             *.AppImage.zsync
-  build_armv7:
+  build_armhf:
     timeout-minutes: 2000
     runs-on: ubuntu-24.04
     steps:
@@ -189,7 +189,7 @@ jobs:
       - name: Load FUSE.
         run: modprobe fuse
 
-      - name: Build armv7 on ubuntu_latest
+      - name: Build armhf on ubuntu_latest
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: armv7
@@ -224,7 +224,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: rokon-${{runner.os}}-failed-i386
+          name: rokon-${{runner.os}}-failed-armhf
           path: |
             tarball
             AppDir
@@ -237,7 +237,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rokon-${{runner.os}}-runfile-armv7
+          name: rokon-${{runner.os}}-runfile-armhf
           include-hidden-files: true
           if-no-files-found: error
           path: |
@@ -246,7 +246,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rokon-${{runner.os}}-tarball-armv7
+          name: rokon-${{runner.os}}-tarball-armhf
           include-hidden-files: true
           if-no-files-found: error
           path: |
@@ -257,12 +257,12 @@ jobs:
         if: always()
 
         with:
-          name: rokon-AppImage-armv7
+          name: rokon-AppImage-armhf
           if-no-files-found: error
           path: |
             *.AppImage
             *.AppImage.zsync
-  build_i386:
+  build_armhf:
     timeout-minutes: 2000
     runs-on: ubuntu-24.04
     steps:
@@ -277,7 +277,7 @@ jobs:
       - name: Load FUSE.
         run: modprobe fuse
 
-      - name: Build i386 (32 bit) on Debian Testing
+      - name: Build i686 (32 bit Intel) on Debian Testing
         uses: uraimo/run-on-arch-action@v2
         with:
           arch: none
@@ -315,7 +315,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: rokon-${{runner.os}}-failed-i386
+          name: rokon-${{runner.os}}-failed-i686
           path: |
             tarball
             AppDir
@@ -328,7 +328,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rokon-${{runner.os}}-runfile-i386
+          name: rokon-${{runner.os}}-runfile-armhf
           include-hidden-files: true
           if-no-files-found: error
           path: |
@@ -337,7 +337,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rokon-${{runner.os}}-tarball-i386
+          name: rokon-${{runner.os}}-tarball-armhf
           include-hidden-files: true
           if-no-files-found: error
           path: |
@@ -348,7 +348,7 @@ jobs:
         if: always()
 
         with:
-          name: rokon-AppImage-i386
+          name: rokon-AppImage-armhf
           if-no-files-found: error
           path: |
             *.AppImage
