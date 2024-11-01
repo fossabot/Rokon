@@ -57,8 +57,8 @@ jobs:
           for repo in "extra" "testing" "extra-testing"; do
               grep -qxF "[$repo]" /etc/pacman.conf || echo -e "[$repo]\nInclude = /etc/pacman.d/mirrorlist" | sudo tee -a /etc/pacman.conf
           done
-          sudo pacman -Syu --needed --noconfirm yay git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap
-          yay -Sy --noconfirm shc
+          sudo pacman -Syu --needed --noconfirm git go gtk4 base-devel gnupg wget curl bash gobject-introspection namcap
+          yay -Syu --noconfirm shc
       - name: 👁️ Ensure Code is Linted
         continue-on-error: true
         run: make check
