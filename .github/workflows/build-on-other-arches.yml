@@ -58,7 +58,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/ppc64le, linux/s390x
+          platforms: linux/ppc64le, linux/s390x, linux/aarch64
           cache-from: type=gha
           cache-to: type=gha,mode=max
   multiarch:
@@ -79,10 +79,10 @@ jobs:
       - name: Build Docker Container and push
         uses: docker/build-push-action@v6
         with:
-          push: ${{ github.event_name != 'pull_request' }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/386, linux/amd64, linux/arm/v5,linux/arm/v7,linux/ppc64le,linux/riscv64,linux/s390x
+          platforms: linux/386, linux/amd64, linux/arm, linux/aarch64, linux/ppc64le,linux/riscv64,linux/s390x
           file: multiarch.Dockerfile
           cache-from: type=gha
           cache-to: type=gha,mode=max
