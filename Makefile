@@ -419,7 +419,6 @@ gen: ## go generate
 .PHONY: build
 build: ## go build -v -o rokon
 	$(call print-target)
-	@rm *.c
 	@echo "Building version $(VERSION) commit $(COMMIT) on branch $(BRANCH)"
 	go build -v -ldflags="-X main.version=$(VERSION) -X main.commit=$(COMMIT) -X main.packaged=$(PACKAGED) -X main.packageFormat=$(PACKAGEFORMAT) -X main.branch=$(BRANCH) $(EXTRALDFLAGS)" $(EXTRAGOFLAGS) -o $(TARGET) -tags "$(BUILDTAGS)" .
 
