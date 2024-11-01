@@ -147,6 +147,10 @@ all: mod inst gen build tarball fatimage spell lint test
 check: ## runs basic checks
 check: spell lint test
 
+.PHONY: tidy
+tidy: ## go mod tidy
+tidy: mod
+
 .PHONY: precommit
 precommit: ## validate the branch before commit
 precommit: all vuln

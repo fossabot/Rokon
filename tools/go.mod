@@ -7,6 +7,7 @@ toolchain go1.23.2
 require (
 	github.com/client9/misspell v0.3.4
 	github.com/golangci/golangci-lint v1.61.0
+	github.com/synthesio/selfextract v0.0.0-20240323225418-337a9cebfd86
 	golang.org/x/vuln v1.1.3
 )
 
@@ -158,7 +159,6 @@ require (
 	github.com/stretchr/objx v0.5.2 // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/subosito/gotenv v1.6.0 // indirect
-	github.com/synthesio/selfextract v0.0.0-20240323225418-337a9cebfd86 // indirect
 	github.com/tdakkota/asciicheck v0.2.0 // indirect
 	github.com/tetafro/godot v1.4.18 // indirect
 	github.com/timakin/bodyclose v0.0.0-20240125160201-f835fa56326a // indirect
