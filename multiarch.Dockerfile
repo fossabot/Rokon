@@ -17,7 +17,7 @@ RUN zypper in -y git go gtk4-devel gobject-introspection-devel make clang awk
 
 
 
-RUN make PACKAGED=true TBPKGFMT=docker NOTB=1 SANITYCHECK=0 tarball
+RUN make PACKAGED=true TBPKGFMT=docker NOTB=1 tarball
 
 FROM opensuse/tumbleweed:latest AS runner
 

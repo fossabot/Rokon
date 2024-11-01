@@ -26,7 +26,7 @@ COPY . .
 
 # TBPKGFMT = TARBALL PACKAGE FORMAT (This is used for telemetry and logging purposes, does not affect the package whatsoever)
 # NOTB = Prevents the creation of tar.gz files. It's not needed and the container won't use it.
-RUN make PACKAGED=true TBPKGFMT=docker NOTB=1 SANITYCHECK=0 tarball
+RUN make PACKAGED=true TBPKGFMT=docker NOTB=1 tarball
 
 FROM fedora:latest AS runner
 

@@ -120,9 +120,9 @@ jobs:
             mv *.run /usr/local/bin
           run: |
             git config --global --add safe.directory '*'
-            make SANITYCHECK=0 run
-            make SANITYCHECK=0 tarball
-            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
+            make run
+            make tarball
+            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage tarball
       - name: Create Bootleg AppImage
         run: |
             sudo apt -y install zsync desktop-file-utils python3 python3-pip fakeroot python3-setuptools squashfs-tools util-linux appstream software-properties-common && sudo add-apt-repository universe && sudo apt install -y libfuse2t64
@@ -210,9 +210,9 @@ jobs:
             mv *.run /usr/local/bin
           run: |
             git config --global --add safe.directory '*'
-            make SANITYCHECK=0 run
-            make SANITYCHECK=0 tarball
-            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
+            make run
+            make tarball
+            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage tarball
       - name: Create Bootleg AppImage
         run: |
             sudo apt -y install zsync desktop-file-utils python3 python3-pip fakeroot python3-setuptools squashfs-tools util-linux appstream software-properties-common && sudo add-apt-repository universe && sudo apt install -y libfuse2t64
@@ -301,9 +301,9 @@ jobs:
           run: |
             git config --global --add safe.directory /home/runner/work/Rokon/Rokon
             git config --global --add safe.directory '*'
-            make SANITYCHECK=0 run
-            make SANITYCHECK=0 tarball
-            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage SANITYCHECK=0 tarball
+            make run
+            make tarball
+            make NOTB=1 TARBALLDIR=./AppDir TBPKGFMT=AppImage tarball
       - name: Create Bootleg AppImage
         run: |
             sudo apt -y install zsync desktop-file-utils python3 python3-pip fakeroot python3-setuptools squashfs-tools util-linux appstream software-properties-common && sudo add-apt-repository universe && sudo apt install -y libfuse2t64
