@@ -93,7 +93,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: rokon-${{runner.os}}-failed-tarball-${{ runner.arch }}
+          name: rokon-${{runner.os}}-failed-tarball-x86_64
           path: |
             tarball
             run
@@ -103,7 +103,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rokon-${{runner.os}}-tarball-${{ runner.arch }}
+          name: rokon-${{runner.os}}-tarball-x86_64
           include-hidden-files: true
           if-no-files-found: error
           path: |
@@ -113,7 +113,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rokon-${{runner.os}}-runfile-${{ runner.arch }}
+          name: rokon-${{runner.os}}-runfile-x86_64
           include-hidden-files: true
           if-no-files-found: error
           path: |
@@ -124,7 +124,7 @@ jobs:
         if: always()
 
         with:
-          name: rokon-archlinux-pkg-${{ runner.arch }}
+          name: rokon-archlinux-pkg-x86_64
           if-no-files-found: error
           path: "*pkg*"
       - name: 🗑️ Remove Artifacts
@@ -239,7 +239,7 @@ jobs:
         if: always()
 
         with:
-          name: rokon-AppImage-${{ runner.arch }}
+          name: rokon-AppImage-x86_64
           if-no-files-found: error
           path: |
             *.AppImage
@@ -301,7 +301,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always() && github.repository_owner != 'BrycensRanch'
         with:
-          name: rokon-rpm-fedora-${{ runner.arch }}
+          name: rokon-rpm-fedora-x86_64
           if-no-files-found: error
           path: |
             *.rpm
@@ -310,7 +310,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always() && github.repository_owner != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
         with:
-          name: rokon-flatpak-${{ runner.arch }}
+          name: rokon-flatpak-x86_64
           if-no-files-found: error
           path: |
             flathub/*.flatpak
@@ -463,7 +463,7 @@ jobs:
       fail-fast: false
       matrix:
         arch:
-          - amd64
+          - x64
     env:
       result: msi
     defaults:
@@ -507,7 +507,7 @@ jobs:
 
           cat<<EOF >> "$GITHUB_OUTPUT"
           version=$version
-          name=Rokon-Setup-${{ runner.arch }}
+          name=Rokon-Setup-x86_64
           EOF
       - name: Install
         run: |
@@ -631,7 +631,7 @@ jobs:
           set +e
           false
           while [ $? -ne 0 ]; do
-            create-dmg --volname Rokon --volicon macos/icon.icns --window-size 600 400 --icon-size 100 --icon "Rokon.app" 200 150 --hide-extension "Rokon.app" --app-drop-link 400 150 Rokon_macOS_${{ runner.arch }}.dmg $result/dmg
+            create-dmg --volname Rokon --volicon macos/icon.icns --window-size 600 400 --icon-size 100 --icon "Rokon.app" 200 150 --hide-extension "Rokon.app" --app-drop-link 400 150 Rokon_macOS_x86_64.dmg $result/dmg
           done
       - name: Find and mount DMG
         id: mount-dmg
