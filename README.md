@@ -1,4 +1,4 @@
-  <h1 align="center">
+<h1 align="center">
       <img alt="Rokon logo" src="assets/Rokon.png" width="240" />
       <h1 align="center" >Rokon (Roku Remote for your computer) </h1>
   </p>
@@ -17,6 +17,7 @@
   <a aria-label="Semantic Release" href="https://github.com/semantic-release/semantic-release">
     <img alt="Semantic Release Badge" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=for-the-badge">
     </a>
+<a href="https://app.fossa.com/projects/git%2Bgithub.com%2FBrycensRanch%2FRokon?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FBrycensRanch%2FRokon.svg?type=shield"/></a>
     <a aria-label="Build Status" href="https://github.com/BrycensRanch/Rokon/actions/workflows/publish.yml">
       <img alt="GitHub Workflow Status Badge" src="https://img.shields.io/github/actions/workflow/status/BrycensRanch/Rokon/publish.yml?label=BUILD&logo=github&style=for-the-badge">
     </a>
@@ -86,6 +87,9 @@ Packages for macOS are a WIP. I plan to target:
 > Also, none of the features listed below are implemented yet. This is a roadmap for the future.
 
 This application provides a remote control interface for Roku devices, utilizing the Roku External Control Protocol (ECP) API. It allows users to control their Roku device from their desktop or laptop, providing a more convenient and efficient way to interact with their TV. The app offers a sleek interface with various functions such as navigation, volume control, input selection, typing, and more. It also supports features like Neovim Mode, automatic Roku discovery, DiscordRPC integration, and more. With Rokon, you can control your Roku device remotely with ease and speed, all without the noise of a traditional remote. All powered by Golang and GTK4.
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FBrycensRanch%2FRokon.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FBrycensRanch%2FRokon?ref=badge_large)
 
 ## Features
 
