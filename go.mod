@@ -3,7 +3,7 @@ module github.com/brycensranch/rokon
 go 1.22.0
 
 require (
-	github.com/adrg/xdg v0.5.2
+	github.com/adrg/xdg v0.5.3
 	github.com/benesch/cgosymbolizer v0.0.0-20190515212042-bec6fe6e597b
 	github.com/brycensranch/go-aptabase/pkg v0.0.0-20241004152612-e20856549654
 	github.com/diamondburned/gotk4/pkg v0.3.1

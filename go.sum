@@ -2,6 +2,8 @@ github.com/KarpelesLab/weak v0.1.1 h1:fNnlPo3aypS9tBzoEQluY13XyUfd/eWaSE/vMvo9s4
 github.com/KarpelesLab/weak v0.1.1/go.mod h1:pzXsWs5f2bf+fpgHayTlBE1qJpO3MpJKo5sRaLu1XNw=
 github.com/adrg/xdg v0.5.2 h1:HNeVffMIG56GLMaoKTcTcyFhD2xS/dhyuBlKSNCM6Ug=
 github.com/adrg/xdg v0.5.2/go.mod h1:nlTsY+NNiCBGCK2tpm09vRqfVzrc2fLmXGpBLF0zlTQ=
+github.com/adrg/xdg v0.5.3 h1:xRnxJXne7+oWDatRhR1JLnvuccuIeCoBu2rtuLqQB78=
+github.com/adrg/xdg v0.5.3/go.mod h1:nlTsY+NNiCBGCK2tpm09vRqfVzrc2fLmXGpBLF0zlTQ=
 github.com/benesch/cgosymbolizer v0.0.0-20190515212042-bec6fe6e597b h1:5JgaFtHFRnOPReItxvhMDXbvuBkjSWE+9glJyF466yw=
 github.com/benesch/cgosymbolizer v0.0.0-20190515212042-bec6fe6e597b/go.mod h1:eMD2XUcPsHYbakFEocKrWZp47G0MRJYoC60qFblGjpA=
 github.com/brycensranch/go-aptabase/pkg v0.0.0-20241004152612-e20856549654 h1:nlf5x665VNLeq64zmaljKUp1LFdGa6k2GRfaNW1Yrmc=
