@@ -26,6 +26,8 @@ jobs:
       - name: Setup Docker Build Environment
         id: meta
         uses: ./.github/actions/setup-docker-build-env
+        with:
+          tmpfs: "false"
       - name: Build Docker Container and push
         uses: docker/build-push-action@v6
         with:
@@ -47,6 +49,7 @@ jobs:
         id: meta
         uses: ./.github/actions/setup-docker-build-env
         with:
+          tmpfs: "false"
           flavor: |
             latest=auto
             prefix=multiarch-
@@ -74,7 +77,12 @@ jobs:
           ls -la /var/run/docker.sock
       - name: Load FUSE.
         run: modprobe fuse
-
+      - name: Run Docker on tmpfs
+        uses: JonasAlfredsson/docker-on-tmpfs@v1
+        with:
+          tmpfs_size: 5
+          swap_size: 4
+          swap_location: '/mnt/swapfile'
       - name: Build aarch64 on fedora_latest
         uses: uraimo/run-on-arch-action@v2
         with:
@@ -161,7 +169,12 @@ jobs:
           ls -la /var/run/docker.sock
       - name: Load FUSE.
         run: modprobe fuse
-
+      - name: Run Docker on tmpfs
+        uses: JonasAlfredsson/docker-on-tmpfs@v1
+        with:
+          tmpfs_size: 5
+          swap_size: 4
+          swap_location: '/mnt/swapfile'
       - name: Build armhf on Mageia Cauldron
         uses: uraimo/run-on-arch-action@v2
         with:
@@ -251,7 +264,12 @@ jobs:
           ls -la /var/run/docker.sock
       - name: Load FUSE.
         run: modprobe fuse
-
+      - name: Run Docker on tmpfs
+        uses: JonasAlfredsson/docker-on-tmpfs@v1
+        with:
+          tmpfs_size: 5
+          swap_size: 4
+          swap_location: '/mnt/swapfile'
       - name: Build i686 (32 bit Intel) on Debian Sid
         uses: uraimo/run-on-arch-action@v2
         with:

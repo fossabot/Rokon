@@ -6,6 +6,9 @@ inputs:
   flavor:
     description: flavor of container (prefix)
     default: ""
+  tmpfs:
+    description: whether or not to put docker on tmpfs
+    default: "true"
 outputs:
   tags:
     description: 'The output value from the meta step'
@@ -18,6 +21,7 @@ runs:
   using: composite
   steps:
       - name: Run Docker on tmpfs
+        if: inputs.tmpfs == "true"
         uses: JonasAlfredsson/docker-on-tmpfs@v1
         with:
           tmpfs_size: 5
