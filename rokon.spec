@@ -83,6 +83,10 @@ ls
 %else
     %set_build_flags
 %endif
+# Since some RPM distributions think they're better than to lower themselves to clang...
+# Cough cough openSUSE not respecting the toolchain variable
+go env -w CC=clang
+go env -w CXX=clang++
 
 # Rokon's Makefile still respects any CFLAGS LDFLAGS CXXFLAGS passed to it. It is compliant.
 # https://lists.fedoraproject.org/archives/list/devel@lists.fedoraproject.org/thread/PK5PEKWE65UC5XQ6LTLSMATVPIISQKQS/
