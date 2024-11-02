@@ -40,7 +40,7 @@ Name:           rokon
 # Note for Rokon Contributors: Do not touch the version or release. GitHub Actions handles these and bump as necessary.
 # On OpenSUSE Build Service, the Release is overwritten which is out of my control.
 Version:        %{version}
-Release:        21%{?dist}
+Release:        22%{?dist}
 Summary:        Control your Roku device with your desktop!
 
 
