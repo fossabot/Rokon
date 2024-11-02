@@ -137,9 +137,7 @@ jobs:
           name: rokon-vendored-source
           path: |
             .
-            !.git/objects
-            !.git/logs
-            !.git/hooks
+            !.git
           include-hidden-files: true
           if-no-files-found: error
       - name: Start building on other arches
