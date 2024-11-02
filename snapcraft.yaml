@@ -70,8 +70,8 @@ parts:
       make DESTDIR=$SNAPCRAFT_PART_INSTALL PREFIX=/usr install
     build-snaps: [go/latest/stable, gnome-46-2404-sdk/latest/edge]
     build-packages:
-      # For goreleaser or git information in general.
       - git
+      - clang
     build-environment:
       - CGO_ENABLED: '1'
       - CC: clang
