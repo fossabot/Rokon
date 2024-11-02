@@ -212,6 +212,9 @@ jobs:
           git_tag_gpgsign: true
           git_push_gpgsign: false
       - name: 🖼️ Assemble the AppImage
+        env:
+          CC: clang
+          CXX: clang++
         run: |
           wget -c https://github.com/$(wget -q https://github.com/probonopd/go-appimage/releases/expanded_assets/continuous -O - | grep "appimagetool-.*-x86_64.AppImage" | head -n 1 | cut -d '"' -f 2)
           chmod +x appimagetool-*.AppImage
