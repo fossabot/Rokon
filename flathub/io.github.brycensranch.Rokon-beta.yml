@@ -9,6 +9,8 @@ branch: "beta"
 
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.golang
+  - org.freedesktop.Sdk.Extension.llvm19
+
 finish-args:
   - --socket=wayland
   - --socket=fallback-x11
@@ -34,8 +36,11 @@ modules:
       # test-args:
       #   - "--socket=x11"
       #   - "--share=network"
-      append-path: /usr/lib/sdk/golang/bin
+      append-path: /usr/lib/sdk/golang/bin:/usr/lib/sdk/llvm19/bin
+      prepend-ld-library-path: /usr/lib/sdk/llvm19/lib
       env:
+        CC: clang
+        CXX: clang++
         GOBIN: /app/bin
         GOROOT: /usr/lib/sdk/golang
     build-commands:

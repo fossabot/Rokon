@@ -6,6 +6,7 @@ command: rokon
 
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.golang
+  - org.freedesktop.Sdk.Extension.llvm19
 
 finish-args:
   - --socket=wayland
@@ -24,8 +25,11 @@ modules:
   - name: rokon
     buildsystem: simple
     build-options:
-      append-path: /usr/lib/sdk/golang/bin
+      append-path: /usr/lib/sdk/golang/bin:/usr/lib/sdk/llvm19/bin
+      prepend-ld-library-path: /usr/lib/sdk/llvm19/lib
       env:
+        CC: clang
+        CXX: clang++
         GOBIN: /app/bin
         GOROOT: /usr/lib/sdk/golang
     build-commands:
@@ -33,8 +37,9 @@ modules:
       - desktop-file-edit --set-key=Exec --set-value=$GOBIN/rokon usr/share/applications/$FLATPAK_ID.desktop
       - make PREFIX=/app BINDIR=$GOBIN install
     sources:
-      - type: archive
-        url: https://github.com/BrycensRanch/Rokon/archive/8a788fe.tar.gz
-        sha256: 0e1e13750d8a39321a40a58eedac6f226bb46b5ed4e4c47ef1cb7a3c831685f6
+      - type: git
+        url: https://github.com/BrycensRanch/Rokon
+        branch: master
+        commit: f3a2e2cb0c7de053ff0715a4bbc679b00bd10e54
 
       - go.mod.yml
