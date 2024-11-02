@@ -169,14 +169,14 @@ jobs:
           flatpak remote-add --user --if-not-exists flathub-beta https://flathub.org/beta-repo/flathub-beta.flatpakrepo
           flatpak install --user -y flathub org.flatpak.Builder
       - name: Create RPM build environment
-        if: github.repository_owner != 'BrycensRanch'
+        if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner || github.repository_owner) != 'BrycensRanch'
         run: |
           rpmdev-setuptree
       - name: Uninstall Old RPMs
-        if: github.repository_owner != 'BrycensRanch'
+        if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner || github.repository_owner) != 'BrycensRanch'
         run: sudo dnf remove -y rokon rokon-debuginfo rokon-debugsource golang-github-brycensranch-aptabase-devel
       - name: Build and Install RPMs
-        if: github.repository_owner != 'BrycensRanch'
+        if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner || github.repository_owner) != 'BrycensRanch'
         run: |
           for spec in ./*.spec; do
               echo "Building $spec"
@@ -194,11 +194,8 @@ jobs:
 
               echo "Finished building and installing RPMs for $spec"
           done
-      - name: Test built RPM
-        if: github.repository_owner != 'BrycensRanch'
-        run: rokon --version
       - name: Uninstall built RPMs
-        if: github.repository_owner != 'BrycensRanch'
+        if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner || github.repository_owner) != 'BrycensRanch'
         run: sudo dnf remove -y rokon rokon-debuginfo rokon-debugsource golang-github-brycensranch-aptabase-devel
       - name: Lint AppStream Metadata
         run: |
@@ -242,7 +239,7 @@ jobs:
             *.AppImage
             *.AppImage.zsync
       - uses: chrisdickinson/setup-yq@latest
-        if: github.repository_owner != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
+        if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner || github.repository_owner) != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
         with:
           yq-version: v4.44.3 # renovate: version from https://github.com/mikefarah/yq
       - name: 🔷 Update Flatpak Data
@@ -265,24 +262,24 @@ jobs:
           commit_message: "build(flathub): update go vendor modules [skip ci]"
           commit_author: "github-actions <41898282+github-actions[bot]@users.noreply.github.com>"
       - name: Extract branch name
-        if: github.repository_owner != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
+        if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner || github.repository_owner) != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
       - name: Set source branch for Flatpak
-        if: github.repository_owner != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
+        if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner || github.repository_owner) != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
         run: yq '.modules[0].sources[0].branch = "${{env.BRANCH_NAME}}"' -i flathub/io.github.brycensranch.Rokon-beta.yml
         env:
           BRANCH_NAME: ${{ steps.extract_branch.outputs.branch }}
 
       - name: Set source URL for Flatpak
-        if: github.repository_owner != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
+        if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner || github.repository_owner) != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
         run: yq '.modules[0].sources[0].url = "${{env.GITHUB_REPOSITORY_URL}}"' -i flathub/io.github.brycensranch.Rokon-beta.yml
         env:
-          GITHUB_REPOSITORY_URL: "${{ github.server_url }}/${{ github.repository }}.git"
+          GITHUB_REPOSITORY_URL: "${{ github.server_url }}/${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}.git"
 
       - name: ⚙️ Assemble the Flatpak!
-        if: github.repository_owner != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
+        if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner || github.repository_owner) != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
         working-directory: flathub
         run: |
           flatpak-builder --disable-rofiles-fuse --install --user --install-deps-from=flathub --force-clean repo/ io.github.brycensranch.Rokon-beta.yml
@@ -291,12 +288,12 @@ jobs:
           # Create a Flatpak bundle for the beta version
           flatpak build-bundle export io.github.brycensranch.Rokon-beta.flatpak io.github.brycensranch.Rokon master --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
       - name: Test Flatpak
-        if: github.repository_owner != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
+        if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner || github.repository_owner) != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
         run: |
           flatpak --branch=beta --user run io.github.brycensranch.Rokon --version
       - name: 🗃️ Upload Built RPMs 📦
         uses: actions/upload-artifact@v4
-        if: always() && github.repository_owner != 'BrycensRanch'
+        if: always() && (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner || github.repository_owner) != 'BrycensRanch'
         with:
           name: rokon-rpm-fedora-x86_64
           if-no-files-found: error
@@ -305,7 +302,7 @@ jobs:
 
       - name: 🥙 Upload Built Flatpaks 📦
         uses: actions/upload-artifact@v4
-        if: always() && github.repository_owner != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
+        if: always() && (github.event_name == 'pull_request' && github.event.pull_request.head.repo.owner || github.repository_owner) != 'BrycensRanch' || github.event_name == 'pull_request' || github.ref != 'refs/heads/master'
         with:
           name: rokon-flatpak-x86_64
           if-no-files-found: error
@@ -372,7 +369,7 @@ jobs:
         run: yq '.parts.rokon.source-branch = "${{ steps.extract_branch.outputs.branch }}"' -i snapcraft.yaml
       - name: Switch snap git repository
         if: ${{ github.event_name == 'pull_request' }}
-        run: yq '.parts.rokon.source = "${{ github.server_url }}/${{ github.repository }}"' -i snapcraft.yaml
+        run: yq '.parts.rokon.source = "${{ github.server_url }}/${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name || github.repository }}"' -i snapcraft.yaml
       - name: Force snap to be grade devel
         if: ${{ github.event_name == 'pull_request' }}
         run: yq '.grade = "devel"' -i snapcraft.yaml

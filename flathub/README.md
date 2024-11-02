@@ -20,7 +20,7 @@ So, let's test it!
 ```sh
 # After building with the command provided above...
 flatpak build-export export builddir
-flatpak build-bundle export io.github.brycensranch.Rokon.flatpak io.github.brycensranch.Rokon master
+flatpak build-bundle export io.github.brycensranch.Rokon.flatpak io.github.brycensranch.Rokon master --runtime-repo=https://flathub.org/repo/flathub.flatpakrepo
 ```
 
 ## Important for developers
