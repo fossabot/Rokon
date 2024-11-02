@@ -74,6 +74,8 @@ parts:
       - git
     build-environment:
       - CGO_ENABLED: '1'
+      - CC: clang
+      - CXX: clang++
     source: https://github.com/BrycensRanch/Rokon
     source-type: git
     override-pull: |
