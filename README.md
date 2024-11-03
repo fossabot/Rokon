@@ -17,7 +17,6 @@
   <a aria-label="Semantic Release" href="https://github.com/semantic-release/semantic-release">
     <img alt="Semantic Release Badge" src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg?style=for-the-badge">
     </a>
-<a href="https://app.fossa.com/projects/git%2Bgithub.com%2FBrycensRanch%2FRokon?ref=badge_shield" alt="FOSSA Status"><img src="https://app.fossa.com/api/projects/git%2Bgithub.com%2FBrycensRanch%2FRokon.svg?type=shield&style=for-the-badge"/></a>
     <a aria-label="Build Status" href="https://github.com/BrycensRanch/Rokon/actions/workflows/publish.yml">
       <img alt="GitHub Workflow Status Badge" src="https://img.shields.io/github/actions/workflow/status/BrycensRanch/Rokon/publish.yml?label=BUILD&logo=github&style=for-the-badge">
     </a>
